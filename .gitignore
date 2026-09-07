@@ -6,3 +6,7 @@ Thumbs.db
 node_modules/
 _ref-frames/
 .next/
+out/
+*.tsbuildinfo
+.env*
+!.env.example

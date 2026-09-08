@@ -17,47 +17,33 @@ export function PageBackdrop() {
     () => {
       const wrap = wrapRef.current;
       const video = videoRef.current;
-      const hero = document.getElementById("heroScrolly");
       if (!wrap || !video) return;
 
-      const applyVisual = (progress: number) => {
-        const hold = 0.02;
-        const fadeEnd = 0.08;
-        let poster = 1;
-        let videoOpacity = 0;
-        if (progress <= hold) {
-          poster = 1;
-          videoOpacity = 0;
-        } else if (progress >= fadeEnd) {
-          poster = 0;
-          videoOpacity = 1;
-        } else {
-          const t = (progress - hold) / (fadeEnd - hold);
-          poster = 1 - t;
-          videoOpacity = t;
-        }
-        wrap.style.setProperty("--backdrop-poster-opacity", poster.toFixed(3));
-        wrap.style.setProperty("--backdrop-video-opacity", videoOpacity.toFixed(3));
-      };
+      wrap.style.setProperty("--backdrop-video-opacity", "1");
 
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (reduceMotion) {
-        applyVisual(0);
         video.pause();
         return;
       }
 
-      applyVisual(0);
-
+      const region = wrap.closest(".home-cinematic");
       const trigger = ScrollTrigger.create({
-        start: () => Math.max(0, (hero?.offsetHeight ?? 0) - window.innerHeight),
-        end: () => Math.max(1, document.documentElement.scrollHeight - window.innerHeight),
-        scrub: true,
-        onUpdate: (self) => applyVisual(self.progress),
+        start: 0,
+        end: () => {
+          if (!region) return Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+          const top = region.getBoundingClientRect().top + window.scrollY;
+          return Math.max(1, top + region.offsetHeight - window.innerHeight);
+        },
+        scrub: 1.05,
+        onUpdate: (self) => {
+          wrap.classList.toggle("is-past", self.progress >= 0.999);
+        },
       });
 
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
+        smoothing: 0.14,
       });
 
       return () => {
@@ -70,11 +56,12 @@ export function PageBackdrop() {
 
   return (
     <div className="page-backdrop" id="pageBackdrop" ref={wrapRef} aria-hidden="true">
-      <img src="/media/backdrop-poster.png" alt="" />
-      <video ref={videoRef} muted playsInline preload="auto" poster="/media/backdrop-poster.png">
-        <source src="/media/backdrop.mp4" type="video/mp4" />
-      </video>
-      <div className="page-backdrop-wash" />
+      <div className="page-backdrop-media">
+        <video ref={videoRef} muted playsInline preload="auto">
+          <source src="/media/backdrop.mp4?v=3" type="video/mp4" />
+        </video>
+        <div className="page-backdrop-wash" />
+      </div>
     </div>
   );
 }

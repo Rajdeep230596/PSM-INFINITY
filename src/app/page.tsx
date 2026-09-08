@@ -2,13 +2,13 @@ import Link from "next/link";
 
 import { HeroScrolly } from "@/components/home/hero-scrolly";
 import { PageBackdrop } from "@/components/home/page-backdrop";
-import { PracticeOrbit } from "@/components/home/practice-orbit";
 
 export default function HomePage() {
   return (
     <>
-      <PageBackdrop />
-      <HeroScrolly />
+      <div className="home-cinematic">
+        <PageBackdrop />
+        <HeroScrolly />
       <div className="marquee" aria-hidden="true">
         <div className="marquee-track">
           <span>Personalised branding</span>
@@ -23,7 +23,15 @@ export default function HomePage() {
           <span>Logistics</span>
         </div>
       </div>
-      <PracticeOrbit />
+      <section className="section story" aria-label="Private Concierge">
+        <div className="container">
+          <h2 className="story-heading">
+            Private
+            <br />
+            Concierge
+          </h2>
+        </div>
+      </section>
       <section className="section">
         <div className="container">
           <div className="split-head">
@@ -131,6 +139,8 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+      </div>
+      <div className="home-afterglow">
       <section className="section reviews">
         <div className="container">
           <div className="split-head">
@@ -205,6 +215,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      </div>
     </>
   );
 }

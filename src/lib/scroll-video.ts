@@ -1,9 +1,13 @@
 "use client";
 
+import { gsap } from "gsap";
+
 type ScrollVideoOptions = {
   getProgress: () => number;
   mapProgress?: (progress: number) => number;
   enabled?: boolean;
+  /** 0–1. Lower is silkier; higher tracks the scroll more tightly. */
+  smoothing?: number;
 };
 
 export function attachScrollVideo(
@@ -23,13 +27,19 @@ export function attachScrollVideo(
     return () => {};
   }
 
+  const smoothing = options.smoothing ?? 0.16;
+  const minStep = 1 / 60;
   let duration = 0;
-  let targetTime = 0;
-  let seeking = false;
-  let queued = false;
-  let seekWatch = 0;
-  const frameStep = 1 / 24;
-  const endTime = () => Math.max(0, duration - frameStep);
+  let displayed = 0;
+
+  const endTime = () => Math.max(0, duration - minStep);
+
+  const targetFromProgress = () => {
+    const raw = Math.min(1, Math.max(0, options.getProgress()));
+    const progress = options.mapProgress ? options.mapProgress(raw) : raw;
+    if (duration <= 0) return 0;
+    return progress >= 0.995 ? endTime() : progress * endTime();
+  };
 
   const unlockSeek = () => {
     const play = video.play();
@@ -37,7 +47,6 @@ export function attachScrollVideo(
       play
         .then(() => {
           video.pause();
-          schedule();
         })
         .catch(() => {});
     } else {
@@ -45,65 +54,37 @@ export function attachScrollVideo(
     }
   };
 
-  const seekToTarget = () => {
-    if (seeking || duration <= 0) return;
-    if (Math.abs(video.currentTime - targetTime) < frameStep) return;
-    seeking = true;
-    video.pause();
+  const tick = () => {
+    if (duration <= 0 || video.readyState < 1) return;
+
+    const target = targetFromProgress();
+    displayed += (target - displayed) * smoothing;
+    if (Math.abs(target - displayed) < minStep) displayed = target;
+
+    if (Math.abs(video.currentTime - displayed) < minStep) return;
+    if (video.seeking) return;
     try {
-      if (typeof video.fastSeek === "function") video.fastSeek(targetTime);
-      else video.currentTime = targetTime;
+      video.currentTime = displayed;
     } catch {
-      video.currentTime = targetTime;
+      // Safari can throw if a seek lands before the buffer is ready.
     }
-    window.clearTimeout(seekWatch);
-    seekWatch = window.setTimeout(() => {
-      seeking = false;
-    }, 140);
-  };
-
-  const render = () => {
-    queued = false;
-    const raw = Math.min(1, Math.max(0, options.getProgress()));
-    const progress = options.mapProgress ? options.mapProgress(raw) : raw;
-    if (duration > 0) {
-      targetTime = progress >= 0.995 ? endTime() : progress * endTime();
-      seekToTarget();
-    }
-  };
-
-  const schedule = () => {
-    if (queued) return;
-    queued = true;
-    requestAnimationFrame(render);
   };
 
   const onMeta = () => {
     duration = video.duration || 0;
-    schedule();
-  };
-
-  const onSeeked = () => {
-    window.clearTimeout(seekWatch);
-    seeking = false;
-    if (Math.abs(video.currentTime - targetTime) >= frameStep) seekToTarget();
+    displayed = targetFromProgress();
+    if (duration > 0) video.currentTime = displayed;
   };
 
   video.addEventListener("loadedmetadata", onMeta);
-  if (video.readyState >= 1) duration = video.duration || 0;
+  if (video.readyState >= 1) onMeta();
   video.addEventListener("loadeddata", unlockSeek, { once: true });
   document.addEventListener("touchstart", unlockSeek, { once: true, passive: true });
   document.addEventListener("click", unlockSeek, { once: true });
-  video.addEventListener("seeked", onSeeked);
-  window.addEventListener("scroll", schedule, { passive: true });
-  window.addEventListener("resize", schedule);
-  schedule();
+  gsap.ticker.add(tick);
 
   return () => {
-    window.clearTimeout(seekWatch);
+    gsap.ticker.remove(tick);
     video.removeEventListener("loadedmetadata", onMeta);
-    video.removeEventListener("seeked", onSeeked);
-    window.removeEventListener("scroll", schedule);
-    window.removeEventListener("resize", schedule);
   };
 }

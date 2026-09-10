@@ -17,6 +17,9 @@ export function SiteFooter() {
             <h4>Visit</h4>
             <ul>
               <li>
+                <Link href="/first-ascent">First Ascent</Link>
+              </li>
+              <li>
                 <Link href="/services">Services</Link>
               </li>
               <li>

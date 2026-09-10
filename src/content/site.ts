@@ -16,6 +16,7 @@ export const site = {
   ],
   navigation: [
     { href: "/", label: "Home" },
+    { href: "/first-ascent", label: "First Ascent" },
     { href: "/services", label: "Services" },
     { href: "/locations", label: "Locations" },
     { href: "/about", label: "Our Story" },

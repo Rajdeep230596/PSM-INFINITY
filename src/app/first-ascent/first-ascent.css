@@ -1,0 +1,107 @@
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@source "../../components/first-ascent/**/*.{tsx,ts,jsx,js}";
+@source "./**/*.{tsx,ts,jsx,js}";
+
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI",
+    sans-serif;
+  --color-obsidian: #080808;
+}
+
+html.first-ascent-page,
+html.first-ascent-page body {
+  background: #080808;
+}
+
+html.first-ascent-page .site-header {
+  z-index: 50;
+  background: rgba(8, 8, 8, 0.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+html.first-ascent-page .site-header.scrolled {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+
+html.first-ascent-page .whatsapp-cta {
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 40;
+}
+
+html.first-ascent-page .site-footer {
+  background: #080808;
+  padding-bottom: 9rem;
+}
+
+.first-ascent {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI",
+    sans-serif;
+  color-scheme: dark;
+}
+
+.first-ascent-hero-frame {
+  width: min(100%, calc(75vh * 16 / 9));
+  max-height: 75vh;
+  margin-inline: auto;
+}
+
+.first-ascent input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) opacity(0.7);
+  cursor: pointer;
+}
+
+@keyframes fa-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes fa-marquee-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.fa-marquee {
+  display: flex;
+  width: max-content;
+  gap: 2rem;
+  animation: fa-marquee 42s linear infinite;
+  will-change: transform;
+}
+
+@media (min-width: 768px) {
+  .fa-marquee {
+    gap: 2.5rem;
+  }
+}
+
+.fa-marquee-reverse {
+  animation-name: fa-marquee-reverse;
+  animation-duration: 48s;
+}
+
+.fa-marquee:hover,
+.fa-marquee:focus-within {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fa-marquee {
+    animation: none;
+  }
+}

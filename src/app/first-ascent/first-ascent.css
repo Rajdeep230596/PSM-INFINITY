@@ -47,6 +47,16 @@ html.first-ascent-page .site-footer {
   color-scheme: dark;
 }
 
+.first-ascent .fa-dossier-btn {
+  color-scheme: light;
+  color: #0a0a0a !important;
+  background: #ffffff !important;
+}
+
+.first-ascent .fa-dossier-btn span {
+  color: #0a0a0a !important;
+}
+
 .first-ascent-hero-frame {
   width: min(100%, calc(75vh * 16 / 9));
   max-height: 75vh;
@@ -82,12 +92,6 @@ html.first-ascent-page .site-footer {
   gap: 2rem;
   animation: fa-marquee 42s linear infinite;
   will-change: transform;
-}
-
-@media (min-width: 768px) {
-  .fa-marquee {
-    gap: 2.5rem;
-  }
 }
 
 .fa-marquee-reverse {

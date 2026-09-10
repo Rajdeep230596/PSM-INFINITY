@@ -1,0 +1,16 @@
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: psm_infinity
+      MYSQL_USER: psm
+      MYSQL_PASSWORD: psm_local_password
+      MYSQL_ROOT_PASSWORD: psm_root_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - psm_mysql:/var/lib/mysql
+
+volumes:
+  psm_mysql:

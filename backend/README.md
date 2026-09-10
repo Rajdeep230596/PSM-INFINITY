@@ -9,7 +9,8 @@ Local:
 ```bash
 cd backend
 cp .env.example .env
-docker compose up -d
+docker-compose up -d
+# or: docker compose up -d
 npm install
 npm run db:migrate
 npm run dev

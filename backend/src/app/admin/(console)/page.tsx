@@ -18,13 +18,17 @@ export default async function AdminHomePage() {
       <p>Signed in as {email}</p>
       <h1>Dashboard</h1>
       <ul>
-        <li>Industries: {industries.length}</li>
-        <li>Companies: {companies.length}</li>
-        <li>Products: {products.length}</li>
+        <li>
+          <Link href="/admin/industries">Industries: {industries.length}</Link>
+        </li>
+        <li>
+          <Link href="/admin/companies">Companies: {companies.length}</Link>
+        </li>
+        <li>
+          <Link href="/admin/products">Products: {products.length}</Link>
+        </li>
       </ul>
-      <p>
-        <Link href="/admin/industries">Manage industries</Link>
-      </p>
+      <p>Unpublished rows stay out of the public API used by the marketing site.</p>
     </main>
   );
 }

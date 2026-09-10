@@ -3,14 +3,15 @@ import { z } from "zod";
 
 import { getAdminEmail, requireAdmin } from "@/lib/auth";
 import { json, options } from "@/lib/http";
+import { statusFor } from "@/lib/route-errors";
 import { createIndustry, listIndustries } from "@/modules/industries/repo";
 
 const createSchema = z.object({
   slug: z.string().min(1),
   name: z.string().min(1),
   summary: z.string().min(1),
-  description: z.string().optional(),
-  hero_media_url: z.string().optional(),
+  description: z.string().nullable().optional(),
+  hero_media_url: z.string().nullable().optional(),
   sort_order: z.number().int().optional(),
   published: z.boolean().optional(),
 });
@@ -38,7 +39,6 @@ export async function POST(request: NextRequest) {
     const id = await createIndustry(body);
     return json({ id }, { status: 201 }, origin);
   } catch (error) {
-    const status = error instanceof Error && error.name === "UnauthorizedError" ? 401 : 400;
-    return json({ error: error instanceof Error ? error.message : "Failed" }, { status }, origin);
+    return json({ error: error instanceof Error ? error.message : "Failed" }, { status: statusFor(error) }, origin);
   }
 }

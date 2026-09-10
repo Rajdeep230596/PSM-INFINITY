@@ -17,4 +17,6 @@ All public GETs return `{ data: ... }`. Unpublished rows are omitted.
 
 CORS: set `ALLOWED_ORIGINS` to the frontend origin. Credentials not required for public GETs.
 
+Owner mutations (cookie `psm_admin`): `POST` collections and `PATCH`/`DELETE` `/api/v1/{industries|companies|products}/:slug`. Public GETs omit unpublished rows.
+
 Do not call admin/auth routes from the marketing site. Enquiry stays WhatsApp on the frontend.

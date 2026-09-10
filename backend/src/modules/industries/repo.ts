@@ -1,4 +1,5 @@
 import { getPool } from "@/lib/db";
+import { conflict } from "@/lib/route-errors";
 
 export type IndustryRow = {
   id: number;
@@ -92,6 +93,9 @@ export async function getIndustryById(id: number) {
 
 export async function deleteIndustry(id: number) {
   const pool = getPool();
+  const [countRows] = await pool.query("SELECT COUNT(*) AS n FROM companies WHERE industry_id = ?", [id]);
+  const n = Number((countRows as Array<{ n: number }>)[0]?.n || 0);
+  if (n > 0) conflict("Delete companies in this industry first");
   const [result] = await pool.execute("DELETE FROM industries WHERE id = ?", [id]);
   return (result as { affectedRows: number }).affectedRows > 0;
 }

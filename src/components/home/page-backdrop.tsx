@@ -58,7 +58,7 @@ export function PageBackdrop() {
     <div className="page-backdrop" id="pageBackdrop" ref={wrapRef} aria-hidden="true">
       <div className="page-backdrop-media">
         <video ref={videoRef} muted playsInline preload="auto">
-          <source src="/media/backdrop.mp4?v=3" type="video/mp4" />
+          <source src="/media/backdrop.mp4?v=6" type="video/mp4" />
         </video>
         <div className="page-backdrop-wash" />
       </div>

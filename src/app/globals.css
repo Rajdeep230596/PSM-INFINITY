@@ -13,7 +13,7 @@
   --line: rgba(74, 50, 38, 0.14);
   --shadow: 0 18px 50px rgba(44, 28, 20, 0.12);
   --radius: 22px;
-  --header: 84px;
+  --header: 80px;
   --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --font-script: "Italianno", cursive;
   --font-body: var(--font-outfit), "Outfit", system-ui, sans-serif;
@@ -145,6 +145,12 @@ a {
   top: 12px;
 }
 
+html.cinematic-hero-active .whatsapp-cta {
+  opacity: 0 !important;
+  visibility: hidden;
+  pointer-events: none !important;
+}
+
 button,
 input,
 select,
@@ -273,20 +279,31 @@ textarea {
 
 /* Header */
 .site-header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
+  right: 0;
+  left: 0;
+  z-index: 50;
   height: var(--header);
   display: flex;
   align-items: center;
-  background: transparent;
-  border-bottom: 1px solid transparent;
-  transition: 0.25s ease;
+  background: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  transition:
+    background 0.5s ease,
+    border-color 0.5s ease,
+    box-shadow 0.5s ease,
+    backdrop-filter 0.5s ease;
 }
 
 .site-header.scrolled {
+  background: rgba(0, 0, 0, 0.6);
   border-bottom-color: rgba(255, 255, 255, 0.12);
-  box-shadow: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+  backdrop-filter: blur(64px);
+  -webkit-backdrop-filter: blur(64px);
 }
 
 .nav-wrap {
@@ -294,40 +311,69 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  width: min(1180px, calc(100% - 40px));
+  width: 100%;
+  max-width: 80rem;
+  height: var(--header);
   margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .nav-wrap {
+    padding: 0 2.5rem;
+  }
 }
 
 .logo {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
-.logo-mark {
-  width: 42px;
-  height: 42px;
+.logo-orb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #e5e5e5;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1;
+  backdrop-filter: blur(12px);
+  transition: border-color 0.2s ease;
+}
+
+.logo:hover .logo-orb {
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .logo-text {
   display: flex;
   flex-direction: column;
-  line-height: 1;
+  line-height: 1.15;
 }
 
 .logo-text strong {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
   color: #fff;
 }
 
 .logo-text span {
-  font-size: 0.62rem;
-  letter-spacing: 0.32em;
+  font-size: 0.5625rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
+  color: #a3a3a3;
 }
 
 .nav-links {
@@ -338,13 +384,62 @@ textarea {
 }
 
 .nav-links a {
-  font-size: 0.92rem;
-  color: rgba(255, 255, 255, 0.88);
+  position: relative;
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: #d4d4d4;
+  transition: color 0.2s ease;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
+.nav-links a:hover {
   color: #fff;
+}
+
+.nav-links a.active {
+  font-weight: 500;
+  color: #fff;
+}
+
+.nav-links a.active::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: #fff;
+  transform: translateX(-50%);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.nav-cta {
+  color-scheme: light;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  padding: 0.5rem 1.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 2px 14px rgba(255, 255, 255, 0.18);
+  color: #0a0a0a !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nav-cta:hover {
+  background: #e5e5e5;
 }
 
 .menu-toggle {
@@ -1129,7 +1224,7 @@ textarea {
 .page-hero {
   position: relative;
   z-index: 1;
-  padding: 72px 0 48px;
+  padding: calc(var(--header) + 28px) 0 48px;
   background: transparent;
   text-align: center;
   color: #fff;
@@ -1386,14 +1481,13 @@ textarea {
     grid-template-columns: 1fr 1fr;
   }
 
-  .nav-links,
-  .nav-cta {
+  .nav-links {
     display: none;
   }
 
   .nav-wrap {
     width: 100%;
-    padding: 0 20px;
+    padding: 0 1.5rem;
   }
 
   .nav-links.open {
@@ -1404,9 +1498,15 @@ textarea {
     left: 0;
     right: 0;
     padding: 24px;
-    background: rgba(7, 20, 40, 0.92);
+    background: rgba(0, 0, 0, 0.82);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     align-items: flex-start;
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+  }
+
+  .nav-links.open a.active::after {
+    display: none;
   }
 
   .menu-toggle {

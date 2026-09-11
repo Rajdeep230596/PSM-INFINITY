@@ -1,37 +1,15 @@
 import Link from "next/link";
 
-import { HeroScrolly } from "@/components/home/hero-scrolly";
-import { PageBackdrop } from "@/components/home/page-backdrop";
+import "./first-ascent/first-ascent.css";
+import { FirstAscentGallery } from "@/components/first-ascent/FirstAscentGallery";
+import { CinematicWalkthrough } from "@/components/home/cinematic-walkthrough";
 
 export default function HomePage() {
   return (
     <>
+      <CinematicWalkthrough />
+      <FirstAscentGallery hideHero />
       <div className="home-cinematic">
-        <PageBackdrop />
-        <HeroScrolly />
-      <div className="marquee" aria-hidden="true">
-        <div className="marquee-track">
-          <span>Personalised branding</span>
-          <span>Corporate identity</span>
-          <span>Technology</span>
-          <span>Textile</span>
-          <span>Logistics</span>
-          <span>Personalised branding</span>
-          <span>Corporate identity</span>
-          <span>Technology</span>
-          <span>Textile</span>
-          <span>Logistics</span>
-        </div>
-      </div>
-      <section className="section story" aria-label="Private Concierge">
-        <div className="container">
-          <h2 className="story-heading">
-            Private
-            <br />
-            Concierge
-          </h2>
-        </div>
-      </section>
       <section className="section">
         <div className="container">
           <div className="split-head">

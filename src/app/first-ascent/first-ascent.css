@@ -4,6 +4,7 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 
 @source "../../components/first-ascent/**/*.{tsx,ts,jsx,js}";
+@source "../../components/home/**/*.{tsx,ts,jsx,js}";
 @source "./**/*.{tsx,ts,jsx,js}";
 
 @theme {
@@ -19,15 +20,14 @@ html.first-ascent-page body {
 
 html.first-ascent-page .site-header {
   z-index: 50;
-  background: rgba(8, 8, 8, 0.8);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 html.first-ascent-page .site-header.scrolled {
-  border-bottom-color: rgba(255, 255, 255, 0.06);
-  box-shadow: none;
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+html.first-ascent-page .first-ascent {
+  padding-top: var(--header, 80px);
 }
 
 html.first-ascent-page .whatsapp-cta {

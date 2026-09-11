@@ -429,7 +429,7 @@ function SectionHeader({
   );
 }
 
-export function FirstAscentGallery() {
+export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean }) {
   const heroRef = useRef<HTMLElement>(null);
   const [heroInView, setHeroInView] = useState(true);
   const [muted, setMuted] = useState(true);
@@ -455,7 +455,7 @@ export function FirstAscentGallery() {
     [reference, country, clientName, contact],
   );
   const formValid = !errors.reference && !errors.country && !errors.clientName && !errors.contact;
-  const showDock = !deskOpen && !heroInView;
+  const showDock = !deskOpen && !hideHero && !heroInView;
 
   const openDesk = (intent?: Partial<SourcingIntent>) => {
     const nextCategory = intent?.category ?? "watches";
@@ -483,11 +483,16 @@ export function FirstAscentGallery() {
   };
 
   useEffect(() => {
+    if (hideHero) return;
     document.documentElement.classList.add("first-ascent-page");
     return () => document.documentElement.classList.remove("first-ascent-page");
-  }, []);
+  }, [hideHero]);
 
   useEffect(() => {
+    if (hideHero) {
+      setHeroInView(false);
+      return;
+    }
     const node = heroRef.current;
     if (!node) return;
     const observer = new IntersectionObserver(
@@ -496,7 +501,7 @@ export function FirstAscentGallery() {
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, []);
+  }, [hideHero]);
 
   useEffect(() => {
     document.body.style.overflow = deskOpen ? "hidden" : "";
@@ -522,6 +527,7 @@ export function FirstAscentGallery() {
 
   return (
     <div className="first-ascent w-full min-h-screen bg-[#080808] pb-36 text-white selection:bg-white/20">
+      {hideHero ? null : (
       <section ref={heroRef} className="flex w-full flex-col items-center justify-center pt-8 pb-16">
         <div className="mx-auto flex w-full max-w-7xl justify-center px-4 sm:px-6 lg:px-12">
           <div className="first-ascent-hero-frame relative mx-auto flex aspect-[16/9] max-h-[75vh] w-full items-center justify-center overflow-hidden rounded-3xl border border-white/[0.08] bg-neutral-950 shadow-2xl">
@@ -551,8 +557,9 @@ export function FirstAscentGallery() {
           </div>
         </div>
       </section>
+      )}
 
-      <div className="w-full">
+      <div id="collections" className="w-full">
         <section className="w-full border-b border-white/[0.04] py-24 last:border-b-0 md:py-32">
           <SectionHeader
             eyebrow="Timepieces"

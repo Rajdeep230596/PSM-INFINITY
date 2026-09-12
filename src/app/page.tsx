@@ -3,11 +3,13 @@ import Link from "next/link";
 import "./first-ascent/first-ascent.css";
 import { FirstAscentGallery } from "@/components/first-ascent/FirstAscentGallery";
 import { CinematicWalkthrough } from "@/components/home/cinematic-walkthrough";
+import { SkyTerraceArrival } from "@/components/home/sky-terrace-arrival";
 
 export default function HomePage() {
   return (
     <>
       <CinematicWalkthrough />
+      <SkyTerraceArrival />
       <FirstAscentGallery hideHero />
       <div className="home-cinematic">
       <section className="section">

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, Calendar, Check, Volume2, VolumeX, X } from "lucide-react";
+import { ArrowUpRight, Calendar, Check, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type AssetCategory = "watches" | "fleet" | "suites" | "estates";
@@ -432,7 +432,6 @@ function SectionHeader({
 export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean }) {
   const heroRef = useRef<HTMLElement>(null);
   const [heroInView, setHeroInView] = useState(true);
-  const [muted, setMuted] = useState(true);
   const [deskOpen, setDeskOpen] = useState(false);
   const [transmitted, setTransmitted] = useState(false);
 
@@ -527,34 +526,34 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
 
   return (
     <div className="first-ascent w-full min-h-screen bg-[#080808] pb-36 text-white selection:bg-white/20">
-      {hideHero ? null : (
-      <section ref={heroRef} className="flex w-full flex-col items-center justify-center pt-8 pb-16">
-        <div className="mx-auto flex w-full max-w-7xl justify-center px-4 sm:px-6 lg:px-12">
-          <div className="first-ascent-hero-frame relative mx-auto flex aspect-[16/9] max-h-[75vh] w-full items-center justify-center overflow-hidden rounded-3xl border border-white/[0.08] bg-neutral-950 shadow-2xl">
-            <video
-              src="/videos/first-ascent-galleria.mp4"
-              autoPlay
-              loop
-              muted={muted}
-              playsInline
-              className="h-full w-full object-cover"
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
-            <div className="absolute top-4 left-4 z-10 flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-3.5 py-1.5 text-[11px] font-medium tracking-wider text-neutral-300 uppercase backdrop-blur-md sm:top-6 sm:left-6">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-              VIP Private Pavilion Open
-            </div>
-            <div className="absolute right-4 bottom-4 z-10 sm:right-6 sm:bottom-6">
-              <button
-                type="button"
-                onClick={() => setMuted((value) => !value)}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/40 text-white/80 backdrop-blur-md"
-                aria-label={muted ? "Unmute walkthrough" : "Mute walkthrough"}
-              >
-                {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-              </button>
-            </div>
+      {hideHero ? (
+      <section className="mx-auto max-w-7xl px-6 pt-10 pb-4 md:px-12">
+        <p className="mb-3 text-[10px] font-semibold tracking-[0.32em] text-neutral-500 uppercase">
+          Second Ascent — Personal Curation & Living Spaces
+        </p>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="text-3xl font-light tracking-tight md:text-4xl">Second Ascent</h2>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed font-light text-neutral-500">
+              Haute horlogerie, bespoke automotive allocations, couture wardrobe suites, and architectural estate gardens.
+            </p>
           </div>
+          <a href="/second-ascent" className="text-xs tracking-wide text-neutral-400 transition-colors hover:text-white">
+            Open pavilion ↗
+          </a>
+        </div>
+      </section>
+      ) : (
+      <section ref={heroRef} className="relative isolate overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
+        <div className="relative mx-auto max-w-7xl px-6 pt-16 pb-12 md:px-12 md:pt-20 md:pb-16">
+          <p className="mb-4 text-[10px] font-semibold tracking-[0.32em] text-neutral-500 uppercase">
+            Second Ascent — Personal Curation & Living Spaces
+          </p>
+          <h1 className="text-4xl font-light tracking-tight md:text-6xl">Second Ascent</h1>
+          <p className="mt-5 max-w-2xl text-sm leading-relaxed font-light text-neutral-400 md:text-base">
+            Haute horlogerie, bespoke automotive allocations, couture wardrobe suites, and architectural estate gardens.
+          </p>
         </div>
       </section>
       )}

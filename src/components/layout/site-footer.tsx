@@ -20,13 +20,16 @@ export function SiteFooter() {
                 <Link href="/first-ascent">First Ascent</Link>
               </li>
               <li>
+                <Link href="/second-ascent">Second Ascent</Link>
+              </li>
+              <li>
                 <Link href="/services">Services</Link>
               </li>
               <li>
                 <Link href="/locations">Locations</Link>
               </li>
               <li>
-                <Link href="/about">Our story</Link>
+                <Link href="/our-story">Our story</Link>
               </li>
             </ul>
           </div>

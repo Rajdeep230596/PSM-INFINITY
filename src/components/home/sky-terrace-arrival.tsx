@@ -16,25 +16,25 @@ const SERVICES = [
     id: "itineraries",
     label: "Global Itineraries",
     icon: Globe,
-    href: "/locations",
+    href: "/first-ascent/itineraries",
   },
   {
     id: "yachts",
     label: "Yacht Charters",
     icon: Ship,
-    href: "/services",
+    href: "/first-ascent/yachts",
   },
   {
     id: "villas",
     label: "Bespoke Villas",
     icon: House,
-    href: "/first-ascent",
+    href: "/first-ascent/villas",
   },
   {
     id: "chauffeur",
     label: "Chauffeur Fleet",
     icon: Car,
-    href: "/first-ascent",
+    href: "/first-ascent/chauffeur",
   },
 ] as const;
 

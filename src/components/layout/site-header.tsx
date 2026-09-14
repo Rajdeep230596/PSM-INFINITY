@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { FIRST_ASCENT_LINKS } from "@/content/first-ascent";
 import { site } from "@/content/site";
 
 export function SiteHeader() {
@@ -22,6 +23,8 @@ export function SiteHeader() {
     setOpen(false);
   }, [pathname]);
 
+  const firstAscentActive = pathname === "/first-ascent" || pathname.startsWith("/first-ascent/");
+
   return (
     <header className={scrolled ? "site-header scrolled" : "site-header"}>
       <div className="nav-wrap">
@@ -30,13 +33,38 @@ export function SiteHeader() {
             ∞
           </span>
           <span className="logo-text">
-            <strong>PSM Infinity</strong>
+            <strong>PSM INFINITY</strong>
             <span>Global Atelier</span>
           </span>
         </Link>
         <nav>
           <ul className={open ? "nav-links open" : "nav-links"}>
             {site.navigation.map((item) => {
+              if (item.href === "/first-ascent") {
+                return (
+                  <li key={item.href} className="nav-item-dropdown">
+                    <Link
+                      href={item.href}
+                      className={firstAscentActive ? "active" : undefined}
+                      aria-haspopup="true"
+                    >
+                      {item.label}
+                    </Link>
+                    <div className="nav-dropdown">
+                      {FIRST_ASCENT_LINKS.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className={pathname === link.href ? "active" : undefined}
+                          onClick={() => setOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </li>
+                );
+              }
               const active = pathname === item.href;
               return (
                 <li key={item.href}>
@@ -49,7 +77,7 @@ export function SiteHeader() {
           </ul>
         </nav>
         <div className="nav-actions">
-          <Link className="nav-cta" href="/locations">
+          <Link className="nav-cta" href="/locations#concierge">
             Get in touch
           </Link>
           <button

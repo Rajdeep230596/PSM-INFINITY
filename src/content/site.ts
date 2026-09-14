@@ -17,9 +17,10 @@ export const site = {
   navigation: [
     { href: "/", label: "Home" },
     { href: "/first-ascent", label: "First Ascent" },
+    { href: "/second-ascent", label: "Second Ascent" },
     { href: "/services", label: "Services" },
     { href: "/locations", label: "Locations" },
-    { href: "/about", label: "Our Story" },
+    { href: "/our-story", label: "Our Story" },
     { href: "/partner", label: "Partner" },
   ],
 } as const;

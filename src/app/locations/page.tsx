@@ -27,7 +27,7 @@ export default function LocationsPage() {
           </p>
         </div>
       </section>
-      <section className="section" style={{ paddingTop: 40 }}>
+      <section className="section" id="concierge" style={{ paddingTop: 40 }}>
         <div className="container locator">
           <div>
             <input

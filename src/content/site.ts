@@ -16,6 +16,7 @@ export const site = {
   ],
   navigation: [
     { href: "/", label: "Home" },
+    { href: "/ground-zero", label: "Ground Zero" },
     { href: "/first-ascent", label: "First Ascent" },
     { href: "/second-ascent", label: "Second Ascent" },
     { href: "/services", label: "Services" },

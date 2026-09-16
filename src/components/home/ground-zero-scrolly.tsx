@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
+import { GroundZeroCard, GROUND_ZERO_CARDS } from "@/components/home/ground-zero-card";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
@@ -13,65 +14,44 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const BEATS: EditorialBeat[] = [
   {
-    id: "earth",
+    id: "gallery",
     start: 0,
-    end: 0.15,
-    eyebrow: "GLOBAL REACH",
-    headline: ["No Borders.", "No Distance."],
-    subtext: "Connecting rare luxury from anywhere on Earth directly to your collection.",
+    end: 0.38,
+    eyebrow: "FOUNDATION TIER / 00",
+    headline: ["Ground Floor:", "The Private Atelier."],
+    subtext:
+      "An expansive duplex sanctuary uniting haute couture styling, prime architectural estates, master landscaping, and rare calibres.",
   },
   {
-    id: "transit",
-    start: 0.2,
-    end: 0.4,
-    eyebrow: "PRIVATE TRANSIT",
-    headline: ["Destination:", "Pure Excellence."],
-    subtext: "Bespoke acquisitions tracked, verified, and escorted in real time.",
-  },
-  {
-    id: "estate",
-    start: 0.45,
-    end: 0.65,
-    eyebrow: "THE ESTATE",
-    headline: ["Where Curations", "Converge."],
-    subtext: "An architectural sanctuary housing the world's most coveted automotive and horological assets.",
-  },
-  {
-    id: "concierge",
-    start: 0.7,
-    end: 0.85,
-    eyebrow: "PRIVATE CONCIERGE",
-    headline: ["Welcome to", "PSM Infinity."],
-    subtext: "Your discreet global desk for timepieces, exotic chassis, and fine living spaces.",
-  },
-  {
-    id: "ascent",
-    start: 0.9,
-    end: 1,
-    eyebrow: "GROUND ZERO",
-    headline: ["The Foundation", "Begins."],
+    id: "domains",
+    start: 0.42,
+    end: 0.68,
+    eyebrow: "CURATED DOMAINS",
+    headline: ["Bespoke Living,", "Unconstrained."],
+    subtext: "Bespoke Wardrobes · Architectural Portfolios · Botanical Grounds · Exotic Chassis.",
   },
 ];
 
-export function CinematicWalkthrough() {
+export function GroundZeroScrollySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [progress, setProgress] = useState(0);
+  const revealed = progress >= 0.72;
+  const { beat } = activeBeat(revealed ? 1.1 : progress, BEATS);
 
   useEffect(() => {
     const node = sectionRef.current;
     if (!node) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setCinematicChapter("landing", entry.isIntersecting);
+        setCinematicChapter("ground-zero", entry.isIntersecting);
       },
       { threshold: 0.02 },
     );
     observer.observe(node);
-    setCinematicChapter("landing", true);
     return () => {
       observer.disconnect();
-      setCinematicChapter("landing", false);
+      setCinematicChapter("ground-zero", false);
     };
   }, []);
 
@@ -116,32 +96,38 @@ export function CinematicWalkthrough() {
     { scope: sectionRef },
   );
 
-  const { beat } = activeBeat(progress, BEATS);
-
   return (
     <section
       ref={sectionRef}
-      id="landing-hero"
-      className="relative h-[450vh] w-full bg-black"
-      aria-label="Master landing sequence"
+      id="ground-zero"
+      className="relative h-[350vh] bg-[#0A0A0B]"
+      aria-label="Ground Zero arrival"
     >
-      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black">
-        <video ref={videoRef} muted playsInline preload="auto" className="h-full w-full object-cover">
-          <source src="/media/backdrop.mp4?v=7" type="video/mp4" />
+      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
+        <video
+          ref={videoRef}
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 h-full w-full object-cover"
+        >
+          <source src="/videos/ground-zero-arrival.mp4" type="video/mp4" />
         </video>
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
-        <EditorialMilestone
-          beat={beat}
-          cta={
-            beat?.id === "ascent"
-              ? {
-                  label: "Continue ↓",
-                  onClick: () =>
-                    document.getElementById("ground-zero")?.scrollIntoView({ behavior: "smooth", block: "start" }),
-                }
-              : undefined
-          }
-        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/40" />
+
+        <EditorialMilestone beat={beat} />
+
+        <div
+          className={`gz-card-overlay absolute inset-0 z-30 flex items-center justify-center ${
+            revealed ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+        >
+          <div className="gz-card-track no-scrollbar mx-auto w-full max-w-7xl">
+            {GROUND_ZERO_CARDS.map((card, index) => (
+              <GroundZeroCard key={card.id} card={card} revealed={revealed} index={index} />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

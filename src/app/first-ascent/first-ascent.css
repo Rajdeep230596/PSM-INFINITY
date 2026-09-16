@@ -4,8 +4,10 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 
 @source "../../components/first-ascent/**/*.{tsx,ts,jsx,js}";
+@source "../../components/ground-zero/**/*.{tsx,ts,jsx,js}";
 @source "../../components/home/**/*.{tsx,ts,jsx,js}";
 @source "./**/*.{tsx,ts,jsx,js}";
+@source "../ground-zero/**/*.{tsx,ts,jsx,js}";
 @source "../second-ascent/**/*.{tsx,ts,jsx,js}";
 
 @theme {
@@ -321,5 +323,72 @@ html.first-ascent-page .site-footer {
 @media (prefers-reduced-motion: reduce) {
   .fa-marquee {
     animation: none;
+  }
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.gz-card-overlay {
+  padding: 6rem 1.5rem 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .gz-card-overlay {
+    padding: 6.5rem 2rem 3rem;
+  }
+}
+
+.gz-card-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 1.5rem;
+  padding: 0 0.5rem 0.5rem;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  mask-image: linear-gradient(to right, transparent 0, black 1.25rem, black calc(100% - 1.25rem), transparent 100%);
+}
+
+.gz-card-slide {
+  flex: 0 0 min(86vw, 22.5rem);
+  scroll-snap-align: center;
+}
+
+.gz-card-face {
+  height: min(470px, calc(100vh - 11rem));
+}
+
+@media (min-width: 768px) {
+  .gz-card-track {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+    gap: 2rem;
+    padding: 0;
+    mask-image: none;
+  }
+
+  .gz-card-slide {
+    flex: unset;
+    width: auto;
+    min-width: 0;
+  }
+
+  .gz-card-face {
+    height: min(500px, calc(100vh - 12rem));
+  }
+}
+
+@media (min-width: 1024px) {
+  .gz-card-track {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem;
   }
 }

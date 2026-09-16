@@ -1531,7 +1531,7 @@ textarea {
   gap: 18px;
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1320px) {
   .nav-links {
     display: none;
   }

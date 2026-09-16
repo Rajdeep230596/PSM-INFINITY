@@ -7,9 +7,30 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Car, Globe, House, Ship } from "lucide-react";
 import { useRef, useState } from "react";
 
+import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+const BEATS: EditorialBeat[] = [
+  {
+    id: "terrace",
+    start: 0,
+    end: 0.38,
+    eyebrow: "FIRST ASCENT / 01",
+    headline: ["Level One:", "Global Mobility."],
+    subtext:
+      "Intercontinental air charters, private yacht berths, secluded island sanctuaries, and armored tarmac transfers.",
+  },
+  {
+    id: "horizon",
+    start: 0.42,
+    end: 0.68,
+    eyebrow: "EXPEDITION DESK",
+    headline: ["The World,", "On Your Horizon."],
+    subtext: "Private Aviation · Superyacht Charters · Off-Market Villas · Diplomatic Chauffeur.",
+  },
+];
 
 const SERVICES = [
   {
@@ -43,6 +64,7 @@ export function SkyTerraceArrival() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [progress, setProgress] = useState(0);
   const revealed = progress >= 0.72;
+  const { beat } = activeBeat(revealed ? 1.1 : progress, BEATS);
 
   useGSAP(
     () => {
@@ -86,7 +108,12 @@ export function SkyTerraceArrival() {
   );
 
   return (
-    <section ref={sectionRef} className="relative h-[350vh] bg-black" aria-label="Sky terrace arrival">
+    <section
+      ref={sectionRef}
+      id="first-ascent-arrival"
+      className="relative h-[350vh] bg-black"
+      aria-label="Sky terrace arrival"
+    >
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
         <video
           ref={videoRef}
@@ -97,9 +124,15 @@ export function SkyTerraceArrival() {
         >
           <source src="/videos/sky-terrace-arrival.mp4" type="video/mp4" />
         </video>
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
 
-        <div className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-center px-6 md:px-10">
+        <EditorialMilestone beat={beat} />
+
+        <div
+          className={`relative z-30 mx-auto flex w-full max-w-6xl items-center justify-center px-6 md:px-10 ${
+            revealed ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+        >
           <div className="grid w-full grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4 lg:gap-8">
             {SERVICES.map((service, index) => {
               const Icon = service.icon;
@@ -109,9 +142,7 @@ export function SkyTerraceArrival() {
                   href={service.href}
                   initial={false}
                   animate={
-                    revealed
-                      ? { opacity: 1, y: 0, scale: 1 }
-                      : { opacity: 0, y: 28, scale: 0.96 }
+                    revealed ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 28, scale: 0.96 }
                   }
                   transition={{
                     duration: 0.7,

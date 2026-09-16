@@ -3,12 +3,14 @@ import Link from "next/link";
 import "./first-ascent/first-ascent.css";
 import { FirstAscentGallery } from "@/components/first-ascent/FirstAscentGallery";
 import { CinematicWalkthrough } from "@/components/home/cinematic-walkthrough";
+import { GroundZeroScrollySection } from "@/components/home/ground-zero-scrolly";
 import { SkyTerraceArrival } from "@/components/home/sky-terrace-arrival";
 
 export default function HomePage() {
   return (
     <>
       <CinematicWalkthrough />
+      <GroundZeroScrollySection />
       <SkyTerraceArrival />
       <FirstAscentGallery hideHero />
       <div className="home-cinematic">

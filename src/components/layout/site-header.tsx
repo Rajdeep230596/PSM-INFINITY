@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { FIRST_ASCENT_LINKS } from "@/content/first-ascent";
+import { GROUND_ZERO_LINKS } from "@/content/ground-zero";
 import { site } from "@/content/site";
 
 export function SiteHeader() {
@@ -23,6 +24,7 @@ export function SiteHeader() {
     setOpen(false);
   }, [pathname]);
 
+  const groundZeroActive = pathname === "/ground-zero" || pathname.startsWith("/ground-zero/");
   const firstAscentActive = pathname === "/first-ascent" || pathname.startsWith("/first-ascent/");
 
   return (
@@ -40,6 +42,31 @@ export function SiteHeader() {
         <nav>
           <ul className={open ? "nav-links open" : "nav-links"}>
             {site.navigation.map((item) => {
+              if (item.href === "/ground-zero") {
+                return (
+                  <li key={item.href} className="nav-item-dropdown">
+                    <Link
+                      href={item.href}
+                      className={groundZeroActive ? "active" : undefined}
+                      aria-haspopup="true"
+                    >
+                      {item.label}
+                    </Link>
+                    <div className="nav-dropdown">
+                      {GROUND_ZERO_LINKS.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className={pathname === link.href ? "active" : undefined}
+                          onClick={() => setOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </li>
+                );
+              }
               if (item.href === "/first-ascent") {
                 return (
                   <li key={item.href} className="nav-item-dropdown">

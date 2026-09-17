@@ -16,6 +16,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/first-ascent/villas",
     "/first-ascent/chauffeur",
     "/second-ascent",
+    "/second-ascent/private-events",
+    "/second-ascent/corporate-events",
     "/services",
     "/locations",
     "/our-story",

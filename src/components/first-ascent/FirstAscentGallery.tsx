@@ -1,31 +1,24 @@
 "use client";
 
+import { useGSAP } from "@gsap/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, Calendar, Check, X } from "lucide-react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowUpRight, Building2, Calendar, Check, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { useDeferredVideoSource } from "@/lib/deferred-video";
+import { attachScrollVideo } from "@/lib/scroll-video";
+
+const EVENT_CTAS = [
+  { id: "private-events", label: "Private Events", href: "/second-ascent/private-events", icon: Calendar },
+  { id: "corporate-events", label: "Corporate Events", href: "/second-ascent/corporate-events", icon: Building2 },
+] as const;
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
 type AssetCategory = "watches" | "fleet" | "suites" | "estates";
-
-type ShowcaseItem = {
-  id: string;
-  category: AssetCategory;
-  maker: string;
-  name: string;
-  image: string;
-  fallbacks?: string[];
-  status: string;
-  tags: string[];
-};
-
-type CommissionBrief = {
-  category: AssetCategory;
-  eyebrow: string;
-  title: string;
-  description: string;
-  cta: string;
-  placeholder: string;
-};
 
 type SourcingIntent = {
   category: AssetCategory;
@@ -43,402 +36,28 @@ const CATEGORIES: { id: AssetCategory; label: string }[] = [
 const TIMELINES = ["Air Priority", "Enclosed Sea Freight"] as const;
 type Timeline = (typeof TIMELINES)[number];
 
-const LUXURY_IMAGE_FALLBACK =
-  "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=85";
-
-const COMMISSIONS: Record<AssetCategory, CommissionBrief> = {
-  watches: {
-    category: "watches",
-    eyebrow: "BESPOKE COMMISSION",
-    title: "Any Rare Calibre or Reference",
-    description:
-      "Have a specific Patek, Rolex, or Richard Mille reference in mind? We source verified, vault-authenticated allocations globally.",
-    cta: "Commission Timepiece",
-    placeholder: "e.g. Rolex Daytona 126500LN",
-  },
-  fleet: {
-    category: "fleet",
-    eyebrow: "CUSTOM ALLOCATION",
-    title: "Specific Build or Rare Chassis",
-    description:
-      "Seeking a bespoke PTS Porsche, rare Ferrari, or hypercar allocation? We manage global negotiation, escrow, and insured air freight.",
-    cta: "Commission Vehicle",
-    placeholder: "e.g. Porsche Cayenne GTS in Obsidian Black",
-  },
-  suites: {
-    category: "suites",
-    eyebrow: "ARCHITECTURAL ATELIER",
-    title: "Custom Vault or Private Suite",
-    description:
-      "Commission custom climate-controlled vaults, biometric dressing suites, and atelier fittings tailored to your space.",
-    cta: "Commission Suite",
-    placeholder: "e.g. Climate vault with biometric dressing chamber",
-  },
-  estates: {
-    category: "estates",
-    eyebrow: "LANDSCAPE CURATION",
-    title: "Private Sanctuary Masterplan",
-    description:
-      "Retain our landscape architects and botanical specialists for estate garden developments and private installations.",
-    cta: "Commission Landscape",
-    placeholder: "e.g. Japanese courtyard with rare flora, 0.8 acres",
-  },
+const PLACEHOLDERS: Record<AssetCategory, string> = {
+  watches: "e.g. Rolex Daytona 126500LN",
+  fleet: "e.g. Porsche Cayenne GTS in Obsidian Black",
+  suites: "e.g. Climate vault with biometric dressing chamber",
+  estates: "e.g. Japanese courtyard with rare flora, 0.8 acres",
 };
-
-const WATCHES: ShowcaseItem[] = [
-  {
-    id: "patek-grand",
-    category: "watches",
-    maker: "Patek Philippe",
-    name: "Grand Complications",
-    image: "https://images.unsplash.com/photo-1539874754764-5a96559165b0?auto=format&fit=crop&w=1400&q=80",
-    status: "GLOBAL SOURCING",
-    tags: ["Calibre 29-535 PS", "Platinum", "Escrow 9 days"],
-  },
-  {
-    id: "ap-offshore",
-    category: "watches",
-    maker: "Audemars Piguet",
-    name: "Royal Oak Offshore",
-    image: "https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?auto=format&fit=crop&w=1400&q=80",
-    status: "GLOBAL SOURCING",
-    tags: ["Calibre 3126", "Forged carbon", "Escrow 12 days"],
-  },
-  {
-    id: "rolex-daytona",
-    category: "watches",
-    maker: "Rolex",
-    name: "Daytona Cosmograph",
-    image: "https://images.unsplash.com/photo-1622434641406-a158123450f9?auto=format&fit=crop&w=1400&q=80",
-    status: "GLOBAL SOURCING",
-    tags: ["Calibre 4131", "Oystersteel", "Escrow 6 days"],
-  },
-  {
-    id: "rm-67",
-    category: "watches",
-    maker: "Richard Mille",
-    name: "RM 67-02",
-    image: "https://images.unsplash.com/photo-1639006570490-79c0c53f1080?auto=format&fit=crop&w=1400&q=80",
-    status: "GLOBAL SOURCING",
-    tags: ["CRMA7", "Carbon TPT", "Escrow 14 days"],
-  },
-];
-
-const CARS: ShowcaseItem[] = [
-  {
-    id: "cayenne-turbo-gt",
-    category: "fleet",
-    maker: "Porsche",
-    name: "Cayenne Turbo GT",
-    image: "/assets/1000356071.jpg",
-    fallbacks: [
-      "/assets/1000356069.jpg",
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=85",
-    ],
-    status: "EXPORT ALLOCATION",
-    tags: ["650 hp", "3.3s 0-100", "Deep Blue Metallic"],
-  },
-  {
-    id: "cayenne-gts",
-    category: "fleet",
-    maker: "Porsche",
-    name: "Cayenne GTS",
-    image: "/assets/1000356065.jpg",
-    fallbacks: [
-      "/assets/1000356063.jpg",
-      "https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1000&q=85",
-    ],
-    status: "AIR FREIGHT READY",
-    tags: ["500 hp", "Sport Chrono", "Obsidian Black"],
-  },
-  {
-    id: "cayenne-cockpit",
-    category: "fleet",
-    maker: "Porsche",
-    name: "PCM Sport Plus Cockpit",
-    image: "/assets/1000356067.jpg",
-    fallbacks: ["https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=1000&q=85"],
-    status: "BESPOKE CONFIG",
-    tags: ["Sport Plus Mode", "Valvetronic", "Air Ride"],
-  },
-];
-
-const SUITES: ShowcaseItem[] = [
-  {
-    id: "vitrine-suite",
-    category: "suites",
-    maker: "Private Living",
-    name: "Walk-in Vitrine Suite",
-    image: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=1000&q=85",
-    fallbacks: ["https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1000&q=85"],
-    tags: ["Custom architecture", "White-glove install", "Bespoke joinery"],
-    status: "GLOBAL SOURCING",
-  },
-  {
-    id: "couture-vault",
-    category: "suites",
-    maker: "Private Living",
-    name: "Couture Climate Vault",
-    image: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=1000&q=85",
-    fallbacks: ["https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1000&q=85"],
-    tags: ["Custom architecture", "White-glove install", "Bespoke joinery"],
-    status: "GLOBAL SOURCING",
-  },
-  {
-    id: "dressing-chamber",
-    category: "suites",
-    maker: "Private Living",
-    name: "Minimalist Dressing Chamber",
-    image: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1000&q=85",
-    fallbacks: ["https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=85"],
-    tags: ["Custom architecture", "White-glove install", "Bespoke joinery"],
-    status: "GLOBAL SOURCING",
-  },
-  {
-    id: "lighting-atelier",
-    category: "suites",
-    maker: "Private Living",
-    name: "Bespoke Lighting Atelier",
-    image: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85",
-    fallbacks: ["https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=85"],
-    tags: ["Custom architecture", "White-glove install", "Bespoke joinery"],
-    status: "GLOBAL SOURCING",
-  },
-];
-
-const ESTATES: ShowcaseItem[] = [
-  {
-    id: "zen-courtyard",
-    category: "estates",
-    maker: "Estate Atelier",
-    name: "Japanese Zen Courtyard",
-    image: "https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=1400&q=80",
-    tags: ["0.8 acres", "Rare flora", "Landscape architecture"],
-    status: "GLOBAL SOURCING",
-  },
-  {
-    id: "botanical-pavilion",
-    category: "estates",
-    maker: "Estate Atelier",
-    name: "Botanical Pavilion",
-    image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=1400&q=80",
-    tags: ["1.4 acres", "Rare flora", "Landscape architecture"],
-    status: "GLOBAL SOURCING",
-  },
-  {
-    id: "water-garden",
-    category: "estates",
-    maker: "Estate Atelier",
-    name: "Sculptural Water Garden",
-    image: "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=1400&q=80",
-    tags: ["2.1 acres", "Rare flora", "Landscape architecture"],
-    status: "GLOBAL SOURCING",
-  },
-  {
-    id: "estate-promenade",
-    category: "estates",
-    maker: "Estate Atelier",
-    name: "Illuminated Promenade",
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1400&q=80",
-    tags: ["3.6 acres", "Rare flora", "Landscape architecture"],
-    status: "GLOBAL SOURCING",
-  },
-];
 
 function phoneValid(value: string) {
   return value.replace(/\D/g, "").length >= 8;
 }
 
-function LuxuryImage({
-  src,
-  fallbacks,
-  alt,
-}: {
-  src: string;
-  fallbacks?: string[];
-  alt: string;
-}) {
-  const sources = [src, ...(fallbacks ?? []), LUXURY_IMAGE_FALLBACK].filter(
-    (value, index, list) => value && list.indexOf(value) === index,
-  );
-  const [index, setIndex] = useState(0);
-  const imgSrc = sources[Math.min(index, sources.length - 1)];
-
-  return (
-    <img
-      src={imgSrc}
-      alt={alt}
-      onError={() => {
-        setIndex((current) => (current < sources.length - 1 ? current + 1 : current));
-      }}
-      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-    />
-  );
-}
-
-function StatusBadge({ label }: { label: string }) {
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-500/15 px-2.5 py-0.5 font-mono text-[9px] font-semibold tracking-wider text-rose-400 uppercase shadow-[0_0_12px_rgba(244,63,94,0.2)]">
-      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-rose-500" />
-      {label || "GLOBAL SOURCING"}
-    </span>
-  );
-}
-
-function CommissionCard({
-  brief,
-  onCommission,
-}: {
-  brief: CommissionBrief;
-  onCommission: (brief: CommissionBrief) => void;
-}) {
-  return (
-    <article className="flex w-[300px] flex-shrink-0 flex-col justify-between rounded-2xl border border-rose-500/30 bg-gradient-to-b from-rose-950/25 via-[#0d0d0f] to-[#0d0d0f] p-6 text-center md:w-[330px]">
-      <div className="flex flex-col items-center gap-3">
-        <StatusBadge label={brief.eyebrow} />
-        <h3 className="text-lg font-light tracking-tight text-white md:text-xl">{brief.title}</h3>
-        <p className="text-[12px] leading-relaxed font-light text-neutral-400">{brief.description}</p>
-      </div>
-      <button
-        type="button"
-        onClick={() => onCommission(brief)}
-        className="fa-dossier-btn mt-6 inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-white py-2.5 text-xs font-semibold !text-black shadow-[0_2px_12px_rgba(255,255,255,0.2)] transition-all hover:bg-neutral-200"
-      >
-        <span className="font-semibold !text-black">{brief.cta}</span>
-        <span className="text-xs font-bold !text-black">↗</span>
-      </button>
-    </article>
-  );
-}
-
-function MarqueeCard({
-  item,
-  onRequest,
-}: {
-  item: ShowcaseItem;
-  onRequest: (item: ShowcaseItem) => void;
-}) {
-  const [spec1, spec2, spec3] = item.tags;
-
-  return (
-    <article className="group flex w-[300px] flex-shrink-0 flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0d0d0f] transition-all duration-300 hover:border-white/20 md:w-[340px]">
-      <div className="relative aspect-[16/10] w-full overflow-hidden bg-neutral-900">
-        <LuxuryImage src={item.image} fallbacks={item.fallbacks} alt={`${item.maker} ${item.name}`} />
-      </div>
-
-      <div className="flex flex-col items-center justify-between p-5 text-center md:p-6">
-        <div className="flex flex-col items-center gap-1.5">
-          <span className="text-[9px] font-semibold tracking-[0.22em] text-neutral-400 uppercase">
-            {item.maker}
-          </span>
-          <StatusBadge label={item.status} />
-          <h3 className="mt-1 text-base font-light tracking-tight text-white sm:text-lg">{item.name}</h3>
-        </div>
-
-        <div className="my-2.5 flex w-full flex-wrap items-center justify-center gap-2 border-y border-white/[0.07] py-2.5 text-[10px] font-light text-neutral-400">
-          {spec1 ? <span>{spec1}</span> : null}
-          {spec1 && spec2 ? <span className="text-neutral-600">•</span> : null}
-          {spec2 ? <span>{spec2}</span> : null}
-          {spec2 && spec3 ? <span className="text-neutral-600">•</span> : null}
-          {spec3 ? <span>{spec3}</span> : null}
-        </div>
-
-        <div className="flex w-full items-center justify-center pt-2">
-          <button
-            type="button"
-            onClick={() => onRequest(item)}
-            className="fa-dossier-btn group/btn inline-flex w-full max-w-[200px] items-center justify-center gap-1.5 rounded-full bg-white px-4 py-2.5 text-[11px] font-semibold tracking-tight !text-black shadow-[0_2px_12px_rgba(255,255,255,0.18)] transition-all hover:bg-neutral-200"
-          >
-            <span className="font-semibold !text-black">Request This Spec</span>
-            <span className="text-xs font-bold !text-black transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5">
-              ↗
-            </span>
-          </button>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-function MarqueeRow({
-  items,
-  commission,
-  reverse,
-  duration,
-  onRequest,
-  onCommission,
-}: {
-  items: ShowcaseItem[];
-  commission: CommissionBrief;
-  reverse?: boolean;
-  duration: string;
-  onRequest: (item: ShowcaseItem) => void;
-  onCommission: (brief: CommissionBrief) => void;
-}) {
-  const tracks = ["a", "b"] as const;
-
-  return (
-    <div className="relative w-full overflow-hidden">
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[#080808] to-transparent md:w-36" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[#080808] to-transparent md:w-36" />
-      <div
-        className={`fa-marquee py-6 ${reverse ? "fa-marquee-reverse" : ""}`}
-        style={{ animationDuration: duration }}
-      >
-        {tracks.flatMap((track) => [
-          <CommissionCard key={`commission-${track}`} brief={commission} onCommission={onCommission} />,
-          ...items.map((item) => (
-            <MarqueeCard key={`${item.id}-${track}`} item={item} onRequest={onRequest} />
-          )),
-        ])}
-      </div>
-    </div>
-  );
-}
-
-function SectionHeader({
-  eyebrow,
-  title,
-  cta,
-  onCta,
-}: {
-  eyebrow: string;
-  title: string;
-  cta: string;
-  onCta: () => void;
-}) {
-  return (
-    <div className="mx-auto mb-12 flex w-full max-w-7xl flex-col gap-4 px-6 md:flex-row md:items-end md:justify-between md:px-12">
-      <div>
-        <span className="mb-3 block text-[10px] font-semibold tracking-[0.3em] text-neutral-500 uppercase">
-          {eyebrow}
-        </span>
-        <h2 className="text-3xl font-light tracking-tight text-white md:text-4xl">{title}</h2>
-      </div>
-      <a
-        href="#inquire"
-        onClick={(event) => {
-          event.preventDefault();
-          onCta();
-        }}
-        className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-4 py-2 text-xs font-normal text-neutral-400 transition-colors duration-200 hover:border-white/20 hover:text-white"
-      >
-        <span>{cta}</span>
-        <span className="text-[11px]">↗</span>
-      </a>
-    </div>
-  );
-}
-
 export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean }) {
-  const heroRef = useRef<HTMLElement>(null);
-  const [heroInView, setHeroInView] = useState(true);
+  const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoSrc = useDeferredVideoSource(sectionRef, "/videos/second-ascent-backdrop.mp4?v=2");
+  const [progress, setProgress] = useState(0);
   const [deskOpen, setDeskOpen] = useState(false);
   const [transmitted, setTransmitted] = useState(false);
 
   const [category, setCategory] = useState<AssetCategory>("watches");
   const [reference, setReference] = useState("");
-  const [placeholder, setPlaceholder] = useState(COMMISSIONS.watches.placeholder);
+  const [placeholder, setPlaceholder] = useState(PLACEHOLDERS.watches);
   const [country, setCountry] = useState("");
   const [timeline, setTimeline] = useState<Timeline>("Air Priority");
   const [clientName, setClientName] = useState("");
@@ -455,52 +74,23 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
     [reference, country, clientName, contact],
   );
   const formValid = !errors.reference && !errors.country && !errors.clientName && !errors.contact;
-  const showDock = !deskOpen && !hideHero && !heroInView;
+  const revealed = progress >= 0.72;
+  const showDock = !deskOpen && !hideHero && progress > 0.12 && !revealed;
 
   const openDesk = (intent?: Partial<SourcingIntent>) => {
     const nextCategory = intent?.category ?? "watches";
     setCategory(nextCategory);
     setReference(intent?.reference ?? "");
-    setPlaceholder(intent?.placeholder ?? COMMISSIONS[nextCategory].placeholder);
+    setPlaceholder(intent?.placeholder ?? PLACEHOLDERS[nextCategory]);
     setTransmitted(false);
     setTouched({});
     setDeskOpen(true);
-  };
-
-  const requestSpec = (item: ShowcaseItem) => {
-    openDesk({
-      category: item.category,
-      reference: `${item.maker} ${item.name}${item.tags[2] ? ` in ${item.tags[2]}` : ""}`,
-    });
-  };
-
-  const requestCommission = (brief: CommissionBrief) => {
-    openDesk({
-      category: brief.category,
-      reference: "",
-      placeholder: brief.placeholder,
-    });
   };
 
   useEffect(() => {
     if (hideHero) return;
     document.documentElement.classList.add("first-ascent-page");
     return () => document.documentElement.classList.remove("first-ascent-page");
-  }, [hideHero]);
-
-  useEffect(() => {
-    if (hideHero) {
-      setHeroInView(false);
-      return;
-    }
-    const node = heroRef.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setHeroInView(entry.isIntersecting),
-      { threshold: 0.35 },
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
   }, [hideHero]);
 
   useEffect(() => {
@@ -518,6 +108,47 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      const video = videoRef.current;
+      if (!section || !video || !videoSrc) return;
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const coarse = window.matchMedia("(pointer: coarse)").matches;
+      const compact = window.matchMedia("(max-width: 700px)").matches;
+      const loopFallback = reduceMotion || coarse || compact;
+
+      const trigger = ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1.05,
+        onUpdate: (self) => setProgress(self.progress),
+      });
+
+      if (loopFallback) {
+        video.loop = true;
+        video.muted = true;
+        video.playsInline = true;
+        const play = video.play();
+        if (play && typeof play.then === "function") play.catch(() => {});
+        return () => trigger.kill();
+      }
+
+      const detach = attachScrollVideo(video, {
+        getProgress: () => trigger.progress,
+        smoothing: 0.14,
+      });
+
+      return () => {
+        detach();
+        trigger.kill();
+      };
+    },
+    { scope: sectionRef, dependencies: [videoSrc] },
+  );
+
   const submitSourcing = (event: React.FormEvent) => {
     event.preventDefault();
     setTouched({ reference: true, country: true, clientName: true, contact: true });
@@ -526,105 +157,103 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
   };
 
   return (
-    <div className="first-ascent w-full min-h-screen bg-[#080808] pb-36 text-white selection:bg-white/20">
-      {hideHero ? (
-      <section className="mx-auto max-w-7xl px-6 pt-10 pb-4 md:px-12">
-        <p className="mb-3 text-[10px] font-semibold tracking-[0.32em] text-neutral-500 uppercase">
-          Second Ascent — Personal Curation & Living Spaces
-        </p>
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h2 className="text-3xl font-light tracking-tight md:text-4xl">Second Ascent</h2>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed font-light text-neutral-500">
-              Haute horlogerie, bespoke automotive allocations, couture wardrobe suites, and architectural estate gardens.
-            </p>
+    <section
+      ref={sectionRef}
+      id="second-ascent"
+      className="first-ascent first-ascent-flush relative h-[350vh] text-white selection:bg-white/20"
+      aria-label="Second Ascent"
+    >
+      <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#080808]">
+        <video
+          ref={videoRef}
+          src={videoSrc}
+          muted
+          playsInline
+          preload={videoSrc ? "metadata" : "none"}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
+
+        <div
+          className={`absolute inset-0 z-30 flex items-center justify-center ${
+            revealed ? "pointer-events-auto" : "pointer-events-none"
+          }`}
+        >
+          <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4">
+            {EVENT_CTAS.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={item.id}
+                  initial={false}
+                  animate={revealed ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 28, scale: 0.96 }}
+                  transition={{
+                    duration: 0.7,
+                    delay: revealed ? index * 0.08 : 0,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                >
+                  <Link
+                    href={item.href}
+                    prefetch={true}
+                    className="group flex aspect-square w-[min(40vw,13.5rem)] flex-col items-center justify-center gap-4 rounded-[1.5rem] border border-white/15 bg-black/55 px-4 text-center shadow-[0_8px_40px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition-colors duration-300 hover:border-white/25 hover:bg-black/70 md:w-[15rem] md:rounded-[1.75rem]"
+                  >
+                    <Icon
+                      size={32}
+                      strokeWidth={1.15}
+                      className="text-white transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <span className="max-w-[9rem] text-[13px] font-light tracking-wide text-white md:text-sm">
+                      {item.label}
+                    </span>
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
-          <Link href="/second-ascent" prefetch={true} className="text-xs tracking-wide text-neutral-400 transition-colors hover:text-white">
-            Open pavilion ↗
-          </Link>
         </div>
-      </section>
-      ) : (
-      <section ref={heroRef} className="relative isolate overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.06),transparent_55%)]" />
-        <div className="relative mx-auto max-w-7xl px-6 pt-16 pb-12 md:px-12 md:pt-20 md:pb-16">
-          <p className="mb-4 text-[10px] font-semibold tracking-[0.32em] text-neutral-500 uppercase">
-            Second Ascent — Personal Curation & Living Spaces
-          </p>
-          <h1 className="text-4xl font-light tracking-tight md:text-6xl">Second Ascent</h1>
-          <p className="mt-5 max-w-2xl text-sm leading-relaxed font-light text-neutral-400 md:text-base">
-            Haute horlogerie, bespoke automotive allocations, couture wardrobe suites, and architectural estate gardens.
-          </p>
+
+        <div
+          className={`absolute inset-x-0 bottom-0 z-20 mx-auto w-full max-w-7xl px-8 pb-28 transition-opacity duration-500 md:px-16 md:pb-36 lg:px-20 ${
+            revealed ? "pointer-events-none opacity-0" : "opacity-100"
+          }`}
+        >
+          <div className="relative max-w-xl text-left">
+            <div className="pointer-events-none absolute -inset-10 -z-10 bg-gradient-to-tr from-black/85 via-black/40 to-transparent blur-3xl" />
+            {hideHero ? (
+              <>
+                <p className="mb-3 block font-mono text-[10px] font-semibold tracking-[0.35em] text-rose-400 uppercase drop-shadow-md md:text-[11px]">
+                  Event Management
+                </p>
+                <h2 className="font-serif text-3xl leading-[1.08] font-light tracking-tight text-white drop-shadow-xl sm:text-4xl md:text-6xl">
+                  Level Two
+                </h2>
+                <p className="mt-4 max-w-lg font-sans text-xs leading-relaxed font-light text-neutral-300 drop-shadow-md md:text-sm">
+                  Private evenings and corporate gatherings, composed as one visual experience.
+                </p>
+                <Link
+                  href="/second-ascent"
+                  prefetch={true}
+                  className="mt-8 inline-block text-xs tracking-wide text-neutral-300 transition-colors hover:text-white"
+                >
+                  Open pavilion ↗
+                </Link>
+              </>
+            ) : (
+              <>
+                <p className="mb-3 block font-mono text-[10px] font-semibold tracking-[0.35em] text-rose-400 uppercase drop-shadow-md md:text-[11px]">
+                  Event Management
+                </p>
+                <h1 className="font-serif text-3xl leading-[1.08] font-light tracking-tight text-white drop-shadow-xl sm:text-4xl md:text-6xl">
+                  Level Two
+                </h1>
+                <p className="mt-4 max-w-lg font-sans text-xs leading-relaxed font-light text-neutral-300 drop-shadow-md md:text-sm">
+                  Private evenings and corporate gatherings, composed as one visual experience.
+                </p>
+              </>
+            )}
+          </div>
         </div>
-      </section>
-      )}
-
-      <div id="collections" className="w-full">
-        <section className="w-full border-b border-white/[0.04] py-24 last:border-b-0 md:py-32">
-          <SectionHeader
-            eyebrow="Timepieces"
-            title="Haute Horlogerie"
-            cta="Seeking a rare timepiece? We source it globally"
-            onCta={() => openDesk({ category: "watches", placeholder: COMMISSIONS.watches.placeholder })}
-          />
-          <MarqueeRow
-            items={WATCHES}
-            commission={COMMISSIONS.watches}
-            duration="42s"
-            onRequest={requestSpec}
-            onCommission={requestCommission}
-          />
-        </section>
-
-        <section className="w-full border-b border-white/[0.04] py-24 last:border-b-0 md:py-32">
-          <SectionHeader
-            eyebrow="Automobiles"
-            title="Exotic Fleet"
-            cta="Have a supercar in mind? We source it globally"
-            onCta={() => openDesk({ category: "fleet", placeholder: COMMISSIONS.fleet.placeholder })}
-          />
-          <MarqueeRow
-            items={CARS}
-            commission={COMMISSIONS.fleet}
-            reverse
-            duration="48s"
-            onRequest={requestSpec}
-            onCommission={requestCommission}
-          />
-        </section>
-
-        <section className="w-full border-b border-white/[0.04] py-24 last:border-b-0 md:py-32">
-          <SectionHeader
-            eyebrow="Interiors"
-            title="Private Living & Wardrobe Suites"
-            cta="Envisioning a bespoke suite? We craft it anywhere"
-            onCta={() => openDesk({ category: "suites", placeholder: COMMISSIONS.suites.placeholder })}
-          />
-          <MarqueeRow
-            items={SUITES}
-            commission={COMMISSIONS.suites}
-            duration="44s"
-            onRequest={requestSpec}
-            onCommission={requestCommission}
-          />
-        </section>
-
-        <section className="w-full border-b border-white/[0.04] py-24 last:border-b-0 md:py-32">
-          <SectionHeader
-            eyebrow="Landscape"
-            title="Architectural Estates & Gardens"
-            cta="Curating a private sanctuary? We design & cultivate"
-            onCta={() => openDesk({ category: "estates", placeholder: COMMISSIONS.estates.placeholder })}
-          />
-          <MarqueeRow
-            items={ESTATES}
-            commission={COMMISSIONS.estates}
-            reverse
-            duration="52s"
-            onRequest={requestSpec}
-            onCommission={requestCommission}
-          />
-        </section>
       </div>
 
       <AnimatePresence>
@@ -728,7 +357,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
                             type="button"
                             onClick={() => {
                               setCategory(item.id);
-                              setPlaceholder(COMMISSIONS[item.id].placeholder);
+                              setPlaceholder(PLACEHOLDERS[item.id]);
                             }}
                             className={`rounded-full px-3 py-2 text-[11px] ${
                               category === item.id
@@ -810,7 +439,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
           </motion.div>
         ) : null}
       </AnimatePresence>
-    </div>
+    </section>
   );
 }
 

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { AscentChrome } from "@/components/first-ascent/AscentChrome";
 
 export const metadata: Metadata = {
-  title: "Second Ascent — Personal Curation & Living Spaces",
+  title: "Second Ascent — Event Management",
   description:
     "Haute horlogerie, bespoke automotive allocations, couture wardrobe suites, and architectural estate gardens.",
 };

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { FIRST_ASCENT_LINKS } from "@/content/first-ascent";
 import { GROUND_ZERO_LINKS } from "@/content/ground-zero";
+import { SECOND_ASCENT_LINKS } from "@/content/second-ascent";
 import { site } from "@/content/site";
 
 function NavDropdown({
@@ -87,6 +88,7 @@ export function SiteHeader() {
 
   const groundZeroActive = pathname === "/ground-zero" || pathname.startsWith("/ground-zero/");
   const firstAscentActive = pathname === "/first-ascent" || pathname.startsWith("/first-ascent/");
+  const secondAscentActive = pathname === "/second-ascent" || pathname.startsWith("/second-ascent/");
 
   return (
     <header className={scrolled ? "site-header scrolled" : "site-header"}>
@@ -130,6 +132,22 @@ export function SiteHeader() {
                     links={FIRST_ASCENT_LINKS}
                     pathname={pathname}
                     onOpen={() => setHovered("first-ascent")}
+                    onClose={() => setHovered(null)}
+                    onNavigate={() => setOpen(false)}
+                  />
+                );
+              }
+              if (item.href === "/second-ascent") {
+                return (
+                  <NavDropdown
+                    key={item.href}
+                    href={item.href}
+                    label={item.label}
+                    active={secondAscentActive}
+                    open={hovered === "second-ascent"}
+                    links={SECOND_ASCENT_LINKS}
+                    pathname={pathname}
+                    onOpen={() => setHovered("second-ascent")}
                     onClose={() => setHovered(null)}
                     onNavigate={() => setOpen(false)}
                   />

@@ -1,40 +1,42 @@
 "use client";
 
 import { useEffect } from "react";
-import Lenis from "lenis";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) {
-      return;
-    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const lenis = new Lenis({
-      duration: 1.35,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-      wheelMultiplier: 0.82,
-      touchMultiplier: 1.05,
-    });
+    let cancelled = false;
+    let teardown = () => {};
 
-    lenis.on("scroll", ScrollTrigger.update);
-
-    const ticker = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-
-    gsap.ticker.add(ticker);
-    gsap.ticker.lagSmoothing(0);
+    void Promise.all([import("lenis"), import("gsap"), import("gsap/ScrollTrigger")]).then(
+      ([{ default: Lenis }, { gsap }, { ScrollTrigger }]) => {
+        if (cancelled) return;
+        gsap.registerPlugin(ScrollTrigger);
+        const lenis = new Lenis({
+          duration: 1.35,
+          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          smoothWheel: true,
+          wheelMultiplier: 0.82,
+          touchMultiplier: 1.05,
+        });
+        lenis.on("scroll", ScrollTrigger.update);
+        const ticker = (time: number) => {
+          lenis.raf(time * 1000);
+        };
+        gsap.ticker.add(ticker);
+        gsap.ticker.lagSmoothing(0);
+        teardown = () => {
+          gsap.ticker.remove(ticker);
+          lenis.destroy();
+          ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+        };
+      },
+    );
 
     return () => {
-      gsap.ticker.remove(ticker);
-      lenis.destroy();
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      cancelled = true;
+      teardown();
     };
   }, []);
 

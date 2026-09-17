@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { AscentChrome } from "@/components/first-ascent/AscentChrome";
-import "./first-ascent.css";
 
 export const metadata: Metadata = {
   title: "First Ascent — Global Travel & High-End Mobility",

@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
 import { GroundZeroCard, GROUND_ZERO_CARDS } from "@/components/home/ground-zero-card";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
+import { useDeferredVideoSource } from "@/lib/deferred-video";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -36,6 +37,7 @@ export function GroundZeroScrollySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [progress, setProgress] = useState(0);
+  const videoSrc = useDeferredVideoSource(sectionRef, "/videos/ground-zero-arrival.mp4");
   const revealed = progress >= 0.72;
   const { beat } = activeBeat(revealed ? 1.1 : progress, BEATS);
 
@@ -59,7 +61,7 @@ export function GroundZeroScrollySection() {
     () => {
       const section = sectionRef.current;
       const video = videoRef.current;
-      if (!section || !video) return;
+      if (!section || !video || !videoSrc) return;
 
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const coarse = window.matchMedia("(pointer: coarse)").matches;
@@ -93,7 +95,7 @@ export function GroundZeroScrollySection() {
         trigger.kill();
       };
     },
-    { scope: sectionRef },
+    { scope: sectionRef, dependencies: [videoSrc] },
   );
 
   return (
@@ -106,13 +108,12 @@ export function GroundZeroScrollySection() {
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
         <video
           ref={videoRef}
+          src={videoSrc}
           muted
           playsInline
-          preload="auto"
+          preload={videoSrc ? "metadata" : "none"}
           className="absolute inset-0 h-full w-full object-cover"
-        >
-          <source src="/videos/ground-zero-arrival.mp4" type="video/mp4" />
-        </video>
+        />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/40" />
 
         <EditorialMilestone beat={beat} />

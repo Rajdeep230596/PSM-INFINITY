@@ -5,9 +5,11 @@ import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Car, Globe, House, Ship } from "lucide-react";
+import Link from "next/link";
 import { useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
+import { useDeferredVideoSource } from "@/lib/deferred-video";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -63,6 +65,7 @@ export function SkyTerraceArrival() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [progress, setProgress] = useState(0);
+  const videoSrc = useDeferredVideoSource(sectionRef, "/videos/sky-terrace-arrival.mp4");
   const revealed = progress >= 0.72;
   const { beat } = activeBeat(revealed ? 1.1 : progress, BEATS);
 
@@ -70,7 +73,7 @@ export function SkyTerraceArrival() {
     () => {
       const section = sectionRef.current;
       const video = videoRef.current;
-      if (!section || !video) return;
+      if (!section || !video || !videoSrc) return;
 
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const coarse = window.matchMedia("(pointer: coarse)").matches;
@@ -104,7 +107,7 @@ export function SkyTerraceArrival() {
         trigger.kill();
       };
     },
-    { scope: sectionRef },
+    { scope: sectionRef, dependencies: [videoSrc] },
   );
 
   return (
@@ -117,13 +120,12 @@ export function SkyTerraceArrival() {
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
         <video
           ref={videoRef}
+          src={videoSrc}
           muted
           playsInline
-          preload="auto"
+          preload={videoSrc ? "metadata" : "none"}
           className="absolute inset-0 h-full w-full object-cover"
-        >
-          <source src="/videos/sky-terrace-arrival.mp4" type="video/mp4" />
-        </video>
+        />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
 
         <EditorialMilestone beat={beat} />
@@ -137,9 +139,8 @@ export function SkyTerraceArrival() {
             {SERVICES.map((service, index) => {
               const Icon = service.icon;
               return (
-                <motion.a
+                <motion.div
                   key={service.id}
-                  href={service.href}
                   initial={false}
                   animate={
                     revealed ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 28, scale: 0.96 }
@@ -149,17 +150,22 @@ export function SkyTerraceArrival() {
                     delay: revealed ? index * 0.08 : 0,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  className="group flex aspect-square flex-col items-center justify-center gap-5 rounded-[1.75rem] border border-white/25 bg-white/12 px-4 text-center shadow-[0_8px_40px_rgba(0,0,0,0.18)] backdrop-blur-2xl transition-colors duration-300 hover:border-white/40 hover:bg-white/18 md:rounded-[2rem]"
                 >
-                  <Icon
-                    size={36}
-                    strokeWidth={1.15}
-                    className="text-white transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <span className="max-w-[9rem] text-[13px] font-light tracking-wide text-white md:text-sm">
-                    {service.label}
-                  </span>
-                </motion.a>
+                  <Link
+                    href={service.href}
+                    prefetch={true}
+                    className="group flex aspect-square flex-col items-center justify-center gap-5 rounded-[1.75rem] border border-white/25 bg-white/12 px-4 text-center shadow-[0_8px_40px_rgba(0,0,0,0.18)] backdrop-blur-2xl transition-colors duration-300 hover:border-white/40 hover:bg-white/18 md:rounded-[2rem]"
+                  >
+                    <Icon
+                      size={36}
+                      strokeWidth={1.15}
+                      className="text-white transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <span className="max-w-[9rem] text-[13px] font-light tracking-wide text-white md:text-sm">
+                      {service.label}
+                    </span>
+                  </Link>
+                </motion.div>
               );
             })}
           </div>

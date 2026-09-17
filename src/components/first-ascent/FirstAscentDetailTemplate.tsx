@@ -2,12 +2,17 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, X } from "lucide-react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { BespokeConciergeDesk } from "@/components/first-ascent/BespokeConciergeDesk";
 import type { FirstAscentPageContent } from "@/content/first-ascent";
 import { FIRST_ASCENT_LINKS } from "@/content/first-ascent";
+
+const BespokeConciergeDesk = dynamic(
+  () => import("@/components/first-ascent/BespokeConciergeDesk").then((module) => module.BespokeConciergeDesk),
+  { ssr: false },
+);
 
 const fieldClass =
   "w-full appearance-none rounded-none border-0 border-b border-white/15 bg-transparent pb-2.5 text-sm font-light text-[#F5F2EC] outline-none transition-colors focus:border-amber-300/60";
@@ -71,6 +76,7 @@ export function FirstAscentDetailTemplate({ page }: { page: FirstAscentPageConte
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={true}
                 className={
                   active
                     ? "rounded-full bg-[#E8D8C8] px-5 py-2 text-xs font-medium text-black shadow-sm"

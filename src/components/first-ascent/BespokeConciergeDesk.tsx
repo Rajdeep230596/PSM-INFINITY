@@ -76,13 +76,13 @@ export function BespokeConciergeDesk({ slug, cta, onRequisition }: Props) {
   const assets = DESK_ASSETS[slug] ?? DESK_ASSETS.chauffeur;
   const [mode, setMode] = useState<DeskMode>("guided");
 
-  const [territory, setTerritory] = useState(TERRITORIES[0].value);
+  const [territory, setTerritory] = useState<string>(TERRITORIES[0].value);
   const [customTerritory, setCustomTerritory] = useState("");
-  const [protocol, setProtocol] = useState(PROTOCOLS[0].value);
+  const [protocol, setProtocol] = useState<string>(PROTOCOLS[0].value);
   const [customProtocol, setCustomProtocol] = useState("");
-  const [schedule, setSchedule] = useState(WINDOWS[0].value);
+  const [schedule, setSchedule] = useState<string>(WINDOWS[0].value);
   const [customSchedule, setCustomSchedule] = useState("");
-  const [asset, setAsset] = useState(assets[0].value);
+  const [asset, setAsset] = useState<string>(assets[0].value);
   const [customAsset, setCustomAsset] = useState("");
   const [openBrief, setOpenBrief] = useState("");
 

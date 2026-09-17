@@ -17,13 +17,19 @@ export function SiteFooter() {
             <h4>Visit</h4>
             <ul>
               <li>
-                <Link href="/ground-zero">Ground Zero</Link>
+                <Link href="/ground-zero" prefetch={true}>
+                  Ground Zero
+                </Link>
               </li>
               <li>
-                <Link href="/first-ascent">First Ascent</Link>
+                <Link href="/first-ascent" prefetch={true}>
+                  First Ascent
+                </Link>
               </li>
               <li>
-                <Link href="/second-ascent">Second Ascent</Link>
+                <Link href="/second-ascent" prefetch={true}>
+                  Second Ascent
+                </Link>
               </li>
               <li>
                 <Link href="/services">Services</Link>

@@ -1,5 +1,5 @@
-import { FirstAscentGallery } from "@/components/first-ascent/FirstAscentGallery";
+import { FirstAscentGalleryLazy } from "@/components/home/lazy-chapters";
 
 export default function SecondAscentPage() {
-  return <FirstAscentGallery />;
+  return <FirstAscentGalleryLazy />;
 }

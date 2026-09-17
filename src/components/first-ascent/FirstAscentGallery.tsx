@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Calendar, Check, X } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type AssetCategory = "watches" | "fleet" | "suites" | "estates";
@@ -538,9 +539,9 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
               Haute horlogerie, bespoke automotive allocations, couture wardrobe suites, and architectural estate gardens.
             </p>
           </div>
-          <a href="/second-ascent" className="text-xs tracking-wide text-neutral-400 transition-colors hover:text-white">
+          <Link href="/second-ascent" prefetch={true} className="text-xs tracking-wide text-neutral-400 transition-colors hover:text-white">
             Open pavilion ↗
-          </a>
+          </Link>
         </div>
       </section>
       ) : (

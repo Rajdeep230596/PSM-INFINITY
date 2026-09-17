@@ -129,7 +129,7 @@ export function GroundZeroCard({
       }}
       className="gz-card-slide"
     >
-      <Link href={card.href} className="group block h-full w-full select-none focus:outline-none">
+      <Link href={card.href} prefetch={true} className="group block h-full w-full select-none focus:outline-none">
         <article className="gz-card-face relative flex w-full flex-col items-center justify-between overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#0B0B0E]/60 px-6 pt-10 pb-7 text-center shadow-[0_12px_40px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.12)] backdrop-blur-3xl transition-all duration-700 ease-out hover:border-amber-300/40 hover:bg-[#111116]/80 hover:shadow-[0_20px_50px_rgba(232,216,200,0.15),inset_0_0_20px_rgba(232,216,200,0.08)] sm:px-7">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-44 rounded-t-[2rem] bg-gradient-to-b from-amber-500/[0.06] via-transparent to-transparent" />
 

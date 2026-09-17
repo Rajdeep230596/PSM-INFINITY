@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 
 import type { GroundZeroPageContent } from "@/content/ground-zero";
@@ -26,6 +24,7 @@ export function GroundZeroDetailTemplate({ page }: { page: GroundZeroPageContent
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={true}
                   className={
                     active
                       ? "rounded-full bg-[#E8D8C8] px-5 py-2 text-xs font-medium text-black shadow-sm"

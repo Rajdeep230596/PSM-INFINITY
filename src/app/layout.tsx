@@ -9,6 +9,7 @@ import { site } from "@/content/site";
 
 import "./globals.css";
 import "./whatsapp.css";
+import "./first-ascent/first-ascent.css";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${outfit.variable} ${cormorant.variable}`}>
+    <html lang="en" className={`${outfit.variable} ${cormorant.variable}`} data-scroll-behavior="smooth">
       <body>
         <SmoothScroll>
           <a className="skip-link" href="#content">

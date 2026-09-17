@@ -19,7 +19,7 @@ export function attachScrollVideo(
   video.defaultMuted = true;
   video.playsInline = true;
   video.loop = false;
-  video.preload = "auto";
+  video.preload = "metadata";
   video.disablePictureInPicture = true;
 
   if (reduceMotion || options.enabled === false) {

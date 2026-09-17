@@ -8,13 +8,69 @@ import { FIRST_ASCENT_LINKS } from "@/content/first-ascent";
 import { GROUND_ZERO_LINKS } from "@/content/ground-zero";
 import { site } from "@/content/site";
 
+function NavDropdown({
+  href,
+  label,
+  active,
+  open,
+  links,
+  pathname,
+  onOpen,
+  onClose,
+  onNavigate,
+}: {
+  href: string;
+  label: string;
+  active: boolean;
+  open: boolean;
+  links: readonly { href: string; label: string }[];
+  pathname: string;
+  onOpen: () => void;
+  onClose: () => void;
+  onNavigate: () => void;
+}) {
+  return (
+    <li
+      className={open ? "nav-item-dropdown is-open" : "nav-item-dropdown"}
+      onMouseEnter={onOpen}
+      onMouseLeave={onClose}
+      onFocusCapture={onOpen}
+      onBlurCapture={(event) => {
+        const next = event.relatedTarget as Node | null;
+        if (!next || !event.currentTarget.contains(next)) onClose();
+      }}
+    >
+      <Link href={href} prefetch={true} className={active ? "active" : undefined} aria-haspopup="true" aria-expanded={open}>
+        {label}
+      </Link>
+      <div className="nav-dropdown">
+        {links.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            prefetch={true}
+            className={pathname === link.href ? "active" : undefined}
+            onClick={onNavigate}
+          >
+            {link.label}
+          </Link>
+        ))}
+      </div>
+    </li>
+  );
+}
+
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 12);
+      setHovered(null);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -22,6 +78,11 @@ export function SiteHeader() {
 
   useEffect(() => {
     setOpen(false);
+    setHovered(null);
+    const focused = document.activeElement;
+    if (focused instanceof HTMLElement && focused.closest(".site-header")) {
+      focused.blur();
+    }
   }, [pathname]);
 
   const groundZeroActive = pathname === "/ground-zero" || pathname.startsWith("/ground-zero/");
@@ -30,7 +91,7 @@ export function SiteHeader() {
   return (
     <header className={scrolled ? "site-header scrolled" : "site-header"}>
       <div className="nav-wrap">
-        <Link className="logo" href="/" aria-label={`${site.name} home`}>
+        <Link className="logo" href="/" prefetch={true} aria-label={`${site.name} home`}>
           <span className="logo-orb" aria-hidden="true">
             ∞
           </span>
@@ -44,58 +105,45 @@ export function SiteHeader() {
             {site.navigation.map((item) => {
               if (item.href === "/ground-zero") {
                 return (
-                  <li key={item.href} className="nav-item-dropdown">
-                    <Link
-                      href={item.href}
-                      className={groundZeroActive ? "active" : undefined}
-                      aria-haspopup="true"
-                    >
-                      {item.label}
-                    </Link>
-                    <div className="nav-dropdown">
-                      {GROUND_ZERO_LINKS.map((link) => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          className={pathname === link.href ? "active" : undefined}
-                          onClick={() => setOpen(false)}
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </li>
+                  <NavDropdown
+                    key={item.href}
+                    href={item.href}
+                    label={item.label}
+                    active={groundZeroActive}
+                    open={hovered === "ground-zero"}
+                    links={GROUND_ZERO_LINKS}
+                    pathname={pathname}
+                    onOpen={() => setHovered("ground-zero")}
+                    onClose={() => setHovered(null)}
+                    onNavigate={() => setOpen(false)}
+                  />
                 );
               }
               if (item.href === "/first-ascent") {
                 return (
-                  <li key={item.href} className="nav-item-dropdown">
-                    <Link
-                      href={item.href}
-                      className={firstAscentActive ? "active" : undefined}
-                      aria-haspopup="true"
-                    >
-                      {item.label}
-                    </Link>
-                    <div className="nav-dropdown">
-                      {FIRST_ASCENT_LINKS.map((link) => (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          className={pathname === link.href ? "active" : undefined}
-                          onClick={() => setOpen(false)}
-                        >
-                          {link.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </li>
+                  <NavDropdown
+                    key={item.href}
+                    href={item.href}
+                    label={item.label}
+                    active={firstAscentActive}
+                    open={hovered === "first-ascent"}
+                    links={FIRST_ASCENT_LINKS}
+                    pathname={pathname}
+                    onOpen={() => setHovered("first-ascent")}
+                    onClose={() => setHovered(null)}
+                    onNavigate={() => setOpen(false)}
+                  />
                 );
               }
               const active = pathname === item.href;
               return (
                 <li key={item.href}>
-                  <Link href={item.href} className={active ? "active" : undefined} onClick={() => setOpen(false)}>
+                  <Link
+                    href={item.href}
+                    prefetch={true}
+                    className={active ? "active" : undefined}
+                    onClick={() => setOpen(false)}
+                  >
                     {item.label}
                   </Link>
                 </li>
@@ -104,7 +152,7 @@ export function SiteHeader() {
           </ul>
         </nav>
         <div className="nav-actions">
-          <Link className="nav-cta" href="/locations#concierge">
+          <Link className="nav-cta" href="/locations#concierge" prefetch={true}>
             Get in touch
           </Link>
           <button

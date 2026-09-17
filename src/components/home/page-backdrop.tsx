@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import { useDeferredVideoSource } from "@/lib/deferred-video";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -12,12 +13,13 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export function PageBackdrop() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const videoSrc = useDeferredVideoSource(wrapRef, "/media/backdrop.mp4?v=7");
 
   useGSAP(
     () => {
       const wrap = wrapRef.current;
       const video = videoRef.current;
-      if (!wrap || !video) return;
+      if (!wrap || !video || !videoSrc) return;
 
       wrap.style.setProperty("--backdrop-video-opacity", "1");
 
@@ -33,7 +35,7 @@ export function PageBackdrop() {
         end: () => {
           if (!region) return Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
           const top = region.getBoundingClientRect().top + window.scrollY;
-          return Math.max(1, top + region.offsetHeight - window.innerHeight);
+          return Math.max(1, top + (region as HTMLElement).offsetHeight - window.innerHeight);
         },
         scrub: 1.05,
         onUpdate: (self) => {
@@ -51,15 +53,13 @@ export function PageBackdrop() {
         trigger.kill();
       };
     },
-    { scope: wrapRef },
+    { scope: wrapRef, dependencies: [videoSrc] },
   );
 
   return (
     <div className="page-backdrop" id="pageBackdrop" ref={wrapRef} aria-hidden="true">
       <div className="page-backdrop-media">
-        <video ref={videoRef} muted playsInline preload="auto">
-          <source src="/media/backdrop.mp4?v=7" type="video/mp4" />
-        </video>
+        <video ref={videoRef} src={videoSrc} muted playsInline preload={videoSrc ? "metadata" : "none"} />
         <div className="page-backdrop-wash" />
       </div>
     </div>

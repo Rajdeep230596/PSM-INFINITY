@@ -126,7 +126,13 @@ export function CinematicWalkthrough() {
       aria-label="Master landing sequence"
     >
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black">
-        <video ref={videoRef} muted playsInline preload="auto" className="h-full w-full object-cover">
+        <video
+          ref={videoRef}
+          muted
+          playsInline
+          preload="metadata"
+          className="h-full w-full object-cover"
+        >
           <source src="/media/backdrop.mp4?v=7" type="video/mp4" />
         </video>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />

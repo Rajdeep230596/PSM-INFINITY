@@ -10,6 +10,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    optimizePackageImports: [
+      "framer-motion",
+      "lucide-react",
+      "gsap",
+      "lenis",
+      "three",
+      "@react-three/fiber",
+      "@react-three/drei",
+    ],
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
   async redirects() {
     return [{ source: "/about", destination: "/our-story", permanent: true }];
   },

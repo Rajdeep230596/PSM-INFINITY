@@ -1,18 +1,19 @@
 import Link from "next/link";
 
-import "./first-ascent/first-ascent.css";
-import { FirstAscentGallery } from "@/components/first-ascent/FirstAscentGallery";
-import { CinematicWalkthrough } from "@/components/home/cinematic-walkthrough";
-import { GroundZeroScrollySection } from "@/components/home/ground-zero-scrolly";
-import { SkyTerraceArrival } from "@/components/home/sky-terrace-arrival";
+import {
+  CinematicWalkthroughLazy,
+  FirstAscentGalleryLazy,
+  GroundZeroScrollyLazy,
+  SkyTerraceArrivalLazy,
+} from "@/components/home/lazy-chapters";
 
 export default function HomePage() {
   return (
     <>
-      <CinematicWalkthrough />
-      <GroundZeroScrollySection />
-      <SkyTerraceArrival />
-      <FirstAscentGallery hideHero />
+      <CinematicWalkthroughLazy />
+      <GroundZeroScrollyLazy />
+      <SkyTerraceArrivalLazy />
+      <FirstAscentGalleryLazy hideHero />
       <div className="home-cinematic">
       <section className="section">
         <div className="container">

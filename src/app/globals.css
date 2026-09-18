@@ -1243,7 +1243,7 @@ textarea {
 /* Footer */
 .site-footer {
   position: relative;
-  z-index: 1;
+  z-index: 20;
   background: linear-gradient(180deg, #071428 0%, #050b18 100%);
   color: var(--beige);
   padding: 72px 0 28px;

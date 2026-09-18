@@ -16,6 +16,9 @@ const EVENT_CTAS = [
   { id: "corporate-events", label: "Corporate Events", href: "/second-ascent/corporate-events", icon: Building2 },
 ] as const;
 
+const EVENT_CTA_REVEAL_AT = 7.5 / 37;
+const EVENT_CTA_HIDE_AT = 13.4 / 37;
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 type AssetCategory = "watches" | "fleet" | "suites" | "estates";
@@ -49,8 +52,9 @@ function phoneValid(value: string) {
 
 export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
+  const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, "/videos/second-ascent-backdrop.mp4?v=2");
+  const videoSrc = useDeferredVideoSource(sectionRef, "/videos/second-ascent-backdrop.mp4?v=4");
   const [progress, setProgress] = useState(0);
   const [deskOpen, setDeskOpen] = useState(false);
   const [transmitted, setTransmitted] = useState(false);
@@ -74,7 +78,8 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
     [reference, country, clientName, contact],
   );
   const formValid = !errors.reference && !errors.country && !errors.clientName && !errors.contact;
-  const revealed = progress >= 0.72;
+  const revealed = progress >= EVENT_CTA_REVEAL_AT;
+  const ctaVisible = progress >= EVENT_CTA_REVEAL_AT && progress < EVENT_CTA_HIDE_AT;
   const showDock = !deskOpen && !hideHero && progress > 0.12 && !revealed;
 
   const openDesk = (intent?: Partial<SourcingIntent>) => {
@@ -111,13 +116,24 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
   useGSAP(
     () => {
       const section = sectionRef.current;
+      const wrap = videoWrapRef.current;
       const video = videoRef.current;
-      if (!section || !video || !videoSrc) return;
+      if (!section || !wrap || !video || !videoSrc) return;
 
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const coarse = window.matchMedia("(pointer: coarse)").matches;
       const compact = window.matchMedia("(max-width: 700px)").matches;
       const loopFallback = reduceMotion || coarse || compact;
+
+      const pin = ScrollTrigger.create({
+        trigger: section,
+        start: "top top",
+        end: "max",
+        pin: wrap,
+        pinSpacing: false,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      });
 
       const trigger = ScrollTrigger.create({
         trigger: section,
@@ -133,7 +149,10 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
         video.playsInline = true;
         const play = video.play();
         if (play && typeof play.then === "function") play.catch(() => {});
-        return () => trigger.kill();
+        return () => {
+          pin.kill();
+          trigger.kill();
+        };
       }
 
       const detach = attachScrollVideo(video, {
@@ -143,6 +162,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
 
       return () => {
         detach();
+        pin.kill();
         trigger.kill();
       };
     },
@@ -160,10 +180,10 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
     <section
       ref={sectionRef}
       id="second-ascent"
-      className="first-ascent first-ascent-flush relative h-[350vh] text-white selection:bg-white/20"
+      className="first-ascent first-ascent-flush relative h-[350vh] bg-[#080808] text-white selection:bg-white/20"
       aria-label="Second Ascent"
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden bg-[#080808]">
+      <div ref={videoWrapRef} className="relative z-0 h-screen w-full overflow-hidden bg-[#080808]">
         <video
           ref={videoRef}
           src={videoSrc}
@@ -176,27 +196,27 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
 
         <div
           className={`absolute inset-0 z-30 flex items-center justify-center ${
-            revealed ? "pointer-events-auto" : "pointer-events-none"
+            ctaVisible ? "pointer-events-auto" : "pointer-events-none"
           }`}
         >
-          <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4">
+          <div className="flex items-center justify-center gap-[48px]">
             {EVENT_CTAS.map((item, index) => {
               const Icon = item.icon;
               return (
                 <motion.div
                   key={item.id}
                   initial={false}
-                  animate={revealed ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 28, scale: 0.96 }}
+                  animate={ctaVisible ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 28, scale: 0.96 }}
                   transition={{
                     duration: 0.7,
-                    delay: revealed ? index * 0.08 : 0,
+                    delay: ctaVisible ? index * 0.08 : 0,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                 >
                   <Link
                     href={item.href}
                     prefetch={true}
-                    className="group flex aspect-square w-[min(40vw,13.5rem)] flex-col items-center justify-center gap-4 rounded-[1.5rem] border border-white/15 bg-black/55 px-4 text-center shadow-[0_8px_40px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition-colors duration-300 hover:border-white/25 hover:bg-black/70 md:w-[15rem] md:rounded-[1.75rem]"
+                    className="group flex aspect-square w-[min(42vw,14.75rem)] flex-col items-center justify-center gap-4 rounded-[1.5rem] border border-white/15 bg-black/55 px-4 text-center shadow-[0_8px_40px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition-colors duration-300 hover:border-white/25 hover:bg-black/70 md:w-[16.5rem] md:rounded-[1.75rem]"
                   >
                     <Icon
                       size={32}

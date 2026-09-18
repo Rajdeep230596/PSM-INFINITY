@@ -1,7 +1,8 @@
 export const GROUND_ZERO_LINKS = [
-  { href: "/ground-zero/shopping", label: "Personal Shopping" },
+  { href: "/ground-zero/couture", label: "Haute Couture & Wardrobes" },
   { href: "/ground-zero/real-estate", label: "Real Estate Portfolios" },
   { href: "/ground-zero/landscaping", label: "Landscaping Masterplans" },
+  { href: "/ground-zero/gardens", label: "Private Botanical Gardens" },
   { href: "/ground-zero/collectibles", label: "Curated Collectibles" },
 ] as const;
 
@@ -15,12 +16,12 @@ export type GroundZeroPageContent = {
 };
 
 export const GROUND_ZERO_PAGES: Record<string, GroundZeroPageContent> = {
-  shopping: {
-    slug: "shopping",
+  couture: {
+    slug: "couture",
     code: "01",
-    heading: "Personal Premium Shopping",
+    heading: "Haute Couture & Wardrobes",
     subhead:
-      "Private haute couture allocations, runway archives, and a styling concierge that works from the person, not the rack.",
+      "Private salon appointments, archive runway acquisitions, and a styling concierge that works from the person, not the rack.",
     cta: "Open Wardrobe Brief",
     pillars: [
       { title: "Closed Atelier Access", body: "Maison allocations and archive pieces circulated privately, never on public e-commerce." },
@@ -34,7 +35,7 @@ export const GROUND_ZERO_PAGES: Record<string, GroundZeroPageContent> = {
     code: "02",
     heading: "Real Estate Portfolios",
     subhead:
-      "Prime architectural estates, private duplexes, and international residential holdings assembled as a living portfolio.",
+      "Prime architectural estates, private duplexes, and off-market residential holdings assembled as a living portfolio.",
     cta: "Request Portfolio Lookbook",
     pillars: [
       { title: "Off-Market Holdings", body: "Residences introduced through family offices and architects, not listing portals." },
@@ -48,7 +49,7 @@ export const GROUND_ZERO_PAGES: Record<string, GroundZeroPageContent> = {
     code: "03",
     heading: "Landscaping Masterplans",
     subhead:
-      "Estate grounds, botanical courts, and indoor-outdoor living drawn as one composition with the architecture.",
+      "Integrated architectural terrain, estate hardscaping, and indoor-outdoor living drawn as one composition with the house.",
     cta: "Commission Estate Grounds",
     pillars: [
       { title: "Garden as Architecture", body: "Axes, water, and canopy planned with the same discipline as the house." },
@@ -57,12 +58,26 @@ export const GROUND_ZERO_PAGES: Record<string, GroundZeroPageContent> = {
       { title: "Night Rooms", body: "Lighting and scent considered for evening use, not only the daytime photograph." },
     ],
   },
+  gardens: {
+    slug: "gardens",
+    code: "04",
+    heading: "Private Botanical Gardens",
+    subhead:
+      "Manicured emerald lawns, sculpted groves, water sanctuaries, and curated flora held as a private outdoor room.",
+    cta: "Open Garden Mandate",
+    pillars: [
+      { title: "The Grand Lawn", body: "A quiet, exact plane of green sized for evening gatherings, not a public park." },
+      { title: "Water Courts", body: "Still pools and rills placed to catch light and cool the rooms that face them." },
+      { title: "Sculpted Groves", body: "Trees and understorey composed as architecture — shade, scent, and privacy in one." },
+      { title: "Seasonal Flora", body: "A planting calendar the house can live with, refreshed without a public showing." },
+    ],
+  },
   collectibles: {
     slug: "collectibles",
-    code: "04",
+    code: "05",
     heading: "Curated Collectibles",
     subhead:
-      "Ultra-rare timepieces, bespoke hypercars, and unlisted museum-grade objects sourced as a single acquisition desk.",
+      "Ultra-rare horological masterworks paired with bespoke hypercars and limited coachbuilt chassis.",
     cta: "Open Acquisition Mandate",
     pillars: [
       { title: "Provenance First", body: "Papers, service history, and ownership chain completed before a price is discussed." },

@@ -21,15 +21,15 @@ const BEATS: EditorialBeat[] = [
     eyebrow: "FOUNDATION TIER / 00",
     headline: ["Ground Floor:", "The Private Atelier."],
     subtext:
-      "An expansive duplex sanctuary uniting haute couture styling, prime architectural estates, master landscaping, and rare calibres.",
+      "An expansive duplex sanctuary uniting haute couture, prime estates, landscaping masterplans, private gardens, and rare calibres.",
   },
   {
     id: "domains",
-    start: 0.42,
-    end: 0.68,
+    start: 0.4,
+    end: 0.82,
     eyebrow: "CURATED DOMAINS",
     headline: ["Bespoke Living,", "Unconstrained."],
-    subtext: "Bespoke Wardrobes · Architectural Portfolios · Botanical Grounds · Exotic Chassis.",
+    subtext: "Wardrobes · Estates · Masterplans · Gardens · Calibre & Chassis.",
   },
 ];
 
@@ -38,7 +38,7 @@ export function GroundZeroScrollySection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [progress, setProgress] = useState(0);
   const videoSrc = useDeferredVideoSource(sectionRef, "/videos/ground-zero-arrival.mp4");
-  const revealed = progress >= 0.72;
+  const revealed = progress >= 0.85;
   const { beat } = activeBeat(revealed ? 1.1 : progress, BEATS);
 
   useEffect(() => {
@@ -102,7 +102,7 @@ export function GroundZeroScrollySection() {
     <section
       ref={sectionRef}
       id="ground-zero"
-      className="relative h-[350vh] bg-[#0A0A0B]"
+      className="relative h-[380vh] bg-[#0A0A0B]"
       aria-label="Ground Zero arrival"
     >
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
@@ -123,7 +123,7 @@ export function GroundZeroScrollySection() {
             revealed ? "pointer-events-auto" : "pointer-events-none"
           }`}
         >
-          <div className="gz-card-track no-scrollbar mx-auto w-full max-w-7xl">
+          <div className="gz-card-track no-scrollbar mx-auto w-full max-w-[100rem]">
             {GROUND_ZERO_CARDS.map((card, index) => (
               <GroundZeroCard key={card.id} card={card} revealed={revealed} index={index} />
             ))}

@@ -25,7 +25,10 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === "production",
   },
   async redirects() {
-    return [{ source: "/about", destination: "/our-story", permanent: true }];
+    return [
+      { source: "/about", destination: "/our-story", permanent: true },
+      { source: "/ground-zero/shopping", destination: "/ground-zero/couture", permanent: true },
+    ];
   },
 };
 

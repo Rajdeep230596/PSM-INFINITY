@@ -434,7 +434,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  min-width: 240px;
+  min-width: 280px;
   padding: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1rem;

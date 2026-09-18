@@ -6,9 +6,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     "",
     "/ground-zero",
-    "/ground-zero/shopping",
+    "/ground-zero/couture",
     "/ground-zero/real-estate",
     "/ground-zero/landscaping",
+    "/ground-zero/gardens",
     "/ground-zero/collectibles",
     "/first-ascent",
     "/first-ascent/itineraries",

@@ -357,7 +357,7 @@ html.first-ascent-page .site-footer {
 }
 
 .gz-card-slide {
-  flex: 0 0 min(86vw, 22.5rem);
+  flex: 0 0 min(82vw, 21rem);
   scroll-snap-align: center;
 }
 
@@ -365,12 +365,16 @@ html.first-ascent-page .site-footer {
   height: min(470px, calc(100vh - 11rem));
 }
 
-@media (min-width: 768px) {
+.gz-card-cta-label {
+  white-space: nowrap;
+}
+
+@media (min-width: 1280px) {
   .gz-card-track {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     overflow: visible;
-    gap: 2rem;
+    gap: 1.15rem;
     padding: 0;
     mask-image: none;
   }
@@ -382,13 +386,19 @@ html.first-ascent-page .site-footer {
   }
 
   .gz-card-face {
-    height: min(500px, calc(100vh - 12rem));
+    height: min(430px, calc(100vh - 10.5rem));
+    padding-left: 1.1rem;
+    padding-right: 1.1rem;
   }
-}
 
-@media (min-width: 1024px) {
-  .gz-card-track {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 2rem;
+  .gz-card-icon-well {
+    height: 5.25rem;
+    width: 5.25rem;
+  }
+
+  .gz-card-cta-label {
+    white-space: normal;
+    line-height: 1.35;
+    letter-spacing: 0.12em;
   }
 }

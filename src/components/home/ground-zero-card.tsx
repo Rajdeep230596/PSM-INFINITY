@@ -44,6 +44,17 @@ function CypressTerraceIcon() {
   );
 }
 
+function BotanicalFountainIcon() {
+  return (
+    <svg className={iconClass} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M24 42c-9 0-16-7.2-16-16C8 17 24 4 24 4s16 13 16 22c0 8.8-7 16-16 16z" />
+      <circle cx="24" cy="24" r="6" />
+      <path d="M24 18.5V30M18.5 24H29.5" />
+      <path d="M24 4v5" />
+    </svg>
+  );
+}
+
 function CalibreChassisIcon() {
   return (
     <svg className={iconClass} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -72,11 +83,11 @@ export type GroundZeroCardData = {
 
 export const GROUND_ZERO_CARDS: GroundZeroCardData[] = [
   {
-    id: "shopping",
+    id: "couture",
     eyebrow: "01 / Atelier",
-    title: "Personal Haute Couture",
-    description: "Private salon appointments, archive runway acquisitions, and bespoke wardrobe styling.",
-    href: "/ground-zero/shopping",
+    title: "Haute Couture & Wardrobes",
+    description: "Private salon appointments, archive runway acquisitions, and bespoke designer wardrobe curations.",
+    href: "/ground-zero/couture",
     actionLabel: "Enter Atelier",
     icon: <CoutureGownIcon />,
   },
@@ -84,25 +95,34 @@ export const GROUND_ZERO_CARDS: GroundZeroCardData[] = [
     id: "real-estate",
     eyebrow: "02 / Sanctuary",
     title: "Real Estate Portfolios",
-    description: "Prime architectural estates, private duplexes, and off-market residential holdings.",
+    description: "Prime architectural estates, private duplexes, and off-market prime residential holdings globally.",
     href: "/ground-zero/real-estate",
     actionLabel: "View Portfolios",
     icon: <PavilionIcon />,
   },
   {
     id: "landscaping",
-    eyebrow: "03 / Botanical",
+    eyebrow: "03 / Masterplan",
     title: "Landscaping Masterplans",
-    description: "Curated estate grounds, botanical gardens, and seamless indoor-outdoor living.",
+    description: "Integrated architectural terrain, estate hardscaping, and seamless indoor-outdoor living design.",
     href: "/ground-zero/landscaping",
-    actionLabel: "Commission Grounds",
+    actionLabel: "Commission Plan",
     icon: <CypressTerraceIcon />,
   },
   {
+    id: "gardens",
+    eyebrow: "04 / Botanical",
+    title: "Private Botanical Gardens",
+    description: "Manicured grand emerald lawns, private sculpted groves, water sanctuaries, and curated flora.",
+    href: "/ground-zero/gardens",
+    actionLabel: "Explore Gardens",
+    icon: <BotanicalFountainIcon />,
+  },
+  {
     id: "collectibles",
-    eyebrow: "04 / Calibre & Chassis",
+    eyebrow: "05 / Calibre & Chassis",
     title: "Curated Collectibles",
-    description: "Grand complication timepieces paired with bespoke hypercars and rare automotive chassis.",
+    description: "Ultra-rare horological masterworks paired with bespoke hypercars and limited coachbuilt chassis.",
     href: "/ground-zero/collectibles",
     actionLabel: "Acquire Calibre & Fleet",
     icon: <CalibreChassisIcon />,
@@ -124,7 +144,7 @@ export function GroundZeroCard({
       animate={revealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 35 }}
       transition={{
         duration: 0.7,
-        delay: revealed ? index * 0.12 : 0,
+        delay: revealed ? index * 0.08 : 0,
         ease: [0.16, 1, 0.3, 1],
       }}
       className="gz-card-slide"
@@ -134,7 +154,7 @@ export function GroundZeroCard({
           <div className="pointer-events-none absolute inset-x-0 top-0 h-44 rounded-t-[2rem] bg-gradient-to-b from-amber-500/[0.06] via-transparent to-transparent" />
 
           <div className="relative z-10 flex flex-col items-center">
-            <div className="flex h-24 w-24 items-center justify-center rounded-3xl border border-amber-300/20 bg-white/[0.03] text-amber-200/90 shadow-[0_0_24px_rgba(232,216,200,0.1)] transition-all duration-500 group-hover:scale-105 group-hover:border-amber-300/50 group-hover:text-amber-100 group-hover:shadow-[0_0_32px_rgba(232,216,200,0.22)] sm:h-28 sm:w-28">
+            <div className="gz-card-icon-well flex h-24 w-24 items-center justify-center rounded-3xl border border-amber-300/20 bg-white/[0.03] text-amber-200/90 shadow-[0_0_24px_rgba(232,216,200,0.1)] transition-all duration-500 group-hover:scale-105 group-hover:border-amber-300/50 group-hover:text-amber-100 group-hover:shadow-[0_0_32px_rgba(232,216,200,0.22)]">
               {card.icon}
             </div>
             <span className="mt-7 block font-mono text-[10px] tracking-[0.32em] text-amber-300/75 uppercase">
@@ -153,7 +173,7 @@ export function GroundZeroCard({
 
           <div className="relative z-10 mt-auto flex w-full items-center justify-center border-t border-white/[0.08] pt-4">
             <span className="inline-flex items-center justify-center gap-2.5 rounded-full border border-white/[0.12] bg-white/[0.05] px-5 py-2 text-neutral-200 shadow-sm transition-all duration-300 group-hover:border-amber-300/40 group-hover:bg-[#E8D8C8] group-hover:text-black sm:px-6">
-              <span className="text-center font-mono text-[10px] font-medium tracking-[0.16em] whitespace-nowrap uppercase sm:text-[11px] sm:tracking-[0.2em]">
+              <span className="gz-card-cta-label text-center font-mono text-[10px] font-medium tracking-[0.16em] uppercase sm:text-[11px] sm:tracking-[0.18em]">
                 {card.actionLabel}
               </span>
               <span className="text-xs transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { GroundZeroDetailTemplate } from "@/components/ground-zero/GroundZeroDetailTemplate";
+import { CoutureSalonPage } from "@/components/ground-zero/CoutureSalonPage";
 import { GROUND_ZERO_PAGES } from "@/content/ground-zero";
 
 const page = GROUND_ZERO_PAGES.couture;
@@ -11,5 +11,5 @@ export const metadata: Metadata = {
 };
 
 export default function GroundZeroCouturePage() {
-  return <GroundZeroDetailTemplate page={page} />;
+  return <CoutureSalonPage />;
 }

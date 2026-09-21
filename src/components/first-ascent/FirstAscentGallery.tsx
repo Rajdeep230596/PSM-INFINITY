@@ -16,8 +16,19 @@ const EVENT_CTAS = [
   { id: "corporate-events", label: "Corporate Events", href: "/second-ascent/corporate-events", icon: Building2 },
 ] as const;
 
-const EVENT_CTA_REVEAL_AT = 7.5 / 37;
-const EVENT_CTA_HIDE_AT = 13.4 / 37;
+const VIDEO_DURATION = 30.814;
+const EVENT_CTA_REVEAL_AT = 6.85 / VIDEO_DURATION;
+const EVENT_CTA_HIDE_AT = 11.9 / VIDEO_DURATION;
+const DOCK_AT = 0.12;
+
+type ScrollPhase = "intro" | "dock" | "cta" | "rest";
+
+function phaseFromProgress(progress: number): ScrollPhase {
+  if (progress >= EVENT_CTA_HIDE_AT) return "rest";
+  if (progress >= EVENT_CTA_REVEAL_AT) return "cta";
+  if (progress > DOCK_AT) return "dock";
+  return "intro";
+}
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -54,8 +65,8 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, "/videos/second-ascent-backdrop.mp4?v=4");
-  const [progress, setProgress] = useState(0);
+  const videoSrc = useDeferredVideoSource(sectionRef, "/videos/second-ascent-backdrop.mp4?v=8");
+  const [phase, setPhase] = useState<ScrollPhase>("intro");
   const [deskOpen, setDeskOpen] = useState(false);
   const [transmitted, setTransmitted] = useState(false);
 
@@ -78,9 +89,9 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
     [reference, country, clientName, contact],
   );
   const formValid = !errors.reference && !errors.country && !errors.clientName && !errors.contact;
-  const revealed = progress >= EVENT_CTA_REVEAL_AT;
-  const ctaVisible = progress >= EVENT_CTA_REVEAL_AT && progress < EVENT_CTA_HIDE_AT;
-  const showDock = !deskOpen && !hideHero && progress > 0.12 && !revealed;
+  const revealed = phase === "cta" || phase === "rest";
+  const ctaVisible = phase === "cta";
+  const showDock = !deskOpen && !hideHero && phase === "dock";
 
   const openDesk = (intent?: Partial<SourcingIntent>) => {
     const nextCategory = intent?.category ?? "watches";
@@ -139,8 +150,11 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
         trigger: section,
         start: "top top",
         end: "bottom bottom",
-        scrub: 1.05,
-        onUpdate: (self) => setProgress(self.progress),
+        scrub: 0.55,
+        onUpdate: (self) => {
+          const next = phaseFromProgress(self.progress);
+          setPhase((prev) => (prev === next ? prev : next));
+        },
       });
 
       if (loopFallback) {
@@ -157,7 +171,9 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
 
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
-        smoothing: 0.14,
+        smoothing: 0.2,
+        frameRate: 30,
+        preload: "auto",
       });
 
       return () => {
@@ -189,8 +205,8 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
           src={videoSrc}
           muted
           playsInline
-          preload={videoSrc ? "metadata" : "none"}
-          className="absolute inset-0 h-full w-full object-cover"
+          preload={videoSrc ? "auto" : "none"}
+          className="absolute inset-0 h-full w-full object-cover will-change-transform"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
 

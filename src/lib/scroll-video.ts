@@ -8,6 +8,9 @@ type ScrollVideoOptions = {
   enabled?: boolean;
   /** 0–1. Lower is silkier; higher tracks the scroll more tightly. */
   smoothing?: number;
+  /** Match the source frame rate so we do not seek faster than the video can show. */
+  frameRate?: number;
+  preload?: HTMLVideoElement["preload"];
 };
 
 export function attachScrollVideo(
@@ -19,7 +22,7 @@ export function attachScrollVideo(
   video.defaultMuted = true;
   video.playsInline = true;
   video.loop = false;
-  video.preload = "metadata";
+  video.preload = options.preload ?? "metadata";
   video.disablePictureInPicture = true;
 
   if (reduceMotion || options.enabled === false) {
@@ -28,7 +31,7 @@ export function attachScrollVideo(
   }
 
   const smoothing = options.smoothing ?? 0.16;
-  const minStep = 1 / 60;
+  const minStep = 1 / (options.frameRate ?? 30);
   let duration = 0;
   let displayed = 0;
 

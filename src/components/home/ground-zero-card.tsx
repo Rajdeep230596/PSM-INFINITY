@@ -147,14 +147,14 @@ export function GroundZeroCard({
         delay: revealed ? index * 0.08 : 0,
         ease: [0.16, 1, 0.3, 1],
       }}
-      className="gz-card-slide"
+      className="gz-card-slide gpu-surface"
     >
       <Link href={card.href} prefetch={true} className="group block h-full w-full select-none focus:outline-none">
-        <article className="gz-card-face relative flex w-full flex-col items-center justify-between overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#0B0B0E]/60 px-6 pt-10 pb-7 text-center shadow-[0_12px_40px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.12)] backdrop-blur-3xl transition-all duration-700 ease-out hover:border-amber-300/40 hover:bg-[#111116]/80 hover:shadow-[0_20px_50px_rgba(232,216,200,0.15),inset_0_0_20px_rgba(232,216,200,0.08)] sm:px-7">
+        <article className="gz-card-face relative flex w-full flex-col items-center justify-between overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#0B0B0E]/60 px-6 pt-10 pb-7 text-center shadow-[0_12px_40px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.12)] backdrop-blur-3xl transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-700 ease-out hover:border-amber-300/40 hover:bg-[#111116]/80 hover:shadow-[0_20px_50px_rgba(232,216,200,0.15),inset_0_0_20px_rgba(232,216,200,0.08)] sm:px-7">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-44 rounded-t-[2rem] bg-gradient-to-b from-amber-500/[0.06] via-transparent to-transparent" />
 
           <div className="relative z-10 flex flex-col items-center">
-            <div className="gz-card-icon-well flex h-24 w-24 items-center justify-center rounded-3xl border border-amber-300/20 bg-white/[0.03] text-amber-200/90 shadow-[0_0_24px_rgba(232,216,200,0.1)] transition-all duration-500 group-hover:scale-105 group-hover:border-amber-300/50 group-hover:text-amber-100 group-hover:shadow-[0_0_32px_rgba(232,216,200,0.22)]">
+            <div className="gz-card-icon-well flex h-24 w-24 items-center justify-center rounded-3xl border border-amber-300/20 bg-white/[0.03] text-amber-200/90 shadow-[0_0_24px_rgba(232,216,200,0.1)] transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-500 group-hover:scale-105 group-hover:border-amber-300/50 group-hover:text-amber-100 group-hover:shadow-[0_0_32px_rgba(232,216,200,0.22)]">
               {card.icon}
             </div>
             <span className="mt-7 block font-mono text-[10px] tracking-[0.32em] text-amber-300/75 uppercase">
@@ -172,7 +172,7 @@ export function GroundZeroCard({
           </div>
 
           <div className="relative z-10 mt-auto flex w-full items-center justify-center border-t border-white/[0.08] pt-4">
-            <span className="inline-flex items-center justify-center gap-2.5 rounded-full border border-white/[0.12] bg-white/[0.05] px-5 py-2 text-neutral-200 shadow-sm transition-all duration-300 group-hover:border-amber-300/40 group-hover:bg-[#E8D8C8] group-hover:text-black sm:px-6">
+            <span className="inline-flex items-center justify-center gap-2.5 rounded-full border border-white/[0.12] bg-white/[0.05] px-5 py-2 text-neutral-200 shadow-sm transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-300 group-hover:border-amber-300/40 group-hover:bg-[#E8D8C8] group-hover:text-black sm:px-6">
               <span className="gz-card-cta-label text-center font-mono text-[10px] font-medium tracking-[0.16em] uppercase sm:text-[11px] sm:tracking-[0.18em]">
                 {card.actionLabel}
               </span>

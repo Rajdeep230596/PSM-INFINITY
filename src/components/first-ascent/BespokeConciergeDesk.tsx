@@ -202,7 +202,7 @@ export function BespokeConciergeDesk({ slug, cta, onRequisition }: Props) {
           <button
             type="button"
             onClick={() => onRequisition(brief)}
-            className="flex items-center gap-2 rounded-full bg-[#E8D8C8] px-8 py-3.5 text-xs font-semibold text-black shadow-[0_4px_20px_rgba(232,216,200,0.2)] transition-all duration-300 hover:bg-white"
+            className="flex items-center gap-2 rounded-full bg-[#E8D8C8] px-8 py-3.5 text-xs font-semibold text-black shadow-[0_4px_20px_rgba(232,216,200,0.2)] transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-300 hover:bg-white"
           >
             <span>{cta}</span>
             <span className="text-xs">↗</span>

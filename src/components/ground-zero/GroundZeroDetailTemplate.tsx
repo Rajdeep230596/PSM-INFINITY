@@ -28,7 +28,7 @@ export function GroundZeroDetailTemplate({ page }: { page: GroundZeroPageContent
                   className={
                     active
                       ? "rounded-full bg-[#E8D8C8] px-5 py-2 text-xs font-medium text-black shadow-sm"
-                      : "rounded-full border border-white/[0.08] bg-white/[0.02] px-5 py-2 text-xs font-light text-neutral-400 transition-all duration-300 hover:border-white/25 hover:text-white"
+                      : "rounded-full border border-white/[0.08] bg-white/[0.02] px-5 py-2 text-xs font-light text-neutral-400 transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-300 hover:border-white/25 hover:text-white"
                   }
                 >
                   {item.label}
@@ -57,7 +57,7 @@ export function GroundZeroDetailTemplate({ page }: { page: GroundZeroPageContent
         <div className="flex justify-center py-16">
           <Link
             href="/locations#concierge"
-            className="inline-flex items-center gap-2 rounded-full bg-[#E8D8C8] px-8 py-3.5 text-xs font-semibold text-black transition-all hover:bg-white"
+            className="inline-flex items-center gap-2 rounded-full bg-[#E8D8C8] px-8 py-3.5 text-xs font-semibold text-black transition-[transform,opacity,color,background-color,border-color,box-shadow] hover:bg-white"
           >
             {page.cta} ↗
           </Link>

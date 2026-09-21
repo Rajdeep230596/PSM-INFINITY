@@ -24,7 +24,7 @@ export default function GroundZeroPortalPage() {
               key={item.href}
               href={item.href}
               prefetch={true}
-              className="group rounded-3xl border border-white/[0.08] bg-white/[0.02] p-8 transition-all duration-500 hover:border-amber-400/30"
+              className="group rounded-3xl border border-white/[0.08] bg-white/[0.02] p-8 transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-500 hover:border-amber-400/30"
             >
               <p className="font-mono text-[10px] tracking-widest text-amber-400/60 uppercase">0{index + 1}</p>
               <h2 className="mt-3 font-serif text-2xl font-light tracking-tight text-[#F5F2EC]">{item.label}</h2>

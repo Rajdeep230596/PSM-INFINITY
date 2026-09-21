@@ -68,13 +68,21 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => {
+    let frame = 0;
+    const sync = () => {
+      frame = 0;
       setScrolled(window.scrollY > 12);
-      setHovered(null);
     };
-    onScroll();
+    const onScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(sync);
+    };
+    sync();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   useEffect(() => {

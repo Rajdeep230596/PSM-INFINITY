@@ -52,6 +52,7 @@ export function EditorialMilestone({
             {beat ? (
               <motion.div
                 key={beat.id}
+                className="gpu-surface"
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12, transition: { duration: 0.4, ease: "easeIn" } }}

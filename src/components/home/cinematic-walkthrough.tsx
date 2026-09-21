@@ -56,7 +56,7 @@ const BEATS: EditorialBeat[] = [
 export function CinematicWalkthrough() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [progress, setProgress] = useState(0);
+  const [beat, setBeat] = useState<EditorialBeat | null>(null);
 
   useEffect(() => {
     const node = sectionRef.current;
@@ -91,7 +91,10 @@ export function CinematicWalkthrough() {
         start: "top top",
         end: "bottom bottom",
         scrub: 1.05,
-        onUpdate: (self) => setProgress(self.progress),
+        onUpdate: (self) => {
+          const next = activeBeat(self.progress, BEATS).beat;
+          setBeat((prev) => (prev?.id === next?.id ? prev : next));
+        },
       });
 
       if (loopFallback) {
@@ -106,6 +109,7 @@ export function CinematicWalkthrough() {
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
         smoothing: 0.14,
+        frameRate: 30,
       });
 
       return () => {
@@ -116,8 +120,6 @@ export function CinematicWalkthrough() {
     { scope: sectionRef },
   );
 
-  const { beat } = activeBeat(progress, BEATS);
-
   return (
     <section
       ref={sectionRef}
@@ -125,13 +127,13 @@ export function CinematicWalkthrough() {
       className="relative h-[450vh] w-full bg-black"
       aria-label="Master landing sequence"
     >
-      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black">
+      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black gpu-layer">
         <video
           ref={videoRef}
           muted
           playsInline
-          preload="metadata"
-          className="h-full w-full object-cover"
+          preload="auto"
+          className="gpu-media h-full w-full object-cover"
         >
           <source src="/media/backdrop.mp4?v=7" type="video/mp4" />
         </video>

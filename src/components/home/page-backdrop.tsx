@@ -46,6 +46,7 @@ export function PageBackdrop() {
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
         smoothing: 0.14,
+        frameRate: 30,
       });
 
       return () => {
@@ -59,7 +60,7 @@ export function PageBackdrop() {
   return (
     <div className="page-backdrop" id="pageBackdrop" ref={wrapRef} aria-hidden="true">
       <div className="page-backdrop-media">
-        <video ref={videoRef} src={videoSrc} muted playsInline preload={videoSrc ? "metadata" : "none"} />
+        <video ref={videoRef} src={videoSrc} muted playsInline preload={videoSrc ? "auto" : "none"} className="gpu-media" />
         <div className="page-backdrop-wash" />
       </div>
     </div>

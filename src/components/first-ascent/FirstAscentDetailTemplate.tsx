@@ -80,7 +80,7 @@ export function FirstAscentDetailTemplate({ page }: { page: FirstAscentPageConte
                 className={
                   active
                     ? "rounded-full bg-[#E8D8C8] px-5 py-2 text-xs font-medium text-black shadow-sm"
-                    : "rounded-full border border-white/[0.08] bg-white/[0.02] px-5 py-2 text-xs font-light text-neutral-400 transition-all duration-300 hover:border-white/25 hover:text-white"
+                    : "rounded-full border border-white/[0.08] bg-white/[0.02] px-5 py-2 text-xs font-light text-neutral-400 transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-300 hover:border-white/25 hover:text-white"
                 }
               >
                 {item.label}
@@ -119,7 +119,7 @@ export function FirstAscentDetailTemplate({ page }: { page: FirstAscentPageConte
           {page.fleet.map((asset) => (
             <article
               key={asset.name}
-              className="fa-card group overflow-hidden rounded-3xl border border-white/[0.08] bg-[#111113] shadow-xl transition-all duration-500 hover:border-amber-400/30"
+              className="fa-card group overflow-hidden rounded-3xl border border-white/[0.08] bg-[#111113] shadow-xl transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-500 hover:border-amber-400/30"
             >
               <div className="relative aspect-[16/11] w-full overflow-hidden bg-neutral-900">
                 <AllocationImage src={asset.image} fallback={asset.fallback} alt={asset.name} />
@@ -143,7 +143,7 @@ export function FirstAscentDetailTemplate({ page }: { page: FirstAscentPageConte
                 <button
                   type="button"
                   onClick={() => openDesk(`Request allocation: ${asset.name}`)}
-                  className="fa-card-cta flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-xs font-semibold text-black shadow-md transition-all duration-300 hover:bg-neutral-200"
+                  className="fa-card-cta flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-xs font-semibold text-black shadow-md transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-300 hover:bg-neutral-200"
                 >
                   <span>Request Allocation</span>
                   <span className="text-xs">↗</span>
@@ -227,7 +227,7 @@ export function FirstAscentDetailTemplate({ page }: { page: FirstAscentPageConte
                   </label>
                   <button
                     type="submit"
-                    className="mt-auto flex w-full items-center justify-center gap-2 rounded-full bg-[#E8D8C8] py-3.5 text-xs font-semibold text-black transition-all hover:bg-[#F3EBE1]"
+                    className="mt-auto flex w-full items-center justify-center gap-2 rounded-full bg-[#E8D8C8] py-3.5 text-xs font-semibold text-black transition-[transform,opacity,color,background-color,border-color,box-shadow] hover:bg-[#F3EBE1]"
                   >
                     Transmit {page.cta} ↗
                   </button>

@@ -116,7 +116,7 @@ export function CoutureSalonPage() {
           <button
             type="button"
             onClick={() => handleEnquiry("Private salon viewing")}
-            className="rounded-full bg-[#C5A880] px-8! py-3! text-xs font-semibold tracking-wider text-black uppercase shadow-[0_4px_20px_rgba(197,168,128,0.25)] transition-all hover:bg-white"
+            className="rounded-full bg-[#C5A880] px-8! py-3! text-xs font-semibold tracking-wider text-black uppercase shadow-[0_4px_20px_rgba(197,168,128,0.25)] transition-[transform,opacity,color,background-color,border-color,box-shadow] hover:bg-white"
           >
             {COUTURE_HERO.cta}
           </button>
@@ -166,7 +166,7 @@ export function CoutureSalonPage() {
                   href={`#${category.id}`}
                   className="group flex flex-col items-center gap-2.5"
                 >
-                  <span className="flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] transition-all group-hover:border-[#C5A880]/50 group-hover:bg-white/[0.06]">
+                  <span className="flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] transition-[transform,opacity,color,background-color,border-color,box-shadow] group-hover:border-[#C5A880]/50 group-hover:bg-white/[0.06]">
                     <Icon size={18} className="text-[#C5A880]" strokeWidth={1.4} />
                   </span>
                   <span className="font-mono text-[9px] leading-tight tracking-[0.16em] text-neutral-400 uppercase group-hover:text-[#F5F2EC] sm:text-[10px]">
@@ -233,7 +233,7 @@ export function CoutureSalonPage() {
             <article
               key={item.id}
               id={item.category}
-              className="flex scroll-mt-28 flex-col justify-between rounded-2xl border border-white/[0.06] bg-[#111114] p-4! transition-all duration-300 hover:border-[#C5A880]/30"
+              className="flex scroll-mt-28 flex-col justify-between rounded-2xl border border-white/[0.06] bg-[#111114] p-4! transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-300 hover:border-[#C5A880]/30"
             >
               <div>
                 <div className="mb-4! aspect-[4/5] overflow-hidden rounded-xl bg-neutral-900">
@@ -250,7 +250,7 @@ export function CoutureSalonPage() {
                 <button
                   type="button"
                   onClick={() => handleEnquiry(item.id)}
-                  className="rounded-full bg-[#C5A880] px-4! py-1.5! font-mono text-[11px] tracking-wider text-black uppercase transition-all duration-200 hover:bg-white"
+                  className="rounded-full bg-[#C5A880] px-4! py-1.5! font-mono text-[11px] tracking-wider text-black uppercase transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-200 hover:bg-white"
                 >
                   Enquire
                 </button>
@@ -279,7 +279,7 @@ export function CoutureSalonPage() {
             <button
               type="button"
               onClick={() => handleEnquiry("Request private consultation")}
-              className="rounded-full bg-[#C5A880] px-8! py-3! text-xs font-semibold tracking-wider text-black uppercase shadow-[0_4px_20px_rgba(197,168,128,0.25)] transition-all hover:bg-white"
+              className="rounded-full bg-[#C5A880] px-8! py-3! text-xs font-semibold tracking-wider text-black uppercase shadow-[0_4px_20px_rgba(197,168,128,0.25)] transition-[transform,opacity,color,background-color,border-color,box-shadow] hover:bg-white"
             >
               Request Private Consultation
             </button>
@@ -382,7 +382,7 @@ export function CoutureSalonPage() {
             />
             <button
               type="submit"
-              className="rounded-full bg-[#C5A880] px-8! py-3! text-xs font-semibold tracking-wider text-black uppercase transition-all hover:bg-white"
+              className="rounded-full bg-[#C5A880] px-8! py-3! text-xs font-semibold tracking-wider text-black uppercase transition-[transform,opacity,color,background-color,border-color,box-shadow] hover:bg-white"
             >
               Subscribe
             </button>
@@ -469,7 +469,7 @@ export function CoutureSalonPage() {
                   </label>
                   <button
                     type="submit"
-                    className="mt-auto flex w-full items-center justify-center gap-2 rounded-full bg-[#C5A880] py-3.5! text-xs font-semibold text-black transition-all hover:bg-white"
+                    className="mt-auto flex w-full items-center justify-center gap-2 rounded-full bg-[#C5A880] py-3.5! text-xs font-semibold text-black transition-[transform,opacity,color,background-color,border-color,box-shadow] hover:bg-white"
                   >
                     Transmit Wardrobe Brief ↗
                   </button>

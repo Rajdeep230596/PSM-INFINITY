@@ -4,6 +4,7 @@ import { Cormorant_Garamond, Outfit } from "next/font/google";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppCta } from "@/components/layout/whatsapp-cta";
+import { BootLoader } from "@/components/motion/boot-loader";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { site } from "@/content/site";
 
@@ -37,8 +38,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${outfit.variable} ${cormorant.variable}`} data-scroll-behavior="smooth">
+    <html lang="en" className={`${outfit.variable} ${cormorant.variable} is-booting`} data-scroll-behavior="smooth">
       <body>
+        <noscript>
+          <style>{`.boot-loader{display:none!important}html.is-booting{overflow:auto!important}`}</style>
+        </noscript>
+        <BootLoader />
         <SmoothScroll>
           <a className="skip-link" href="#content">
             Skip to content

@@ -36,10 +36,9 @@ const BEATS: EditorialBeat[] = [
 export function GroundZeroScrollySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [progress, setProgress] = useState(0);
   const videoSrc = useDeferredVideoSource(sectionRef, "/videos/ground-zero-arrival.mp4");
-  const revealed = progress >= 0.85;
-  const { beat } = activeBeat(revealed ? 1.1 : progress, BEATS);
+  const [revealed, setRevealed] = useState(false);
+  const [beat, setBeat] = useState<EditorialBeat | null>(BEATS[0]);
 
   useEffect(() => {
     const node = sectionRef.current;
@@ -73,7 +72,12 @@ export function GroundZeroScrollySection() {
         start: "top top",
         end: "bottom bottom",
         scrub: 1.05,
-        onUpdate: (self) => setProgress(self.progress),
+        onUpdate: (self) => {
+          const isRevealed = self.progress >= 0.85;
+          const next = activeBeat(isRevealed ? 1.1 : self.progress, BEATS).beat;
+          setRevealed((prev) => (prev === isRevealed ? prev : isRevealed));
+          setBeat((prev) => (prev?.id === next?.id ? prev : next));
+        },
       });
 
       if (loopFallback) {
@@ -88,6 +92,7 @@ export function GroundZeroScrollySection() {
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
         smoothing: 0.14,
+        frameRate: 30,
       });
 
       return () => {
@@ -105,14 +110,14 @@ export function GroundZeroScrollySection() {
       className="relative h-[380vh] bg-[#0A0A0B]"
       aria-label="Ground Zero arrival"
     >
-      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
+      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden gpu-layer">
         <video
           ref={videoRef}
           src={videoSrc}
           muted
           playsInline
-          preload={videoSrc ? "metadata" : "none"}
-          className="absolute inset-0 h-full w-full object-cover"
+          preload={videoSrc ? "auto" : "none"}
+          className="gpu-media absolute inset-0 h-full w-full object-cover"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/40" />
 

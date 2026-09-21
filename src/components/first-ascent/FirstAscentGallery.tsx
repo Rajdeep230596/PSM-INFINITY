@@ -199,14 +199,14 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
       className="first-ascent first-ascent-flush relative h-[350vh] bg-[#080808] text-white selection:bg-white/20"
       aria-label="Second Ascent"
     >
-      <div ref={videoWrapRef} className="relative z-0 h-screen w-full overflow-hidden bg-[#080808]">
+      <div ref={videoWrapRef} className="relative z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
         <video
           ref={videoRef}
           src={videoSrc}
           muted
           playsInline
           preload={videoSrc ? "auto" : "none"}
-          className="absolute inset-0 h-full w-full object-cover will-change-transform"
+          className="gpu-media absolute inset-0 h-full w-full object-cover will-change-transform"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
 
@@ -221,6 +221,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
               return (
                 <motion.div
                   key={item.id}
+                  className="gpu-surface"
                   initial={false}
                   animate={ctaVisible ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 28, scale: 0.96 }}
                   transition={{

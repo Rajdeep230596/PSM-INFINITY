@@ -90,6 +90,13 @@ html.first-ascent-page .first-ascent-editorial {
   margin-right: auto;
 }
 
+.first-ascent-editorial .fa-pillars,
+.first-ascent-editorial .fa-desk,
+.first-ascent-editorial .fa-portfolio {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+
 .first-ascent-editorial .fa-hero {
   max-width: 64rem;
   margin-bottom: 6rem;
@@ -249,7 +256,8 @@ html.first-ascent-page .whatsapp-cta {
 }
 
 html.first-ascent-page .site-footer {
-  background: #0a0a0b;
+  background: #000;
+  color: var(--gold);
   padding-bottom: 4rem;
 }
 
@@ -307,7 +315,9 @@ html.first-ascent-page .site-footer {
   width: max-content;
   gap: 2rem;
   animation: fa-marquee 42s linear infinite;
+  transform: translate3d(0, 0, 0);
   will-change: transform;
+  backface-visibility: hidden;
 }
 
 .fa-marquee-reverse {
@@ -323,6 +333,13 @@ html.first-ascent-page .site-footer {
 @media (prefers-reduced-motion: reduce) {
   .fa-marquee {
     animation: none;
+    will-change: auto;
+  }
+
+  .first-ascent-editorial .fa-pillars,
+  .first-ascent-editorial .fa-desk,
+  .first-ascent-editorial .fa-portfolio {
+    content-visibility: visible;
   }
 }
 

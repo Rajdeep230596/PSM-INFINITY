@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { getWhatsAppHref, site } from "@/content/site";
+import { getWhatsAppUrl } from "@/lib/constants";
+import { site } from "@/content/site";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -49,7 +50,13 @@ export function SiteFooter() {
                 <Link href="/partner">Work with the studio</Link>
               </li>
               <li>
-                <Link href="/partner#enquire">Enquire</Link>
+                <a
+                  href={getWhatsAppUrl("Hello PSM Infinity, I would like to enquire about a studio partnership.")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Enquire
+                </a>
               </li>
             </ul>
           </div>
@@ -72,7 +79,7 @@ export function SiteFooter() {
             © {year} {site.name}. All rights reserved.
           </span>
           <span>Branding · Technology · Textile · Logistics</span>
-          <a href={getWhatsAppHref()} rel="noreferrer noopener">
+          <a href={getWhatsAppUrl()} target="_blank" rel="noopener noreferrer">
             WhatsApp
           </a>
         </div>

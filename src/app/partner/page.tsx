@@ -2,12 +2,23 @@
 
 import { FormEvent, useState } from "react";
 
+import { openWhatsApp } from "@/lib/constants";
+
 export default function PartnerPage() {
   const [note, setNote] = useState("");
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setNote("Thank you. The studio will reach out within two business days.");
+    const data = new FormData(event.currentTarget);
+    const name = String(data.get("name") ?? "").trim();
+    const practice = String(data.get("practice") ?? "").trim();
+    const city = String(data.get("city") ?? "").trim();
+    const timeline = String(data.get("timeline") ?? "").trim();
+    const message = String(data.get("message") ?? "").trim();
+    openWhatsApp(
+      `Hello PSM Infinity, I would like to enquire about a studio partnership. Name: ${name}. Practice: ${practice}. City: ${city}. Timeline: ${timeline}.${message ? ` Notes: ${message}` : ""}`,
+    );
+    setNote("Opening WhatsApp with your partnership brief.");
     event.currentTarget.reset();
   };
 
@@ -89,7 +100,7 @@ export default function PartnerPage() {
               <br />
               happen.
             </h2>
-            <p className="lede">Share a few details and the studio will write back within two business days.</p>
+            <p className="lede">Share a few details and WhatsApp will open a private brief to the studio.</p>
             <p className="lede" style={{ marginTop: 16 }}>
               Identity, technology, textile programmes, and logistics come with the partnership — as one brief, not four
               vendors.

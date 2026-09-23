@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import type { SecondAscentPageContent } from "@/content/second-ascent";
 import { SECOND_ASCENT_LINKS } from "@/content/second-ascent";
+import { getWhatsAppUrl } from "@/lib/constants";
 
 export function SecondAscentDetailTemplate({ page }: { page: SecondAscentPageContent }) {
   return (
@@ -55,12 +56,16 @@ export function SecondAscentDetailTemplate({ page }: { page: SecondAscentPageCon
         </section>
 
         <div className="flex justify-center py-16">
-          <Link
-            href="/locations#concierge"
+          <a
+            href={getWhatsAppUrl(
+              `Hello PSM Infinity Concierge, I would like to inquire about Second Ascent: ${page.heading}. ${page.cta}.`,
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-full bg-[#E8D8C8] px-8 py-3.5 text-xs font-semibold text-black transition-[transform,opacity,color,background-color,border-color,box-shadow] hover:bg-white"
           >
             {page.cta} ↗
-          </Link>
+          </a>
         </div>
       </div>
     </div>

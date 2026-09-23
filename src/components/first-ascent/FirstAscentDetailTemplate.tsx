@@ -1,51 +1,30 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { Check, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import type { FirstAscentPageContent } from "@/content/first-ascent";
 import { FIRST_ASCENT_LINKS } from "@/content/first-ascent";
+import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
 
 const BespokeConciergeDesk = dynamic(
   () => import("@/components/first-ascent/BespokeConciergeDesk").then((module) => module.BespokeConciergeDesk),
   { ssr: false },
 );
 
-const fieldClass =
-  "w-full appearance-none rounded-none border-0 border-b border-white/15 bg-transparent pb-2.5 text-sm font-light text-[#F5F2EC] outline-none transition-colors focus:border-amber-300/60";
-
 export function FirstAscentDetailTemplate({ page }: { page: FirstAscentPageContent }) {
-  const [deskOpen, setDeskOpen] = useState(false);
-  const [sent, setSent] = useState(false);
-  const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
-  const [destination, setDestination] = useState("");
-
   useEffect(() => {
     document.documentElement.classList.add("first-ascent-page");
     return () => document.documentElement.classList.remove("first-ascent-page");
   }, []);
 
-  useEffect(() => {
-    document.body.style.overflow = deskOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [deskOpen]);
-
   const openDesk = (brief?: string) => {
-    setSent(false);
-    if (brief) setDestination(brief);
-    setDeskOpen(true);
-  };
-
-  const submit = (event: React.FormEvent) => {
-    event.preventDefault();
-    if (name.trim().length < 2 || contact.replace(/\D/g, "").length < 8) return;
-    setSent(true);
+    openWhatsApp(
+      brief
+        ? `Hello PSM Infinity Concierge, I would like to inquire about the allocation: "${brief}" in First Ascent / ${page.heading}.`
+        : `Hello PSM Infinity Concierge, I would like to inquire about First Ascent: ${page.heading}. ${page.cta}.`,
+    );
   };
 
   const gridClass = page.fleet.length > 3 ? "fa-card-grid is-quad" : "fa-card-grid is-trio";
@@ -142,7 +121,7 @@ export function FirstAscentDetailTemplate({ page }: { page: FirstAscentPageConte
                 </div>
                 <button
                   type="button"
-                  onClick={() => openDesk(`Request allocation: ${asset.name}`)}
+                  onClick={() => enquireWhatsApp(asset.name, `First Ascent / ${page.heading}`)}
                   className="fa-card-cta flex items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-xs font-semibold text-black shadow-md transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-300 hover:bg-neutral-200"
                 >
                   <span>Request Allocation</span>
@@ -155,88 +134,6 @@ export function FirstAscentDetailTemplate({ page }: { page: FirstAscentPageConte
       </section>
       </div>
 
-      <AnimatePresence>
-        {deskOpen ? (
-          <motion.div
-            className="fixed inset-0 z-[60] flex justify-end"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <button
-              type="button"
-              aria-label="Close requisition"
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              onClick={() => setDeskOpen(false)}
-            />
-            <motion.aside
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              className="relative flex h-full w-full max-w-md flex-col border-l border-white/[0.08] bg-[#0A0A0B]/96 p-8"
-            >
-              <div className="mb-8 flex items-start justify-between">
-                <div>
-                  <p className="font-sans text-[10px] tracking-[0.35em] text-[#C5B39A] uppercase">Private desk</p>
-                  <h2 className="mt-2 font-serif text-3xl font-light tracking-tight text-[#F5F2EC]">Bespoke Concierge</h2>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setDeskOpen(false)}
-                  className="rounded-full border border-white/10 p-2 text-neutral-400 hover:text-white"
-                  aria-label="Close"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-              {sent ? (
-                <div className="flex flex-1 flex-col items-center justify-center text-center">
-                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/10 text-[#E8D8C8]">
-                    <Check size={24} />
-                  </div>
-                  <p className="font-serif text-2xl font-light text-[#F5F2EC]">Requisition received</p>
-                  <p className="mt-3 max-w-xs font-sans text-sm font-light text-neutral-400">
-                    A specialist will confirm protocol on WhatsApp shortly.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={submit} className="flex flex-1 flex-col gap-8">
-                  <label className="block">
-                    <span className="mb-2 block font-sans text-[10px] tracking-widest text-neutral-400 uppercase">
-                      Full name
-                    </span>
-                    <input required value={name} onChange={(event) => setName(event.target.value)} className={fieldClass} />
-                  </label>
-                  <label className="block">
-                    <span className="mb-2 block font-sans text-[10px] tracking-widest text-neutral-400 uppercase">
-                      WhatsApp / phone
-                    </span>
-                    <input required value={contact} onChange={(event) => setContact(event.target.value)} className={fieldClass} />
-                  </label>
-                  <label className="block">
-                    <span className="mb-2 block font-sans text-[10px] tracking-widest text-neutral-400 uppercase">
-                      Requisition brief
-                    </span>
-                    <textarea
-                      rows={5}
-                      value={destination}
-                      onChange={(event) => setDestination(event.target.value)}
-                      placeholder="Any asset, route, territory, or protocol — we source it."
-                      className="mt-1 w-full rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-sm font-light text-[#F5F2EC] outline-none focus:border-amber-300/60"
-                    />
-                  </label>
-                  <button
-                    type="submit"
-                    className="mt-auto flex w-full items-center justify-center gap-2 rounded-full bg-[#E8D8C8] py-3.5 text-xs font-semibold text-black transition-[transform,opacity,color,background-color,border-color,box-shadow] hover:bg-[#F3EBE1]"
-                  >
-                    Transmit {page.cta} ↗
-                  </button>
-                </form>
-              )}
-            </motion.aside>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
     </div>
   );
 }

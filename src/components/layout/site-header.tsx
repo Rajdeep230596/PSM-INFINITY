@@ -8,6 +8,7 @@ import { FIRST_ASCENT_LINKS } from "@/content/first-ascent";
 import { GROUND_ZERO_LINKS } from "@/content/ground-zero";
 import { SECOND_ASCENT_LINKS } from "@/content/second-ascent";
 import { site } from "@/content/site";
+import { getWhatsAppUrl } from "@/lib/constants";
 
 function NavDropdown({
   href,
@@ -178,9 +179,14 @@ export function SiteHeader() {
           </ul>
         </nav>
         <div className="nav-actions">
-          <Link className="nav-cta" href="/locations#concierge" prefetch={true}>
+          <a
+            className="nav-cta"
+            href={getWhatsAppUrl("Hello PSM Infinity, I am seeking a confidential inquiry regarding your global services.")}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Get in touch
-          </Link>
+          </a>
           <button
             className="menu-toggle"
             type="button"

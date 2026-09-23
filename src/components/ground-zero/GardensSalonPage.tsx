@@ -1,10 +1,8 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import {
   Award,
   BadgeCheck,
-  Check,
   Droplets,
   Home,
   Leaf,
@@ -15,9 +13,8 @@ import {
   Trees,
   Landmark,
   Wrench,
-  X,
 } from "lucide-react";
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 
 import {
   GARDENS_CATEGORIES,
@@ -28,9 +25,7 @@ import {
   GARDENS_SPOTLIGHTS,
   GARDENS_TRUST,
 } from "@/content/gardens";
-
-const fieldClass =
-  "w-full appearance-none rounded-none border-0 border-b border-white/15 bg-transparent pb-2.5! text-sm font-light text-[#F5F2EC] outline-none transition-colors focus:border-[#C5A880]/60";
+import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
 
 const CATEGORY_ICONS = {
   topiary: Scissors,
@@ -56,42 +51,10 @@ const PILLAR_ICONS = {
 } as const;
 
 export function GardensSalonPage() {
-  const [deskOpen, setDeskOpen] = useState(false);
-  const [sent, setSent] = useState(false);
-  const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
-  const [brief, setBrief] = useState("");
   const [dispatchNote, setDispatchNote] = useState("");
 
-  useEffect(() => {
-    document.body.style.overflow = deskOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [deskOpen]);
-
-  const openConcierge = (itemId?: string) => {
-    const commission = GARDENS_COMMISSIONS.find((item) => item.id === itemId || item.title === itemId);
-    const spotlight = GARDENS_SPOTLIGHTS.find((item) => item.id === itemId);
-    const journal = GARDENS_JOURNAL.find((item) => item.id === itemId);
-    const nextBrief = commission
-      ? `Request commission: ${commission.title}`
-      : spotlight
-        ? `Request viewing: ${spotlight.title}`
-        : journal
-          ? `Request curator note: ${journal.title}`
-          : itemId
-            ? itemId
-            : "Private botanical masterplan — grounds desk.";
-    setSent(false);
-    setBrief(nextBrief);
-    setDeskOpen(true);
-  };
-
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
-    if (name.trim().length < 2 || contact.replace(/\D/g, "").length < 8) return;
-    setSent(true);
+  const openConcierge = (title: string, category = "Private Botanical Gardens") => {
+    enquireWhatsApp(title, category);
   };
 
   const submitDispatch = (event: FormEvent<HTMLFormElement>) => {
@@ -99,8 +62,10 @@ export function GardensSalonPage() {
     const data = new FormData(event.currentTarget);
     const estate = String(data.get("estate") ?? "").trim();
     if (!estate) return;
-    setDispatchNote("Audit brief received for this estate.");
-    openConcierge(`Landscape audit: ${estate}`);
+    setDispatchNote("Opening WhatsApp with your landscape brief.");
+    openWhatsApp(
+      `Hello PSM Infinity Concierge, I would like to inquire about the allocation: "${estate}" in Private Botanical Gardens.`,
+    );
     event.currentTarget.reset();
   };
 
@@ -192,7 +157,7 @@ export function GardensSalonPage() {
               </p>
               <button
                 type="button"
-                onClick={() => openConcierge(card.id)}
+                onClick={() => openConcierge(card.title)}
                 className="flex items-center gap-1.5 self-start border-0 bg-transparent appearance-none font-mono text-[11px] tracking-wider text-[#C5A880] uppercase transition-colors hover:text-white"
               >
                 {card.action} ↗
@@ -324,7 +289,7 @@ export function GardensSalonPage() {
               </div>
               <button
                 type="button"
-                onClick={() => openConcierge(entry.id)}
+                onClick={() => openConcierge(entry.title)}
                 className="relative z-10 flex items-center gap-1.5 self-start border-0 bg-transparent appearance-none font-mono text-[11px] tracking-wider text-[#C5A880] uppercase transition-colors hover:text-white"
               >
                 {entry.action} ↗
@@ -396,95 +361,6 @@ export function GardensSalonPage() {
         </form>
       </section>
 
-      <AnimatePresence>
-        {deskOpen ? (
-          <motion.div
-            className="fixed inset-0 z-[60] flex justify-end"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <button
-              type="button"
-              aria-label="Close requisition"
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              onClick={() => setDeskOpen(false)}
-            />
-            <motion.aside
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              className="relative flex h-full w-full max-w-md flex-col border-l border-white/[0.08] bg-[#08080A]/96 p-8!"
-            >
-              <div className="mb-8! flex items-start justify-between">
-                <div>
-                  <p className="font-mono text-[10px] tracking-[0.35em] text-[#C5A880] uppercase">Private desk</p>
-                  <h2 className="mt-2! font-serif text-3xl font-light tracking-tight text-[#F5F2EC]">
-                    Grounds Concierge
-                  </h2>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setDeskOpen(false)}
-                  className="rounded-full border border-white/10 p-2! text-neutral-400 hover:text-white"
-                  aria-label="Close"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-              {sent ? (
-                <div className="flex flex-1 flex-col items-center justify-center text-center">
-                  <div className="mb-4! flex h-14 w-14 items-center justify-center rounded-full bg-[#C5A880]/10 text-[#C5A880]">
-                    <Check size={24} />
-                  </div>
-                  <p className="font-serif text-2xl font-light text-[#F5F2EC]">Requisition received</p>
-                  <p className="mt-3! max-w-xs font-sans text-sm font-light text-neutral-400">
-                    A specialist will confirm protocol on WhatsApp shortly.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={submit} className="flex flex-1 flex-col gap-8">
-                  <label className="block">
-                    <span className="mb-2! block font-sans text-[10px] tracking-widest text-neutral-400 uppercase">
-                      Full name
-                    </span>
-                    <input required value={name} onChange={(event) => setName(event.target.value)} className={fieldClass} />
-                  </label>
-                  <label className="block">
-                    <span className="mb-2! block font-sans text-[10px] tracking-widest text-neutral-400 uppercase">
-                      WhatsApp / phone
-                    </span>
-                    <input
-                      required
-                      value={contact}
-                      onChange={(event) => setContact(event.target.value)}
-                      className={fieldClass}
-                    />
-                  </label>
-                  <label className="block">
-                    <span className="mb-2! block font-sans text-[10px] tracking-widest text-neutral-400 uppercase">
-                      Requisition brief
-                    </span>
-                    <textarea
-                      rows={5}
-                      value={brief}
-                      onChange={(event) => setBrief(event.target.value)}
-                      placeholder="Any estate, climate, specimen, or water protocol — we compose it."
-                      className="mt-1! w-full rounded-2xl border border-white/10 bg-white/[0.03] p-3! text-sm font-light text-[#F5F2EC] outline-none focus:border-[#C5A880]/60"
-                    />
-                  </label>
-                  <button
-                    type="submit"
-                    className="mt-auto flex w-full items-center justify-center gap-2 rounded-full bg-[#C5A880] py-3.5! text-xs font-semibold text-black transition-all hover:bg-white"
-                  >
-                    Transmit Grounds Brief ↗
-                  </button>
-                </form>
-              )}
-            </motion.aside>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
     </div>
   );
 }

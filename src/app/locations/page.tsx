@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 
 import { site } from "@/content/site";
+import { getWhatsAppUrl } from "@/lib/constants";
 
 export default function LocationsPage() {
   const [query, setQuery] = useState("");
@@ -60,6 +61,14 @@ export default function LocationsPage() {
                   </a>
                   <a className="btn btn-ghost" href={`tel:${site.phoneTel}`}>
                     Call
+                  </a>
+                  <a
+                    className="btn btn-primary"
+                    href={getWhatsAppUrl("Hello PSM Infinity, I would like to visit or speak with the Kolkata studio.")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    WhatsApp
                   </a>
                 </div>
               </article>

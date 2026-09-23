@@ -4,10 +4,11 @@ import { useGSAP } from "@gsap/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowUpRight, Building2, Calendar, Check, X } from "lucide-react";
+import { ArrowUpRight, Building2, Calendar } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
 import { useDeferredVideoSource } from "@/lib/deferred-video";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
@@ -32,97 +33,21 @@ function phaseFromProgress(progress: number): ScrollPhase {
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-type AssetCategory = "watches" | "fleet" | "suites" | "estates";
-
-type SourcingIntent = {
-  category: AssetCategory;
-  reference: string;
-  placeholder?: string;
-};
-
-const CATEGORIES: { id: AssetCategory; label: string }[] = [
-  { id: "watches", label: "Watches" },
-  { id: "fleet", label: "Exotic Fleet" },
-  { id: "suites", label: "Living Suites" },
-  { id: "estates", label: "Estates" },
-];
-
-const TIMELINES = ["Air Priority", "Enclosed Sea Freight"] as const;
-type Timeline = (typeof TIMELINES)[number];
-
-const PLACEHOLDERS: Record<AssetCategory, string> = {
-  watches: "e.g. Rolex Daytona 126500LN",
-  fleet: "e.g. Porsche Cayenne GTS in Obsidian Black",
-  suites: "e.g. Climate vault with biometric dressing chamber",
-  estates: "e.g. Japanese courtyard with rare flora, 0.8 acres",
-};
-
-function phoneValid(value: string) {
-  return value.replace(/\D/g, "").length >= 8;
-}
-
 export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoSrc = useDeferredVideoSource(sectionRef, "/videos/second-ascent-backdrop.mp4?v=8");
   const [phase, setPhase] = useState<ScrollPhase>("intro");
-  const [deskOpen, setDeskOpen] = useState(false);
-  const [transmitted, setTransmitted] = useState(false);
-
-  const [category, setCategory] = useState<AssetCategory>("watches");
-  const [reference, setReference] = useState("");
-  const [placeholder, setPlaceholder] = useState(PLACEHOLDERS.watches);
-  const [country, setCountry] = useState("");
-  const [timeline, setTimeline] = useState<Timeline>("Air Priority");
-  const [clientName, setClientName] = useState("");
-  const [contact, setContact] = useState("");
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
-
-  const errors = useMemo(
-    () => ({
-      reference: reference.trim().length < 3 ? "Describe the asset or reference you want sourced." : "",
-      country: country.trim().length < 2 ? "Enter a destination country." : "",
-      clientName: clientName.trim().length < 2 ? "Please enter your name." : "",
-      contact: phoneValid(contact) ? "" : "Enter a WhatsApp or phone number.",
-    }),
-    [reference, country, clientName, contact],
-  );
-  const formValid = !errors.reference && !errors.country && !errors.clientName && !errors.contact;
   const revealed = phase === "cta" || phase === "rest";
   const ctaVisible = phase === "cta";
-  const showDock = !deskOpen && !hideHero && phase === "dock";
-
-  const openDesk = (intent?: Partial<SourcingIntent>) => {
-    const nextCategory = intent?.category ?? "watches";
-    setCategory(nextCategory);
-    setReference(intent?.reference ?? "");
-    setPlaceholder(intent?.placeholder ?? PLACEHOLDERS[nextCategory]);
-    setTransmitted(false);
-    setTouched({});
-    setDeskOpen(true);
-  };
+  const showDock = !hideHero && phase === "dock";
 
   useEffect(() => {
     if (hideHero) return;
     document.documentElement.classList.add("first-ascent-page");
     return () => document.documentElement.classList.remove("first-ascent-page");
   }, [hideHero]);
-
-  useEffect(() => {
-    document.body.style.overflow = deskOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [deskOpen]);
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setDeskOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, []);
 
   useGSAP(
     () => {
@@ -184,13 +109,6 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
     },
     { scope: sectionRef, dependencies: [videoSrc] },
   );
-
-  const submitSourcing = (event: React.FormEvent) => {
-    event.preventDefault();
-    setTouched({ reference: true, country: true, clientName: true, contact: true });
-    if (!formValid) return;
-    setTransmitted(true);
-  };
 
   return (
     <section
@@ -303,7 +221,11 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
           >
             <button
               type="button"
-              onClick={() => openDesk()}
+              onClick={() =>
+                openWhatsApp(
+                  "Hello PSM Infinity Concierge, I would like to inquire about First Ascent private acquisition.",
+                )
+              }
               className="fa-dossier-btn flex items-center gap-1 rounded-full bg-white px-4 py-2 text-xs font-medium whitespace-nowrap !text-black transition-colors hover:bg-neutral-200"
             >
               Connect with Private Acquisition Desk
@@ -311,7 +233,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
             </button>
             <button
               type="button"
-              onClick={() => openDesk({ category: "fleet" })}
+              onClick={() => enquireWhatsApp("Commission Any Asset", "First Ascent")}
               className="hidden items-center gap-2 text-xs whitespace-nowrap text-neutral-300 sm:inline-flex"
             >
               <Calendar size={13} />
@@ -320,197 +242,6 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
           </motion.div>
         ) : null}
       </AnimatePresence>
-
-      <AnimatePresence>
-        {deskOpen ? (
-          <motion.div
-            className="fixed inset-0 z-[60] flex justify-end"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <button
-              type="button"
-              aria-label="Close acquisition desk"
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              onClick={() => setDeskOpen(false)}
-            />
-            <motion.aside
-              id="inquire"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", stiffness: 320, damping: 34 }}
-              className="relative flex h-full w-full max-w-md flex-col border-l border-white/10 bg-[#080808]/96 p-6 backdrop-blur-2xl"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="desk-title"
-            >
-              <div className="mb-6 flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-[11px] font-medium tracking-[0.25em] text-rose-400 uppercase">Sourcing concierge</p>
-                  <h2 id="desk-title" className="mt-1 text-2xl font-light tracking-tight">
-                    Private Acquisition Desk
-                  </h2>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setDeskOpen(false)}
-                  className="rounded-full border border-white/10 bg-white/[0.05] p-2"
-                  aria-label="Close"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-
-              {transmitted ? (
-                <div className="flex flex-1 flex-col items-center justify-center px-4 text-center">
-                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/15 text-rose-300">
-                    <Check size={24} />
-                  </div>
-                  <p className="text-lg font-light tracking-tight">Dossier transmitted</p>
-                  <p className="mt-3 text-sm leading-relaxed text-neutral-400">
-                    An acquisition specialist is now assigned to{" "}
-                    <span className="text-neutral-200">{reference.trim() || "your brief"}</span>. Expect WhatsApp
-                    confirmation shortly.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setDeskOpen(false)}
-                    className="fa-dossier-btn mt-8 rounded-full bg-white px-5 py-2.5 text-xs font-semibold !text-black"
-                  >
-                    Return to the pavilion
-                  </button>
-                </div>
-              ) : (
-                <form onSubmit={submitSourcing} noValidate className="flex min-h-0 flex-1 flex-col">
-                  <div className="flex-1 space-y-5 overflow-y-auto pr-1">
-                    <div>
-                      <p className="text-[10px] tracking-wider text-neutral-500 uppercase">Asset category</p>
-                      <div className="mt-2 grid grid-cols-2 gap-2">
-                        {CATEGORIES.map((item) => (
-                          <button
-                            key={item.id}
-                            type="button"
-                            onClick={() => {
-                              setCategory(item.id);
-                              setPlaceholder(PLACEHOLDERS[item.id]);
-                            }}
-                            className={`rounded-full px-3 py-2 text-[11px] ${
-                              category === item.id
-                                ? "bg-white font-medium text-black"
-                                : "border border-white/10 bg-white/[0.04] text-neutral-300"
-                            }`}
-                          >
-                            {item.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <Field
-                      label="Target reference / model"
-                      value={reference}
-                      onChange={setReference}
-                      onBlur={() => setTouched((current) => ({ ...current, reference: true }))}
-                      error={touched.reference ? errors.reference : ""}
-                      placeholder={placeholder}
-                    />
-
-                    <Field
-                      label="Destination country"
-                      value={country}
-                      onChange={setCountry}
-                      onBlur={() => setTouched((current) => ({ ...current, country: true }))}
-                      error={touched.country ? errors.country : ""}
-                      placeholder="e.g. United Arab Emirates"
-                    />
-
-                    <div>
-                      <p className="text-[10px] tracking-wider text-neutral-500 uppercase">Preferred delivery timeline</p>
-                      <div className="mt-2 grid gap-2">
-                        {TIMELINES.map((item) => (
-                          <button
-                            key={item}
-                            type="button"
-                            onClick={() => setTimeline(item)}
-                            className={`rounded-2xl border px-4 py-3 text-left text-sm ${
-                              timeline === item
-                                ? "border-white/20 bg-white/[0.07]"
-                                : "border-white/[0.08] bg-white/[0.02]"
-                            }`}
-                          >
-                            {item}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <Field
-                      label="Full name"
-                      value={clientName}
-                      onChange={setClientName}
-                      onBlur={() => setTouched((current) => ({ ...current, clientName: true }))}
-                      error={touched.clientName ? errors.clientName : ""}
-                    />
-                    <Field
-                      label="WhatsApp / phone"
-                      type="tel"
-                      value={contact}
-                      onChange={setContact}
-                      onBlur={() => setTouched((current) => ({ ...current, contact: true }))}
-                      error={touched.contact ? errors.contact : ""}
-                      placeholder="+971 …"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="fa-dossier-btn mt-4 w-full rounded-full bg-white py-2.5 text-xs font-semibold !text-black transition-colors hover:bg-neutral-200"
-                  >
-                    Transmit Sourcing Dossier
-                  </button>
-                </form>
-              )}
-            </motion.aside>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
     </section>
-  );
-}
-
-function Field({
-  label,
-  value,
-  onChange,
-  onBlur,
-  error,
-  type = "text",
-  placeholder,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  onBlur: () => void;
-  error: string;
-  type?: string;
-  placeholder?: string;
-}) {
-  return (
-    <div>
-      <label className="text-[10px] tracking-wider text-neutral-500 uppercase">{label}</label>
-      <input
-        type={type}
-        value={value}
-        placeholder={placeholder}
-        onChange={(event) => onChange(event.target.value)}
-        onBlur={onBlur}
-        className={`mt-2 w-full rounded-2xl border bg-white/[0.04] px-4 py-3 text-sm outline-none placeholder:text-neutral-600 ${
-          error ? "border-red-400/50" : "border-white/[0.08]"
-        }`}
-      />
-      {error ? <p className="mt-1 text-xs text-red-300">{error}</p> : null}
-    </div>
   );
 }

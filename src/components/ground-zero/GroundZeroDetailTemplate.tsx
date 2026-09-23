@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import type { GroundZeroPageContent } from "@/content/ground-zero";
 import { GROUND_ZERO_LINKS } from "@/content/ground-zero";
+import { getWhatsAppUrl } from "@/lib/constants";
 
 export function GroundZeroDetailTemplate({ page }: { page: GroundZeroPageContent }) {
   return (
@@ -55,12 +56,16 @@ export function GroundZeroDetailTemplate({ page }: { page: GroundZeroPageContent
         </section>
 
         <div className="flex justify-center py-16">
-          <Link
-            href="/locations#concierge"
+          <a
+            href={getWhatsAppUrl(
+              `Hello PSM Infinity Concierge, I would like to inquire about Ground Zero: ${page.heading}. ${page.cta}.`,
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-full bg-[#E8D8C8] px-8 py-3.5 text-xs font-semibold text-black transition-[transform,opacity,color,background-color,border-color,box-shadow] hover:bg-white"
           >
             {page.cta} ↗
-          </Link>
+          </a>
         </div>
       </div>
     </div>

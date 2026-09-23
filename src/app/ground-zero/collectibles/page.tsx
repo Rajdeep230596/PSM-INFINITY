@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 
-import { GroundZeroDetailTemplate } from "@/components/ground-zero/GroundZeroDetailTemplate";
-import { GROUND_ZERO_PAGES } from "@/content/ground-zero";
-
-const page = GROUND_ZERO_PAGES.collectibles;
+import { CollectiblesSalonPage } from "@/components/ground-zero/CollectiblesSalonPage";
 
 export const metadata: Metadata = {
   title: "Curated Collectibles — Ground Zero",
-  description: page.subhead,
+  description:
+    "Off-market grand complications, museum-grade historic timepieces, and limited-allocation coachbuilt hypercars.",
 };
 
 export default function GroundZeroCollectiblesPage() {
-  return <GroundZeroDetailTemplate page={page} />;
+  return <CollectiblesSalonPage />;
 }

@@ -1,6 +1,6 @@
 export const WHATSAPP_CONFIG = {
-  // Country code 91 + 9007331000 (no spaces, plus signs, or hyphens)
-  phoneNumber: "919007331000",
+  // Country code 91 + 9007431000 (no spaces, plus signs, or hyphens)
+  phoneNumber: "919007431000",
   defaultMessage: "Hello PSM Infinity, I would like to inquire about your private allocations.",
 } as const;
 

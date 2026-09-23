@@ -5,8 +5,8 @@ export const site = {
   url: "https://www.psminfinity.com",
   description:
     "PSM Infinity is a Kolkata studio for personalised branding, corporate identity, technology, textile, and logistics — composed as one visual experience.",
-  phoneDisplay: "+91 90073 31000",
-  phoneTel: "+919007331000",
+  phoneDisplay: "+91 90074 31000",
+  phoneTel: "+919007431000",
   email: "psminfinity@gmail.com",
   whatsappE164: WHATSAPP_CONFIG.phoneNumber,
   whatsappPrefill: WHATSAPP_CONFIG.defaultMessage,

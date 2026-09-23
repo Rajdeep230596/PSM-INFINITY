@@ -21,6 +21,7 @@ export const site = {
     { href: "/ground-zero", label: "Ground Zero" },
     { href: "/first-ascent", label: "First Ascent" },
     { href: "/second-ascent", label: "Second Ascent" },
+    { href: "/skydeck", label: "Skydeck" },
     { href: "/services", label: "Services" },
     { href: "/locations", label: "Locations" },
     { href: "/our-story", label: "Our Story" },

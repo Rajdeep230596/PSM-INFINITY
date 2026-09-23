@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 
+import { SKYDECK_SPACES } from "@/content/skydeck";
 import { site } from "@/content/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -19,6 +20,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/second-ascent",
     "/second-ascent/private-events",
     "/second-ascent/corporate-events",
+    "/skydeck",
+    ...SKYDECK_SPACES.map((space) => `/skydeck/${space.slug}`),
     "/services",
     "/locations",
     "/our-story",

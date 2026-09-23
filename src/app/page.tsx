@@ -3,6 +3,7 @@ import {
   FirstAscentGalleryLazy,
   GroundZeroScrollyLazy,
   SkyTerraceArrivalLazy,
+  SkydeckArrivalLazy,
 } from "@/components/home/lazy-chapters";
 
 export default function HomePage() {
@@ -12,6 +13,7 @@ export default function HomePage() {
       <GroundZeroScrollyLazy />
       <SkyTerraceArrivalLazy />
       <FirstAscentGalleryLazy hideHero />
+      <SkydeckArrivalLazy hideHero />
     </>
   );
 }

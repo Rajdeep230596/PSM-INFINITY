@@ -33,6 +33,11 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/skydeck" prefetch={true}>
+                  Skydeck
+                </Link>
+              </li>
+              <li>
                 <Link href="/services">Services</Link>
               </li>
               <li>

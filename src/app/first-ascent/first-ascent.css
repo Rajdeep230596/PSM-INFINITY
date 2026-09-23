@@ -6,6 +6,7 @@
 @source "../../components/first-ascent/**/*.{tsx,ts,jsx,js}";
 @source "../../components/ground-zero/**/*.{tsx,ts,jsx,js}";
 @source "../../components/home/**/*.{tsx,ts,jsx,js}";
+@source "../../components/skydeck/**/*.{tsx,ts,jsx,js}";
 @source "./**/*.{tsx,ts,jsx,js}";
 @source "../ground-zero/**/*.{tsx,ts,jsx,js}";
 @source "../second-ascent/**/*.{tsx,ts,jsx,js}";
@@ -34,6 +35,10 @@ html.first-ascent-page .site-header.scrolled {
   background: rgba(10, 10, 11, 0.92);
   border-bottom-color: rgba(255, 255, 255, 0.06);
   box-shadow: none;
+}
+
+html.skydeck-page body::before {
+  display: none;
 }
 
 html.first-ascent-page .first-ascent:not(.first-ascent-flush):not(.first-ascent-editorial) {

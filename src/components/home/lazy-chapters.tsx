@@ -25,3 +25,8 @@ export const FirstAscentGalleryLazy = dynamic(
   () => import("@/components/first-ascent/FirstAscentGallery").then((module) => module.FirstAscentGallery),
   { ssr: false, loading: ScreenFrame },
 );
+
+export const SkydeckArrivalLazy = dynamic(
+  () => import("@/components/home/skydeck-arrival").then((module) => module.SkydeckArrival),
+  { ssr: false, loading: ScreenFrame },
+);

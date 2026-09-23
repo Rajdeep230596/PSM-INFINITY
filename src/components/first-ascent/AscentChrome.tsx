@@ -2,10 +2,17 @@
 
 import { useEffect } from "react";
 
-export function AscentChrome({ children }: { children: React.ReactNode }) {
+export function AscentChrome({
+  children,
+  htmlClass,
+}: {
+  children: React.ReactNode;
+  htmlClass?: string;
+}) {
   useEffect(() => {
-    document.documentElement.classList.add("first-ascent-page");
-    return () => document.documentElement.classList.remove("first-ascent-page");
-  }, []);
+    const classes = ["first-ascent-page", htmlClass].filter(Boolean) as string[];
+    document.documentElement.classList.add(...classes);
+    return () => document.documentElement.classList.remove(...classes);
+  }, [htmlClass]);
   return children;
 }

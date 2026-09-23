@@ -11,15 +11,15 @@ import { useEffect, useRef, useState } from "react";
 import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
 import { useDeferredVideoSource } from "@/lib/deferred-video";
 import { attachScrollVideo } from "@/lib/scroll-video";
+import { mapToLevelTwo, SECOND_ASCENT_VIDEO_SRC, SKYDECK_HANDOFF_AT } from "@/lib/second-ascent-video";
 
 const EVENT_CTAS = [
   { id: "private-events", label: "Private Events", href: "/second-ascent/private-events", icon: Calendar },
   { id: "corporate-events", label: "Corporate Events", href: "/second-ascent/corporate-events", icon: Building2 },
 ] as const;
 
-const VIDEO_DURATION = 30.814;
-const EVENT_CTA_REVEAL_AT = 6.85 / VIDEO_DURATION;
-const EVENT_CTA_HIDE_AT = 11.9 / VIDEO_DURATION;
+const EVENT_CTA_REVEAL_AT = 6.85 / SKYDECK_HANDOFF_AT;
+const EVENT_CTA_HIDE_AT = 11.9 / SKYDECK_HANDOFF_AT;
 const DOCK_AT = 0.12;
 
 type ScrollPhase = "intro" | "dock" | "cta" | "rest";
@@ -37,7 +37,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, "/videos/second-ascent-backdrop.mp4?v=8");
+  const videoSrc = useDeferredVideoSource(sectionRef, SECOND_ASCENT_VIDEO_SRC);
   const [phase, setPhase] = useState<ScrollPhase>("intro");
   const revealed = phase === "cta" || phase === "rest";
   const ctaVisible = phase === "cta";
@@ -64,9 +64,9 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
       const pin = ScrollTrigger.create({
         trigger: section,
         start: "top top",
-        end: "max",
+        end: "bottom bottom",
         pin: wrap,
-        pinSpacing: false,
+        pinSpacing: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
       });
@@ -96,6 +96,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
 
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
+        mapProgress: mapToLevelTwo,
         smoothing: 0.2,
         frameRate: 30,
         preload: "auto",
@@ -114,7 +115,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
     <section
       ref={sectionRef}
       id="second-ascent"
-      className="first-ascent first-ascent-flush relative h-[350vh] bg-[#080808] text-white selection:bg-white/20"
+      className="first-ascent first-ascent-flush relative h-[240vh] bg-[#080808] text-white selection:bg-white/20"
       aria-label="Second Ascent"
     >
       <div ref={videoWrapRef} className="relative z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
@@ -181,7 +182,8 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
                   Event Management
                 </p>
                 <h2 className="font-serif text-3xl leading-[1.08] font-light tracking-tight text-white drop-shadow-xl sm:text-4xl md:text-6xl">
-                  Level Two
+                  <span className="block">Level Two:</span>
+                  <span className="block">Events</span>
                 </h2>
                 <p className="mt-4 max-w-lg font-sans text-xs leading-relaxed font-light text-neutral-300 drop-shadow-md md:text-sm">
                   Private evenings and corporate gatherings, composed as one visual experience.
@@ -200,7 +202,8 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
                   Event Management
                 </p>
                 <h1 className="font-serif text-3xl leading-[1.08] font-light tracking-tight text-white drop-shadow-xl sm:text-4xl md:text-6xl">
-                  Level Two
+                  <span className="block">Level Two:</span>
+                  <span className="block">Events</span>
                 </h1>
                 <p className="mt-4 max-w-lg font-sans text-xs leading-relaxed font-light text-neutral-300 drop-shadow-md md:text-sm">
                   Private evenings and corporate gatherings, composed as one visual experience.

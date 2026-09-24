@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 
-import { FirstAscentDetailTemplate } from "@/components/first-ascent/FirstAscentDetailTemplate";
-import { FIRST_ASCENT_PAGES } from "@/content/first-ascent";
-
-const page = FIRST_ASCENT_PAGES.itineraries;
+import { ItinerariesSalonPage } from "@/components/first-ascent/ItinerariesSalonPage";
 
 export const metadata: Metadata = {
   title: "Global Itineraries — First Ascent",
-  description: page.subhead,
+  description:
+    "Direct private terminal clearances, point-to-point bespoke flight scheduling, and dedicated tarmac escorts worldwide.",
 };
 
 export default function ItinerariesPage() {
-  return <FirstAscentDetailTemplate page={page} />;
+  return <ItinerariesSalonPage />;
 }

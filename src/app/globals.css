@@ -1288,50 +1288,12 @@ textarea {
 .site-footer {
   position: relative;
   z-index: 20;
-  background: #000;
-  color: var(--gold);
-  padding: 72px 0 28px;
   content-visibility: auto;
-  contain-intrinsic-size: auto 520px;
-}
-
-.footer-grid {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr 1fr 1fr;
-  gap: 32px;
-  padding-bottom: 40px;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.22);
-}
-
-.site-footer h3,
-.site-footer h4 {
-  color: var(--gold);
-  font-family: var(--font-display);
-  font-weight: 500;
-}
-
-.site-footer h3 {
-  font-size: 2.4rem;
-  margin-bottom: 10px;
+  contain-intrinsic-size: auto 720px;
 }
 
 .site-footer ul {
   list-style: none;
-  display: grid;
-  gap: 8px;
-}
-
-.site-footer a:hover {
-  color: #f0d78a;
-}
-
-.copyright {
-  padding-top: 22px;
-  font-size: 0.88rem;
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
 }
 
 /* Page hero */
@@ -1637,7 +1599,6 @@ textarea {
   .franchise-band .container,
   .locator,
   .about-grid,
-  .footer-grid,
   .menu-grid,
   .review-grid,
   .steps,
@@ -1691,8 +1652,7 @@ textarea {
     flex-direction: column;
   }
 
-  .gallery-grid,
-  .copyright {
+  .gallery-grid {
     grid-template-columns: 1fr;
   }
 }

@@ -6,6 +6,7 @@
 @source "../../components/first-ascent/**/*.{tsx,ts,jsx,js}";
 @source "../../components/ground-zero/**/*.{tsx,ts,jsx,js}";
 @source "../../components/home/**/*.{tsx,ts,jsx,js}";
+@source "../../components/layout/**/*.{tsx,ts,jsx,js}";
 @source "../../components/skydeck/**/*.{tsx,ts,jsx,js}";
 @source "./**/*.{tsx,ts,jsx,js}";
 @source "../ground-zero/**/*.{tsx,ts,jsx,js}";
@@ -261,9 +262,7 @@ html.first-ascent-page .whatsapp-cta {
 }
 
 html.first-ascent-page .site-footer {
-  background: #000;
-  color: var(--gold);
-  padding-bottom: 4rem;
+  background: #08080a;
 }
 
 .first-ascent {

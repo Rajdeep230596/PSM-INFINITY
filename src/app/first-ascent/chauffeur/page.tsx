@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 
-import { FirstAscentDetailTemplate } from "@/components/first-ascent/FirstAscentDetailTemplate";
-import { FIRST_ASCENT_PAGES } from "@/content/first-ascent";
-
-const page = FIRST_ASCENT_PAGES.chauffeur;
+import { ChauffeurSalonPage } from "@/components/first-ascent/ChauffeurSalonPage";
 
 export const metadata: Metadata = {
   title: "Chauffeur Fleet — First Ascent",
-  description: page.subhead,
+  description:
+    "Vetted diplomatic chauffeurs, armored vehicle configurations (VR7/VR9), and synchronized airport convoys.",
 };
 
 export default function ChauffeurPage() {
-  return <FirstAscentDetailTemplate page={page} />;
+  return <ChauffeurSalonPage />;
 }

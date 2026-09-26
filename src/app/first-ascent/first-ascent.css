@@ -8,6 +8,7 @@
 @source "../../components/home/**/*.{tsx,ts,jsx,js}";
 @source "../../components/layout/**/*.{tsx,ts,jsx,js}";
 @source "../../components/skydeck/**/*.{tsx,ts,jsx,js}";
+@source "../../components/second-ascent/**/*.{tsx,ts,jsx,js}";
 @source "./**/*.{tsx,ts,jsx,js}";
 @source "../ground-zero/**/*.{tsx,ts,jsx,js}";
 @source "../second-ascent/**/*.{tsx,ts,jsx,js}";

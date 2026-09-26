@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 
-import { SecondAscentDetailTemplate } from "@/components/second-ascent/SecondAscentDetailTemplate";
-import { SECOND_ASCENT_PAGES } from "@/content/second-ascent";
-
-const page = SECOND_ASCENT_PAGES["private-events"];
+import { PrivateEventsSalonPage } from "@/components/second-ascent/PrivateEventsSalonPage";
 
 export const metadata: Metadata = {
   title: "Private Events — Second Ascent",
-  description: page.subhead,
+  description:
+    "Intimate dinners, milestone celebrations, and closed-door gatherings staged as a single composition — guest list, room, and ritual.",
 };
 
 export default function PrivateEventsPage() {
-  return <SecondAscentDetailTemplate page={page} />;
+  return <PrivateEventsSalonPage />;
 }

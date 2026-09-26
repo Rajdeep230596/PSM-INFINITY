@@ -103,13 +103,13 @@ export function SiteHeader() {
     <header className={scrolled ? "site-header scrolled" : "site-header"}>
       <div className="nav-wrap">
         <Link className="logo" href="/" prefetch={true} aria-label={`${site.name} home`}>
-          <span className="logo-orb" aria-hidden="true">
-            ∞
-          </span>
-          <span className="logo-text">
-            <strong>PSM INFINITY</strong>
-            <span>Global Atelier</span>
-          </span>
+          <img
+            src="/brand/psm-infinity-logo.png"
+            alt=""
+            className="logo-mark"
+            width={129}
+            height={77}
+          />
         </Link>
         <nav>
           <ul className={open ? "nav-links open" : "nav-links"}>

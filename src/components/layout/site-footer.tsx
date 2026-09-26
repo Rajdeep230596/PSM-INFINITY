@@ -21,6 +21,15 @@ export function SiteFooter() {
         <div className="grid grid-cols-1 gap-12 border-b border-white/[0.06] pb-16! lg:grid-cols-12 lg:gap-8">
           <div className="flex flex-col justify-between lg:col-span-5">
             <div>
+              <Link href="/" prefetch={true} aria-label={`${site.name} home`} className="mb-6! inline-block opacity-90 transition-opacity hover:opacity-100">
+                <img
+                  src="/brand/psm-infinity-logo.png"
+                  alt=""
+                  className="h-14 w-auto sm:h-16"
+                  width={129}
+                  height={77}
+                />
+              </Link>
               <div className="mb-4! flex items-center gap-3">
                 <span className="h-px w-6 bg-[#C5A880]" />
                 <span className="font-mono text-[10px] tracking-[0.35em] text-[#C5A880] uppercase">

@@ -356,53 +356,25 @@ textarea {
 .logo {
   display: flex;
   align-items: center;
-  gap: 12px;
   flex-shrink: 0;
+  opacity: 0.96;
+  transition: opacity 0.2s ease;
 }
 
-.logo-orb {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.05);
-  color: #e5e5e5;
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 400;
-  line-height: 1;
-  backdrop-filter: blur(12px);
-  transition: border-color 0.2s ease;
+.logo:hover {
+  opacity: 1;
 }
 
-.logo:hover .logo-orb {
-  border-color: rgba(255, 255, 255, 0.4);
+.logo-mark {
+  display: block;
+  height: 44px;
+  width: auto;
 }
 
-.logo-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.15;
-}
-
-.logo-text strong {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: #fff;
-}
-
-.logo-text span {
-  font-size: 0.5625rem;
-  font-weight: 300;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #a3a3a3;
+@media (min-width: 768px) {
+  .logo-mark {
+    height: 52px;
+  }
 }
 
 .nav-links {
@@ -1691,13 +1663,10 @@ textarea {
   transform: translateZ(0);
 }
 
-.boot-word {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.46em;
-  text-transform: uppercase;
+.boot-logo {
+  display: block;
+  width: min(220px, 56vw);
+  height: auto;
 }
 
 .boot-bar {

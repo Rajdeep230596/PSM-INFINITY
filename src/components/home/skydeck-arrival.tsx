@@ -11,6 +11,7 @@ import { SkydeckSpaceTags } from "@/components/skydeck/SkydeckSpaceTags";
 import { SKYDECK_BACKDROP_FIRST, SKYDECK_BACKDROP_SECOND } from "@/content/skydeck";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { useDeferredVideoSource } from "@/lib/deferred-video";
+import { HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING } from "@/lib/home-scroll";
 import { attachScrollVideo } from "@/lib/scroll-video";
 import {
   mapToSkydeck,
@@ -88,9 +89,8 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
   useGSAP(
     () => {
       const section = sectionRef.current;
-      const wrap = videoWrapRef.current;
       const video = videoRef.current;
-      if (!section || !wrap || !video || !videoSrc) return;
+      if (!section || !video || !videoSrc) return;
 
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const coarse = window.matchMedia("(pointer: coarse)").matches;
@@ -99,21 +99,11 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
       const allowCardPause = !hideHeroRef.current && !reduceMotion && !coarse;
       let lastCardPhase: CardPhase = cardPhaseFromProgress(0);
 
-      const pin = ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: "max",
-        pin: wrap,
-        pinSpacing: false,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-      });
-
       const trigger = ScrollTrigger.create({
         trigger: section,
         start: "top top",
         end: "bottom bottom",
-        scrub: 0.55,
+        scrub: HOME_SCROLL_SCRUB,
         onUpdate: (self) => {
           const next = activeBeat(self.progress, BEATS).beat;
           setBeat((prev) => (prev?.id === next?.id ? prev : next));
@@ -145,7 +135,6 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
         const play = video.play();
         if (play && typeof play.then === "function") play.catch(() => {});
         return () => {
-          pin.kill();
           trigger.kill();
           clearScrollPause();
         };
@@ -154,14 +143,13 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
         mapProgress: mapToSkydeck,
-        smoothing: 0.2,
+        smoothing: HOME_VIDEO_SMOOTHING,
         frameRate: 30,
         preload: "auto",
       });
 
       return () => {
         detach();
-        pin.kill();
         trigger.kill();
         clearScrollPause();
       };
@@ -173,10 +161,10 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
     <section
       ref={sectionRef}
       id="skydeck"
-      className="first-ascent first-ascent-flush relative h-[280vh] bg-[#080808] text-white selection:bg-white/20"
+      className="home-scrolly-chapter first-ascent first-ascent-flush relative bg-[#080808] text-white selection:bg-white/20"
       aria-label="Level Three Skydeck"
     >
-      <div ref={videoWrapRef} className="relative z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
+      <div ref={videoWrapRef} className="sticky top-0 z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
         <video
           ref={videoRef}
           src={videoSrc}

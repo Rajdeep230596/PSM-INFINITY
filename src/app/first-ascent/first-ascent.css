@@ -262,6 +262,12 @@ html.first-ascent-page .whatsapp-cta {
   z-index: 40;
 }
 
+html.first-ascent-page .ambient-audio-toggle {
+  right: 1.5rem;
+  bottom: 5.15rem;
+  z-index: 40;
+}
+
 html.first-ascent-page .site-footer {
   background: #08080a;
 }

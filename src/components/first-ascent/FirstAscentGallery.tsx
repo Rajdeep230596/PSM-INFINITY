@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
 import { useDeferredVideoSource } from "@/lib/deferred-video";
+import { HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING } from "@/lib/home-scroll";
 import { attachScrollVideo } from "@/lib/scroll-video";
 import { mapToLevelTwo, SECOND_ASCENT_VIDEO_SRC, SKYDECK_HANDOFF_AT } from "@/lib/second-ascent-video";
 
@@ -52,30 +53,19 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
   useGSAP(
     () => {
       const section = sectionRef.current;
-      const wrap = videoWrapRef.current;
       const video = videoRef.current;
-      if (!section || !wrap || !video || !videoSrc) return;
+      if (!section || !video || !videoSrc) return;
 
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const coarse = window.matchMedia("(pointer: coarse)").matches;
       const compact = window.matchMedia("(max-width: 700px)").matches;
       const loopFallback = reduceMotion || coarse || compact;
 
-      const pin = ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: "bottom bottom",
-        pin: wrap,
-        pinSpacing: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-      });
-
       const trigger = ScrollTrigger.create({
         trigger: section,
         start: "top top",
         end: "bottom bottom",
-        scrub: 0.55,
+        scrub: HOME_SCROLL_SCRUB,
         onUpdate: (self) => {
           const next = phaseFromProgress(self.progress);
           setPhase((prev) => (prev === next ? prev : next));
@@ -88,23 +78,19 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
         video.playsInline = true;
         const play = video.play();
         if (play && typeof play.then === "function") play.catch(() => {});
-        return () => {
-          pin.kill();
-          trigger.kill();
-        };
+        return () => trigger.kill();
       }
 
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
         mapProgress: mapToLevelTwo,
-        smoothing: 0.2,
+        smoothing: HOME_VIDEO_SMOOTHING,
         frameRate: 30,
         preload: "auto",
       });
 
       return () => {
         detach();
-        pin.kill();
         trigger.kill();
       };
     },
@@ -115,10 +101,10 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
     <section
       ref={sectionRef}
       id="second-ascent"
-      className="first-ascent first-ascent-flush relative h-[240vh] bg-[#080808] text-white selection:bg-white/20"
+      className="home-scrolly-chapter first-ascent first-ascent-flush relative bg-[#080808] text-white selection:bg-white/20"
       aria-label="Second Ascent"
     >
-      <div ref={videoWrapRef} className="relative z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
+      <div ref={videoWrapRef} className="sticky top-0 z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
         <video
           ref={videoRef}
           src={videoSrc}

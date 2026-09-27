@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
+import { HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING } from "@/lib/home-scroll";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -90,7 +91,7 @@ export function CinematicWalkthrough() {
         trigger: section,
         start: "top top",
         end: "bottom bottom",
-        scrub: 1.05,
+        scrub: HOME_SCROLL_SCRUB,
         onUpdate: (self) => {
           const next = activeBeat(self.progress, BEATS).beat;
           setBeat((prev) => (prev?.id === next?.id ? prev : next));
@@ -108,7 +109,7 @@ export function CinematicWalkthrough() {
 
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
-        smoothing: 0.14,
+        smoothing: HOME_VIDEO_SMOOTHING,
         frameRate: 30,
       });
 
@@ -124,7 +125,7 @@ export function CinematicWalkthrough() {
     <section
       ref={sectionRef}
       id="landing-hero"
-      className="relative h-[450vh] w-full bg-black"
+      className="home-scrolly-chapter relative w-full bg-black"
       aria-label="Master landing sequence"
     >
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black gpu-layer">

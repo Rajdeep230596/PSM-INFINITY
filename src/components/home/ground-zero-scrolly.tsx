@@ -9,6 +9,7 @@ import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components
 import { GroundZeroCard, GROUND_ZERO_CARDS } from "@/components/home/ground-zero-card";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { useDeferredVideoSource } from "@/lib/deferred-video";
+import { HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING } from "@/lib/home-scroll";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -71,7 +72,7 @@ export function GroundZeroScrollySection() {
         trigger: section,
         start: "top top",
         end: "bottom bottom",
-        scrub: 1.05,
+        scrub: HOME_SCROLL_SCRUB,
         onUpdate: (self) => {
           const isRevealed = self.progress >= 0.85;
           const next = activeBeat(isRevealed ? 1.1 : self.progress, BEATS).beat;
@@ -91,7 +92,7 @@ export function GroundZeroScrollySection() {
 
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
-        smoothing: 0.14,
+        smoothing: HOME_VIDEO_SMOOTHING,
         frameRate: 30,
       });
 
@@ -107,7 +108,7 @@ export function GroundZeroScrollySection() {
     <section
       ref={sectionRef}
       id="ground-zero"
-      className="relative h-[380vh] bg-[#0A0A0B]"
+      className="home-scrolly-chapter relative bg-[#0A0A0B]"
       aria-label="Ground Zero arrival"
     >
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden gpu-layer">

@@ -3,6 +3,8 @@ import type { MetadataRoute } from "next";
 import { SKYDECK_SPACES } from "@/content/skydeck";
 import { site } from "@/content/site";
 
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     "",
@@ -27,7 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/our-story",
     "/partner",
   ].map((path) => ({
-    url: `${site.url}${path}`,
+    url: path === "" ? site.url : `${site.url}${path}/`,
     changeFrequency: "monthly",
     priority: path === "" ? 1 : 0.7,
   }));

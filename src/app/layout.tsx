@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
 
+import { AmbientAudio } from "@/components/layout/ambient-audio";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppCta } from "@/components/layout/whatsapp-cta";
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <SiteHeader />
           <main id="content">{children}</main>
           <SiteFooter />
+          <AmbientAudio />
           <WhatsAppCta />
         </SmoothScroll>
       </body>

@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "export",
+  trailingSlash: true,
   images: {
+    unoptimized: true,
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
@@ -23,12 +26,6 @@ const nextConfig: NextConfig = {
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
-  },
-  async redirects() {
-    return [
-      { source: "/about", destination: "/our-story", permanent: true },
-      { source: "/ground-zero/shopping", destination: "/ground-zero/couture", permanent: true },
-    ];
   },
 };
 

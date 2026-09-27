@@ -173,7 +173,8 @@ a {
   transform: translate3d(0, 0, 0);
 }
 
-html.cinematic-hero-active .whatsapp-cta {
+html.cinematic-hero-active .whatsapp-cta,
+html.cinematic-hero-active .ambient-audio-toggle {
   opacity: 0 !important;
   visibility: hidden;
   pointer-events: none !important;
@@ -525,6 +526,11 @@ textarea {
   height: 2px;
   margin: 6px 0;
   background: #fff;
+}
+
+/* Homepage chapters share one scroll travel so wheel speed stays even. */
+.home-scrolly-chapter {
+  height: 400vh;
 }
 
 /* Hero scrollytelling */

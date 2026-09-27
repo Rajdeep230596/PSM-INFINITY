@@ -10,6 +10,7 @@ import { useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
 import { useDeferredVideoSource } from "@/lib/deferred-video";
+import { HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING } from "@/lib/home-scroll";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -83,7 +84,7 @@ export function SkyTerraceArrival() {
         trigger: section,
         start: "top top",
         end: "bottom bottom",
-        scrub: 1.05,
+        scrub: HOME_SCROLL_SCRUB,
         onUpdate: (self) => {
           const isRevealed = self.progress >= 0.72;
           const next = activeBeat(isRevealed ? 1.1 : self.progress, BEATS).beat;
@@ -103,7 +104,7 @@ export function SkyTerraceArrival() {
 
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
-        smoothing: 0.14,
+        smoothing: HOME_VIDEO_SMOOTHING,
         frameRate: 30,
       });
 
@@ -119,7 +120,7 @@ export function SkyTerraceArrival() {
     <section
       ref={sectionRef}
       id="first-ascent-arrival"
-      className="relative h-[350vh] bg-black"
+      className="home-scrolly-chapter relative bg-black"
       aria-label="Sky terrace arrival"
     >
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden gpu-layer">

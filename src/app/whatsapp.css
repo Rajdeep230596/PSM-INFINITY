@@ -25,3 +25,30 @@
   fill: currentColor;
   flex-shrink: 0;
 }
+
+.ambient-audio-toggle {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 4.85rem;
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid rgba(197, 168, 128, 0.45);
+  border-radius: 999px;
+  background: rgba(8, 8, 10, 0.82);
+  color: #c5a880;
+  cursor: pointer;
+  transform: translateZ(0);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.ambient-audio-toggle:hover {
+  background: #c5a880;
+  color: #08080a;
+  border-color: #c5a880;
+}

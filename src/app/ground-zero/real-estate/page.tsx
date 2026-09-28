@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { EstatesSalonPage } from "@/components/ground-zero/EstatesSalonPage";
+import { EstatesSalonPageLazy } from "@/components/lazy/salons";
 
 export const metadata: Metadata = {
   title: "Real Estate Portfolios — Ground Zero",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function GroundZeroRealEstatePage() {
-  return <EstatesSalonPage />;
+  return <EstatesSalonPageLazy />;
 }

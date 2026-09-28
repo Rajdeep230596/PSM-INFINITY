@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { CorporateEventsSalonPage } from "@/components/second-ascent/CorporateEventsSalonPage";
+import { CorporateEventsSalonPageLazy } from "@/components/lazy/salons";
 
 export const metadata: Metadata = {
   title: "Corporate Events — Second Ascent",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function CorporateEventsPage() {
-  return <CorporateEventsSalonPage />;
+  return <CorporateEventsSalonPageLazy />;
 }

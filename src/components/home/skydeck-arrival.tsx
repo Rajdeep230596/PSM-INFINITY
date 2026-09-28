@@ -13,6 +13,7 @@ import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { markVideoReady, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { prefersReducedMotion } from "@/lib/media-capability";
+import { bindNavYield } from "@/lib/nav-yield";
 import { attachScrollVideo } from "@/lib/scroll-video";
 import {
   mapToSkydeck,
@@ -132,11 +133,12 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
         if (video.readyState >= 3) onReady();
         const play = video.play();
         if (play && typeof play.then === "function") play.catch(() => {});
-        return () => {
+        return bindNavYield(() => {
+          video.pause();
           video.removeEventListener("canplay", onReady);
           trigger.kill();
           clearScrollPause();
-        };
+        });
       }
 
       const detach = attachScrollVideo(video, {
@@ -147,11 +149,11 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
         preload: "metadata",
       });
 
-      return () => {
+      return bindNavYield(() => {
         detach();
         trigger.kill();
         clearScrollPause();
-      };
+      });
     },
     { scope: sectionRef, dependencies: [videoSrc] },
   );

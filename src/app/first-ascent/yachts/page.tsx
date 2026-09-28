@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { YachtsSalonPage } from "@/components/first-ascent/YachtsSalonPage";
+import { YachtsSalonPageLazy } from "@/components/lazy/salons";
 
 export const metadata: Metadata = {
   title: "Yacht Charters — First Ascent",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function YachtsPage() {
-  return <YachtsSalonPage />;
+  return <YachtsSalonPageLazy />;
 }

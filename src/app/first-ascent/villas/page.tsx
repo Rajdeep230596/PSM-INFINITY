@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { VillasSalonPage } from "@/components/first-ascent/VillasSalonPage";
+import { VillasSalonPageLazy } from "@/components/lazy/salons";
 
 export const metadata: Metadata = {
   title: "Bespoke Villas — First Ascent",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function VillasPage() {
-  return <VillasSalonPage />;
+  return <VillasSalonPageLazy />;
 }

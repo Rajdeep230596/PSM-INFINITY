@@ -12,6 +12,7 @@ import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
 import { markVideoReady, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { prefersReducedMotion } from "@/lib/media-capability";
+import { bindNavYield } from "@/lib/nav-yield";
 import { attachScrollVideo } from "@/lib/scroll-video";
 import { mapToLevelTwo, SECOND_ASCENT_VIDEO_SRC, SKYDECK_HANDOFF_AT } from "@/lib/second-ascent-video";
 
@@ -82,10 +83,11 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
         if (video.readyState >= 3) onReady();
         const play = video.play();
         if (play && typeof play.then === "function") play.catch(() => {});
-        return () => {
+        return bindNavYield(() => {
+          video.pause();
           video.removeEventListener("canplay", onReady);
           trigger.kill();
-        };
+        });
       }
 
       const detach = attachScrollVideo(video, {
@@ -96,10 +98,10 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
         preload: "metadata",
       });
 
-      return () => {
+      return bindNavYield(() => {
         detach();
         trigger.kill();
-      };
+      });
     },
     { scope: sectionRef, dependencies: [videoSrc] },
   );

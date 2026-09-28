@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
 
 import { AmbientAudio } from "@/components/layout/ambient-audio";
+import { RouteProgress } from "@/components/layout/route-progress";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppCta } from "@/components/layout/whatsapp-cta";
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <style>{`.boot-loader{display:none!important}html.is-booting{overflow:auto!important}`}</style>
         </noscript>
         <BootLoader />
+        <RouteProgress />
         <SmoothScroll>
           <a className="skip-link" href="#content">
             Skip to content

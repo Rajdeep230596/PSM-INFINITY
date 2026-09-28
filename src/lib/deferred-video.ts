@@ -7,29 +7,19 @@ import { isConstrainedNetwork } from "@/lib/media-capability";
 const warmed = new Set<string>();
 const warmers = new Map<string, HTMLVideoElement>();
 
-/** Start the next scrolly file in the HTTP / media cache before its chapter mounts. */
+/** Warm the media cache without occupying a full download slot. */
 export function prefetchVideo(src: string) {
   if (!src || typeof document === "undefined") return;
   if (warmed.has(src) || warmers.has(src)) return;
   if (isConstrainedNetwork()) return;
   warmed.add(src);
 
-  if (src.includes("second-ascent")) {
-    const link = document.createElement("link");
-    link.rel = "preload";
-    link.as = "video";
-    link.href = src;
-    link.setAttribute("data-video-prefetch", src);
-    document.head.append(link);
-    return;
-  }
-
   const video = document.createElement("video");
   video.muted = true;
   video.defaultMuted = true;
   video.playsInline = true;
   video.disablePictureInPicture = true;
-  video.preload = "auto";
+  video.preload = "metadata";
   video.setAttribute("playsinline", "");
   video.setAttribute("webkit-playsinline", "");
   video.setAttribute("muted", "");
@@ -57,6 +47,10 @@ export function releaseVideoPrefetch(src: string) {
   video.load();
   video.remove();
   warmers.delete(src);
+}
+
+export function releaseAllVideoPrefetch() {
+  for (const src of [...warmers.keys()]) releaseVideoPrefetch(src);
 }
 
 export function timeIsBuffered(video: HTMLVideoElement, time: number) {
@@ -100,7 +94,7 @@ export function useDeferredVideoSource(
 ) {
   const eager = typeof eagerOrOptions === "boolean" ? eagerOrOptions : Boolean(eagerOrOptions.eager);
   const rootMargin =
-    typeof eagerOrOptions === "object" ? (eagerOrOptions.rootMargin ?? "160% 0px") : "160% 0px";
+    typeof eagerOrOptions === "object" ? (eagerOrOptions.rootMargin ?? "200px 0px") : "200px 0px";
   const prefetch = typeof eagerOrOptions === "object" ? eagerOrOptions.prefetch : undefined;
 
   const [activeSrc, setActiveSrc] = useState<string | undefined>(eager ? src : undefined);
@@ -134,7 +128,7 @@ export function useDeferredVideoSource(
 
   useEffect(() => {
     if (!activeSrc) return;
-    const timer = window.setTimeout(() => releaseVideoPrefetch(activeSrc), 12000);
+    const timer = window.setTimeout(() => releaseVideoPrefetch(activeSrc), 8000);
     return () => window.clearTimeout(timer);
   }, [activeSrc]);
 

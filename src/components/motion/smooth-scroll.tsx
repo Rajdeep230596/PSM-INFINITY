@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+import { registerNavYield } from "@/lib/nav-yield";
 import { setSiteLenis } from "@/lib/site-lenis";
 
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
@@ -12,6 +13,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     let cancelled = false;
     let teardown = () => {};
+    let stopForNav = () => {};
 
     void Promise.all([import("lenis"), import("gsap"), import("gsap/ScrollTrigger")]).then(
       ([{ default: Lenis }, { gsap }, { ScrollTrigger }]) => {
@@ -31,17 +33,22 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
         };
         gsap.ticker.add(ticker);
         gsap.ticker.lagSmoothing(0);
+        stopForNav = () => {
+          lenis.stop();
+        };
         teardown = () => {
           setSiteLenis(null);
           gsap.ticker.remove(ticker);
           lenis.destroy();
-          ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
         };
       },
     );
 
+    const unregister = registerNavYield(() => stopForNav());
+
     return () => {
       cancelled = true;
+      unregister();
       teardown();
     };
   }, []);

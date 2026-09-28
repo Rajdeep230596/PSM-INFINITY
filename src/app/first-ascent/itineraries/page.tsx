@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { ItinerariesSalonPage } from "@/components/first-ascent/ItinerariesSalonPage";
+import { ItinerariesSalonPageLazy } from "@/components/lazy/salons";
 
 export const metadata: Metadata = {
   title: "Global Itineraries — First Ascent",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function ItinerariesPage() {
-  return <ItinerariesSalonPage />;
+  return <ItinerariesSalonPageLazy />;
 }

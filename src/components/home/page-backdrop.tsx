@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { useDeferredVideoSource } from "@/lib/deferred-video";
+import { bindNavYield } from "@/lib/nav-yield";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -49,10 +50,10 @@ export function PageBackdrop() {
         frameRate: 30,
       });
 
-      return () => {
+      return bindNavYield(() => {
         detach();
         trigger.kill();
-      };
+      });
     },
     { scope: wrapRef, dependencies: [videoSrc] },
   );

@@ -12,7 +12,7 @@ import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components
 import { markVideoReady, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { prefersReducedMotion } from "@/lib/media-capability";
-import { SECOND_ASCENT_VIDEO_SRC } from "@/lib/second-ascent-video";
+import { bindNavYield } from "@/lib/nav-yield";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -67,10 +67,7 @@ const SERVICES = [
 export function SkyTerraceArrival() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, HOME_VIDEO.skyTerrace, {
-    eager: true,
-    prefetch: SECOND_ASCENT_VIDEO_SRC,
-  });
+  const videoSrc = useDeferredVideoSource(sectionRef, HOME_VIDEO.skyTerrace, { eager: true });
   const [revealed, setRevealed] = useState(false);
   const [beat, setBeat] = useState<EditorialBeat | null>(BEATS[0]);
 
@@ -107,10 +104,11 @@ export function SkyTerraceArrival() {
         if (video.readyState >= 3) onReady();
         const play = video.play();
         if (play && typeof play.then === "function") play.catch(() => {});
-        return () => {
+        return bindNavYield(() => {
+          video.pause();
           video.removeEventListener("canplay", onReady);
           trigger.kill();
-        };
+        });
       }
 
       const detach = attachScrollVideo(video, {
@@ -119,10 +117,10 @@ export function SkyTerraceArrival() {
         frameRate: 30,
       });
 
-      return () => {
+      return bindNavYield(() => {
         detach();
         trigger.kill();
-      };
+      });
     },
     { scope: sectionRef, dependencies: [videoSrc] },
   );

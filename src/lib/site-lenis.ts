@@ -33,3 +33,17 @@ export function clearScrollPause() {
   if (paused) siteLenis?.start();
   paused = false;
 }
+
+export function haltSiteScroll() {
+  if (pauseTimer) window.clearTimeout(pauseTimer);
+  pauseTimer = 0;
+  paused = true;
+  siteLenis?.stop();
+}
+
+export function resumeSiteScroll() {
+  if (pauseTimer) window.clearTimeout(pauseTimer);
+  pauseTimer = 0;
+  paused = false;
+  siteLenis?.start();
+}

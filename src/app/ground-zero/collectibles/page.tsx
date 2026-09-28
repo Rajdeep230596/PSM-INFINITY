@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { CollectiblesSalonPage } from "@/components/ground-zero/CollectiblesSalonPage";
+import { CollectiblesSalonPageLazy } from "@/components/lazy/salons";
 
 export const metadata: Metadata = {
   title: "Curated Collectibles — Ground Zero",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function GroundZeroCollectiblesPage() {
-  return <CollectiblesSalonPage />;
+  return <CollectiblesSalonPageLazy />;
 }

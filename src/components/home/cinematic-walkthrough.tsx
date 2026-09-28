@@ -10,6 +10,7 @@ import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { markVideoReady, prefetchVideo } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { isConstrainedNetwork, prefersReducedMotion } from "@/lib/media-capability";
+import { bindNavYield } from "@/lib/nav-yield";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -97,8 +98,10 @@ export function CinematicWalkthrough() {
         },
       });
 
+      let cancelled = false;
       const warmNext = () => {
-        if (!isConstrainedNetwork()) prefetchVideo(HOME_VIDEO.groundZero);
+        if (cancelled || isConstrainedNetwork()) return;
+        prefetchVideo(HOME_VIDEO.groundZero);
       };
       const warmTimer = window.setTimeout(warmNext, 900);
       video.addEventListener("loadeddata", warmNext, { once: true });
@@ -116,11 +119,13 @@ export function CinematicWalkthrough() {
         if (video.readyState >= 3) onReady();
         const play = video.play();
         if (play && typeof play.then === "function") play.catch(() => {});
-        return () => {
+        return bindNavYield(() => {
+          cancelled = true;
           window.clearTimeout(warmTimer);
+          video.pause();
           video.removeEventListener("canplay", onReady);
           trigger.kill();
-        };
+        });
       }
 
       const detach = attachScrollVideo(video, {
@@ -129,11 +134,12 @@ export function CinematicWalkthrough() {
         frameRate: 30,
       });
 
-      return () => {
+      return bindNavYield(() => {
+        cancelled = true;
         window.clearTimeout(warmTimer);
         detach();
         trigger.kill();
-      };
+      });
     },
     { scope: sectionRef },
   );

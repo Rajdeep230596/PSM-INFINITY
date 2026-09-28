@@ -28,6 +28,7 @@ import {
   COUTURE_TRUST,
 } from "@/content/couture";
 import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
+import { SiteImage } from "@/components/media/site-image";
 
 const CATEGORY_ICONS = {
   gowns: Sparkles,
@@ -105,7 +106,7 @@ export function CoutureSalonPage() {
             className="absolute top-1/2 left-1/2 h-[120%] w-[90%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(197,168,128,0.22),transparent_62%)] blur-2xl"
           />
           <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-[#121215] shadow-[0_24px_80px_rgba(0,0,0,0.45)]">
-            <img
+            <SiteImage
               src="/assets/couture/hero-gown.jpg"
               alt="Black velvet haute couture gown with gold embroidery on a salon mannequin"
               fetchPriority="high"
@@ -169,7 +170,7 @@ export function CoutureSalonPage() {
               </button>
             </div>
             <div className="pointer-events-none absolute right-[-6%] bottom-[-8%] h-[78%] w-[58%]">
-              <img
+              <SiteImage
                 src={card.image}
                 alt={card.imageAlt}
                 className="h-full w-full rounded-tl-2xl object-cover object-center shadow-[0_18px_40px_rgba(0,0,0,0.55)]"
@@ -205,7 +206,7 @@ export function CoutureSalonPage() {
             >
               <div>
                 <div className="mb-4! aspect-[4/5] overflow-hidden rounded-xl bg-neutral-900">
-                  <img
+                  <SiteImage
                     src={item.image}
                     alt={item.imageAlt}
                     loading="lazy"
@@ -236,7 +237,7 @@ export function CoutureSalonPage() {
 
       <section className="mx-auto mb-28! max-w-7xl px-6!">
         <div className="relative flex min-h-[280px] items-center justify-between overflow-hidden rounded-3xl border border-white/[0.08] p-10! md:p-16!">
-          <img
+          <SiteImage
             src="/assets/couture/editorial-embroidery.jpg"
             alt="Macro gold bullion embroidery on black silk tulle"
             className="absolute inset-0 h-full w-full object-cover"
@@ -298,7 +299,7 @@ export function CoutureSalonPage() {
                 Read More ↗
               </button>
               <div className="pointer-events-none absolute right-0 bottom-0 h-[78%] w-[46%]">
-                <img
+                <SiteImage
                   src={entry.image}
                   alt={entry.imageAlt}
                   className="h-full w-full object-cover object-center opacity-80"

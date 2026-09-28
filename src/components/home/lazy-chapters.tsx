@@ -9,6 +9,24 @@ function ChapterFrame() {
   return <div className="home-scrolly-chapter w-full bg-[#0A0A0B]" aria-hidden="true" />;
 }
 
+export function IdleChapter({ children }: { children: ReactNode }) {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    let timeout = 0;
+    const paint = window.requestAnimationFrame(() => {
+      timeout = window.setTimeout(() => setShow(true), 0);
+    });
+    return () => {
+      window.cancelAnimationFrame(paint);
+      window.clearTimeout(timeout);
+    };
+  }, []);
+
+  if (!show) return <ChapterFrame />;
+  return <>{children}</>;
+}
+
 export function DeferredChapter({
   children,
   eager = false,

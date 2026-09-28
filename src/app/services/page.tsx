@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { SiteImage } from "@/components/media/site-image";
 
 const services = [
   {
@@ -112,7 +113,7 @@ export default function ServicesPage() {
           <div className="menu-list">
             {items.map((item) => (
               <article className="menu-item" key={item.name}>
-                <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
+                <SiteImage src={item.image} alt={item.name} />
                 <div>
                   <span className="tag">{item.tag}</span>
                   <h3>{item.name}</h3>

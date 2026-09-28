@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { SECOND_ASCENT_LINKS } from "@/content/second-ascent";
 import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
+import { SiteImage } from "@/components/media/site-image";
 
 export type EventsSalonHero = {
   left: { eyebrow: string; headline: readonly [string, string]; cta: string };
@@ -95,7 +96,7 @@ export function EventsSalonPage({
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="relative flex min-h-[300px] flex-col items-center justify-center overflow-hidden rounded-t-[72px] border-x-2 border-t-2 border-[#C5A880]/30 bg-gradient-to-b from-white/[0.02] to-transparent p-6! text-center md:min-h-[480px] md:rounded-t-[140px] md:p-8! lg:col-span-3 lg:min-h-[580px]"
           >
-            <img
+            <SiteImage
               src={dossier.atmosphere}
               alt=""
               aria-hidden="true"
@@ -131,9 +132,10 @@ export function EventsSalonPage({
               aria-hidden="true"
               className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(197,168,128,0.22),transparent_58%)]"
             />
-            <img
+            <SiteImage
               src={hero.center.image}
               alt={hero.center.imageAlt}
+              fetchPriority="high"
               className="absolute inset-0 h-full w-full object-cover object-[center_70%]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#070709] via-transparent to-[#070709]/25" />
@@ -195,7 +197,7 @@ export function EventsSalonPage({
                 aria-hidden="true"
                 className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(197,168,128,0.18),transparent_70%)]"
               />
-              <img
+              <SiteImage
                 src={section.image}
                 alt={section.imageAlt}
                 className="relative z-10 h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
@@ -229,7 +231,7 @@ export function EventsSalonPage({
             aria-hidden="true"
             className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(197,168,128,0.22),transparent_55%)]"
           />
-          <img
+          <SiteImage
             src={dossier.colonnade.image}
             alt={dossier.colonnade.imageAlt}
             className="relative z-10 h-[420px] w-full object-cover lg:h-[520px]"
@@ -243,7 +245,7 @@ export function EventsSalonPage({
           {dossier.specs.map((spec) => (
             <article key={spec.id} className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#101014]">
               <div className="aspect-[16/9] overflow-hidden">
-                <img
+                <SiteImage
                   src={spec.image}
                   alt={spec.imageAlt}
                   loading="lazy"
@@ -270,7 +272,7 @@ export function EventsSalonPage({
         </div>
 
         <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-b from-[#18181D] to-[#0D0D10] p-8! lg:col-span-4">
-          <img
+          <SiteImage
             src={dossier.atmosphere}
             alt=""
             aria-hidden="true"

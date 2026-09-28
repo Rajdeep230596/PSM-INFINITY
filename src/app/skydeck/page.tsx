@@ -1,5 +1,9 @@
-import { SkydeckArrivalLazy } from "@/components/home/lazy-chapters";
+import { IdleChapter, SkydeckArrivalLazy } from "@/components/home/lazy-chapters";
 
 export default function SkydeckPage() {
-  return <SkydeckArrivalLazy />;
+  return (
+    <IdleChapter>
+      <SkydeckArrivalLazy />
+    </IdleChapter>
+  );
 }

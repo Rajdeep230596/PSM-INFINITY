@@ -6,6 +6,7 @@ import {
   FOOTER_SOCIALS,
   site,
 } from "@/content/site";
+import { SiteImage } from "@/components/media/site-image";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -22,7 +23,7 @@ export function SiteFooter() {
           <div className="flex flex-col justify-between lg:col-span-5">
             <div>
               <Link href="/" prefetch={true} aria-label={`${site.name} home`} className="mb-6! inline-block opacity-90 transition-opacity hover:opacity-100">
-                <img
+                <SiteImage
                   src="/brand/psm-infinity-logo.png"
                   alt=""
                   className="h-14 w-auto sm:h-16"

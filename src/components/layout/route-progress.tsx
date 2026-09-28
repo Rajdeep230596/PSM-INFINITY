@@ -1,25 +1,12 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { beginNavigation, endNavigation, isInternalRouteChange } from "@/lib/nav-yield";
 
-const CORE_ROUTES = [
-  "/",
-  "/ground-zero",
-  "/first-ascent",
-  "/second-ascent",
-  "/skydeck",
-  "/services",
-  "/locations",
-  "/our-story",
-  "/partner",
-] as const;
-
 export function RouteProgress() {
   const pathname = usePathname();
-  const router = useRouter();
   const [phase, setPhase] = useState<"idle" | "active" | "finishing">("idle");
 
   useEffect(() => {
@@ -45,16 +32,6 @@ export function RouteProgress() {
       window.removeEventListener("popstate", onPop);
     };
   }, []);
-
-  useEffect(() => {
-    CORE_ROUTES.forEach((href) => {
-      try {
-        router.prefetch(href);
-      } catch {
-        // Prefetch is opportunistic.
-      }
-    });
-  }, [router]);
 
   useEffect(() => {
     if (phase !== "active") return;

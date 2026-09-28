@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import { PrivateEventsSalonPageLazy } from "@/components/lazy/salons";
+import { LcpPreload } from "@/components/media/site-image";
+import { PRIVATE_EVENTS_HERO } from "@/content/private-events";
 
 export const metadata: Metadata = {
   title: "Private Events — Second Ascent",
@@ -9,5 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default function PrivateEventsPage() {
-  return <PrivateEventsSalonPageLazy />;
+  return (
+    <>
+      <LcpPreload src={PRIVATE_EVENTS_HERO.center.image} />
+      <PrivateEventsSalonPageLazy />
+    </>
+  );
 }

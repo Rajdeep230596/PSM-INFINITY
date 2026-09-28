@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import { VillasSalonPageLazy } from "@/components/lazy/salons";
+import { LcpPreload } from "@/components/media/site-image";
+import { VILLAS_HERO } from "@/content/villas";
 
 export const metadata: Metadata = {
   title: "Bespoke Villas — First Ascent",
@@ -9,5 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default function VillasPage() {
-  return <VillasSalonPageLazy />;
+  return (
+    <>
+      <LcpPreload src={VILLAS_HERO.center.image} />
+      <VillasSalonPageLazy />
+    </>
+  );
 }

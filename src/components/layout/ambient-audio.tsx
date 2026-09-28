@@ -32,8 +32,10 @@ export function AmbientAudio() {
       window.removeEventListener("touchstart", unlock);
     };
 
-    const unlock = () => {
+    const unlock = (event: Event) => {
       if (!pendingUnlock) return;
+      const target = event.target;
+      if (target instanceof Element && target.closest("a, button.menu-toggle")) return;
       if (!audio.src) audio.src = SRC;
       void audio
         .play()

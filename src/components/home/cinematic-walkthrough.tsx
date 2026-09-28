@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
+import { SiteImage } from "@/components/media/site-image";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { markVideoReady, prefetchVideo } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
@@ -61,6 +62,20 @@ export function CinematicWalkthrough() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [beat, setBeat] = useState<EditorialBeat | null>(null);
+  const [videoSrc, setVideoSrc] = useState<string | undefined>();
+
+  useEffect(() => {
+    let cancelled = false;
+    const paint = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        if (!cancelled) setVideoSrc(HOME_VIDEO.landing);
+      });
+    });
+    return () => {
+      cancelled = true;
+      window.cancelAnimationFrame(paint);
+    };
+  }, []);
 
   useEffect(() => {
     const node = sectionRef.current;
@@ -83,7 +98,7 @@ export function CinematicWalkthrough() {
     () => {
       const section = sectionRef.current;
       const video = videoRef.current;
-      if (!section || !video) return;
+      if (!section || !video || !videoSrc) return;
 
       const reduceMotion = prefersReducedMotion();
 
@@ -141,7 +156,7 @@ export function CinematicWalkthrough() {
         trigger.kill();
       });
     },
-    { scope: sectionRef },
+    { scope: sectionRef, dependencies: [videoSrc] },
   );
 
   return (
@@ -153,25 +168,22 @@ export function CinematicWalkthrough() {
       aria-label="Master landing sequence"
     >
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black gpu-layer">
-        <img
+        <SiteImage
           src={HOME_VIDEO.landingPoster}
           alt=""
           aria-hidden="true"
-          fetchPriority="high"
-          decoding="async"
+          priority
           className="absolute inset-0 h-full w-full object-cover"
         />
         <video
           ref={videoRef}
+          src={videoSrc}
           muted
           playsInline
           disablePictureInPicture
-          preload="metadata"
-          poster={HOME_VIDEO.landingPoster}
+          preload={videoSrc ? "metadata" : "none"}
           className="gpu-media relative z-[1] h-full w-full object-cover"
-        >
-          <source src={HOME_VIDEO.landing} type="video/mp4" />
-        </video>
+        />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
         <EditorialMilestone
           beat={beat}

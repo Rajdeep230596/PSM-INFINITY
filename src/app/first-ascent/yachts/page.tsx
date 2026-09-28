@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import { YachtsSalonPageLazy } from "@/components/lazy/salons";
+import { LcpPreload } from "@/components/media/site-image";
+import { YACHTS_HERO } from "@/content/yachts";
 
 export const metadata: Metadata = {
   title: "Yacht Charters — First Ascent",
@@ -9,5 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default function YachtsPage() {
-  return <YachtsSalonPageLazy />;
+  return (
+    <>
+      <LcpPreload src={YACHTS_HERO.center.image} />
+      <YachtsSalonPageLazy />
+    </>
+  );
 }

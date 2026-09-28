@@ -10,6 +10,7 @@ import { SECOND_ASCENT_LINKS } from "@/content/second-ascent";
 import { site } from "@/content/site";
 import { getWhatsAppUrl } from "@/lib/constants";
 import { pathMatches } from "@/lib/path";
+import { SiteImage } from "@/components/media/site-image";
 
 function NavDropdown({
   href,
@@ -52,7 +53,7 @@ function NavDropdown({
             <Link
               key={link.href}
               href={link.href}
-              prefetch={true}
+              prefetch={false}
               className={pathMatches(pathname, link.href) ? "active" : undefined}
               onClick={onNavigate}
             >
@@ -166,14 +167,13 @@ export function SiteHeader() {
       ) : null}
       <div className="nav-wrap">
         <Link className="logo" href="/" prefetch={true} aria-label={`${site.name} home`}>
-          <img
+          <SiteImage
             src="/brand/psm-infinity-logo.png"
             alt=""
             className="logo-mark"
             width={129}
             height={77}
-            decoding="async"
-            fetchPriority="high"
+            priority
           />
         </Link>
         <nav>

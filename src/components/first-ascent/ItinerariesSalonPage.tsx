@@ -14,6 +14,7 @@ import {
   ITINERARIES_TIERS,
 } from "@/content/itineraries";
 import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
+import { SiteImage } from "@/components/media/site-image";
 
 const CATEGORY = "Intercontinental Aviation";
 
@@ -58,7 +59,7 @@ export function ItinerariesSalonPage() {
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="relative flex min-h-[300px] flex-col items-center justify-center overflow-hidden rounded-t-[72px] border-x-2 border-t-2 border-[#C5A880]/30 bg-gradient-to-b from-white/[0.02] to-transparent p-6! text-center md:min-h-[480px] md:rounded-t-[140px] md:p-8! lg:col-span-3 lg:min-h-[580px]"
           >
-            <img
+            <SiteImage
               src={ITINERARIES_DOSSIER.chart}
               alt=""
               aria-hidden="true"
@@ -94,7 +95,7 @@ export function ItinerariesSalonPage() {
               aria-hidden="true"
               className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(197,168,128,0.22),transparent_58%)]"
             />
-            <img
+            <SiteImage
               src={ITINERARIES_HERO.center.image}
               alt={ITINERARIES_HERO.center.imageAlt}
               fetchPriority="high"
@@ -162,7 +163,7 @@ export function ItinerariesSalonPage() {
                 aria-hidden="true"
                 className="absolute bottom-4 left-1/2 h-28 w-48 -translate-x-1/2 rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(197,168,128,0.38),transparent_70%)] blur-md"
               />
-              <img
+              <SiteImage
                 src={airframe.image}
                 alt={airframe.imageAlt}
                 className="relative z-10 h-full w-full object-contain object-center"
@@ -213,7 +214,7 @@ export function ItinerariesSalonPage() {
           })}
 
           <article className="group relative min-h-[7.5rem] overflow-hidden rounded-2xl border border-[#C5A880]/40 md:h-[180px]">
-            <img
+            <SiteImage
               src={ITINERARIES_CABIN.image}
               alt={ITINERARIES_CABIN.imageAlt}
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -239,7 +240,7 @@ export function ItinerariesSalonPage() {
             aria-hidden="true"
             className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(197,168,128,0.22),transparent_55%)]"
           />
-          <img
+          <SiteImage
             src={ITINERARIES_DOSSIER.tailfin.image}
             alt={ITINERARIES_DOSSIER.tailfin.imageAlt}
             className="relative z-10 h-[420px] w-full object-cover lg:h-[520px]"
@@ -256,7 +257,7 @@ export function ItinerariesSalonPage() {
               className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#101014]"
             >
               <div className="aspect-[16/9] overflow-hidden">
-                <img
+                <SiteImage
                   src={spec.image}
                   alt={spec.imageAlt}
                   loading="lazy"
@@ -274,7 +275,7 @@ export function ItinerariesSalonPage() {
         </div>
 
         <div className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-b from-[#18181D] to-[#0D0D10] p-8! lg:col-span-4">
-          <img
+          <SiteImage
             src={ITINERARIES_DOSSIER.chart}
             alt=""
             aria-hidden="true"

@@ -97,16 +97,27 @@ export function useDeferredVideoSource(
     typeof eagerOrOptions === "object" ? (eagerOrOptions.rootMargin ?? "200px 0px") : "200px 0px";
   const prefetch = typeof eagerOrOptions === "object" ? eagerOrOptions.prefetch : undefined;
 
-  const [activeSrc, setActiveSrc] = useState<string | undefined>(eager ? src : undefined);
-  if (eager && activeSrc !== src) {
-    setActiveSrc(src);
-  }
+  const [activeSrc, setActiveSrc] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (eager) {
+    if (!eager) return;
+    let cancelled = false;
+    const arm = () => {
+      if (cancelled) return;
+      setActiveSrc(src);
       if (prefetch) prefetchVideo(prefetch);
-      return;
-    }
+    };
+    const paint = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(arm);
+    });
+    return () => {
+      cancelled = true;
+      window.cancelAnimationFrame(paint);
+    };
+  }, [eager, prefetch, src]);
+
+  useEffect(() => {
+    if (eager) return;
 
     const node = targetRef.current;
     if (!node) return;

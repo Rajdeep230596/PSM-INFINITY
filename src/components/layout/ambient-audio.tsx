@@ -74,9 +74,10 @@ export function AmbientAudio() {
         className="ambient-audio-toggle"
         onClick={toggle}
         aria-pressed={!playing}
-        aria-label={playing ? "Mute background music" : "Play background music"}
+        aria-label={playing ? "Mute background music" : "Unmute background music"}
       >
-        {playing ? <Volume2 size={16} strokeWidth={1.6} /> : <VolumeX size={16} strokeWidth={1.6} />}
+        {playing ? <Volume2 size={15} strokeWidth={1.6} /> : <VolumeX size={15} strokeWidth={1.6} />}
+        <span>{playing ? "Mute" : "Unmute"}</span>
       </button>
     </>
   );

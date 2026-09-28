@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
 import { useDeferredVideoSource } from "@/lib/deferred-video";
-import { HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING } from "@/lib/home-scroll";
+import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle, prefersReducedMotion } from "@/lib/home-scroll";
 import { attachScrollVideo } from "@/lib/scroll-video";
 import { mapToLevelTwo, SECOND_ASCENT_VIDEO_SRC, SKYDECK_HANDOFF_AT } from "@/lib/second-ascent-video";
 
@@ -56,10 +56,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
       const video = videoRef.current;
       if (!section || !video || !videoSrc) return;
 
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const coarse = window.matchMedia("(pointer: coarse)").matches;
-      const compact = window.matchMedia("(max-width: 700px)").matches;
-      const loopFallback = reduceMotion || coarse || compact;
+      const reduceMotion = prefersReducedMotion();
 
       const trigger = ScrollTrigger.create({
         trigger: section,
@@ -72,7 +69,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
         },
       });
 
-      if (loopFallback) {
+      if (reduceMotion) {
         video.loop = true;
         video.muted = true;
         video.playsInline = true;
@@ -102,6 +99,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
       ref={sectionRef}
       id="second-ascent"
       className="home-scrolly-chapter first-ascent first-ascent-flush relative bg-[#080808] text-white selection:bg-white/20"
+      style={homeChapterStyle(HOME_CHAPTER_VIDEO_SECONDS.events)}
       aria-label="Second Ascent"
     >
       <div ref={videoWrapRef} className="sticky top-0 z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">

@@ -9,7 +9,7 @@ import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components
 import { GroundZeroCard, GROUND_ZERO_CARDS } from "@/components/home/ground-zero-card";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { useDeferredVideoSource } from "@/lib/deferred-video";
-import { HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING } from "@/lib/home-scroll";
+import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle, prefersReducedMotion } from "@/lib/home-scroll";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -22,7 +22,7 @@ const BEATS: EditorialBeat[] = [
     eyebrow: "FOUNDATION TIER / 00",
     headline: ["Ground Floor:", "The Private Atelier."],
     subtext:
-      "An expansive duplex sanctuary uniting haute couture, prime estates, landscaping masterplans, private gardens, and rare calibres.",
+      "An expansive duplex sanctuary uniting haute couture, prime estates, private gardens, and rare calibres.",
   },
   {
     id: "domains",
@@ -30,7 +30,7 @@ const BEATS: EditorialBeat[] = [
     end: 0.82,
     eyebrow: "CURATED DOMAINS",
     headline: ["Bespoke Living,", "Unconstrained."],
-    subtext: "Wardrobes · Estates · Masterplans · Gardens · Calibre & Chassis.",
+    subtext: "Wardrobes · Estates · Gardens · Calibre & Chassis.",
   },
 ];
 
@@ -63,10 +63,7 @@ export function GroundZeroScrollySection() {
       const video = videoRef.current;
       if (!section || !video || !videoSrc) return;
 
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const coarse = window.matchMedia("(pointer: coarse)").matches;
-      const compact = window.matchMedia("(max-width: 700px)").matches;
-      const loopFallback = reduceMotion || coarse || compact;
+      const reduceMotion = prefersReducedMotion();
 
       const trigger = ScrollTrigger.create({
         trigger: section,
@@ -74,14 +71,14 @@ export function GroundZeroScrollySection() {
         end: "bottom bottom",
         scrub: HOME_SCROLL_SCRUB,
         onUpdate: (self) => {
-          const isRevealed = self.progress >= 0.85;
+          const isRevealed = self.progress >= 0.58;
           const next = activeBeat(isRevealed ? 1.1 : self.progress, BEATS).beat;
           setRevealed((prev) => (prev === isRevealed ? prev : isRevealed));
           setBeat((prev) => (prev?.id === next?.id ? prev : next));
         },
       });
 
-      if (loopFallback) {
+      if (reduceMotion) {
         video.loop = true;
         video.muted = true;
         video.playsInline = true;
@@ -109,6 +106,7 @@ export function GroundZeroScrollySection() {
       ref={sectionRef}
       id="ground-zero"
       className="home-scrolly-chapter relative bg-[#0A0A0B]"
+      style={homeChapterStyle(HOME_CHAPTER_VIDEO_SECONDS.groundZero)}
       aria-label="Ground Zero arrival"
     >
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden gpu-layer">
@@ -126,7 +124,7 @@ export function GroundZeroScrollySection() {
 
         <div
           className={`gz-card-overlay absolute inset-0 z-30 flex items-center justify-center ${
-            revealed ? "pointer-events-auto" : "pointer-events-none"
+            revealed ? "is-revealed" : "pointer-events-none"
           }`}
         >
           <div className="gz-card-track no-scrollbar mx-auto w-full max-w-[100rem]">

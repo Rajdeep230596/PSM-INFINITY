@@ -22,8 +22,11 @@ export function attachScrollVideo(
   video.defaultMuted = true;
   video.playsInline = true;
   video.loop = false;
-  video.preload = options.preload ?? "metadata";
+  video.preload = options.preload ?? "auto";
   video.disablePictureInPicture = true;
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+  video.setAttribute("muted", "");
 
   if (reduceMotion || options.enabled === false) {
     video.pause();
@@ -34,6 +37,8 @@ export function attachScrollVideo(
   const minStep = 1 / (options.frameRate ?? 30);
   let duration = 0;
   let displayed = 0;
+  let lastSeekAt = 0;
+  let unlocked = false;
 
   const endTime = () => Math.max(0, duration - minStep);
 
@@ -44,16 +49,35 @@ export function attachScrollVideo(
     return progress >= 0.995 ? endTime() : progress * endTime();
   };
 
+  const applyTime = (time: number) => {
+    if (duration <= 0) return;
+    const next = Math.min(endTime(), Math.max(0, time));
+    if (Math.abs(video.currentTime - next) < minStep) return;
+    lastSeekAt = performance.now();
+    try {
+      if (typeof video.fastSeek === "function") video.fastSeek(next);
+      else video.currentTime = next;
+    } catch {
+      try {
+        video.currentTime = next;
+      } catch {
+        // Safari can throw if a seek lands before the buffer is ready.
+      }
+    }
+  };
+
   const unlockSeek = () => {
+    if (unlocked) return;
     const play = video.play();
-    if (play && typeof play.then === "function") {
-      play
-        .then(() => {
-          video.pause();
-        })
-        .catch(() => {});
-    } else {
+    const finish = () => {
       video.pause();
+      unlocked = true;
+      applyTime(displayed || targetFromProgress());
+    };
+    if (play && typeof play.then === "function") {
+      play.then(finish).catch(() => {});
+    } else {
+      finish();
     }
   };
 
@@ -65,29 +89,30 @@ export function attachScrollVideo(
     if (Math.abs(target - displayed) < minStep) displayed = target;
 
     if (Math.abs(video.currentTime - displayed) < minStep) return;
-    if (video.seeking) return;
-    try {
-      video.currentTime = displayed;
-    } catch {
-      // Safari can throw if a seek lands before the buffer is ready.
-    }
+    if (video.seeking && performance.now() - lastSeekAt < 90) return;
+    applyTime(displayed);
   };
 
   const onMeta = () => {
     duration = video.duration || 0;
     displayed = targetFromProgress();
-    if (duration > 0) video.currentTime = displayed;
+    if (duration > 0) applyTime(displayed);
   };
 
   video.addEventListener("loadedmetadata", onMeta);
   if (video.readyState >= 1) onMeta();
   video.addEventListener("loadeddata", unlockSeek, { once: true });
-  document.addEventListener("touchstart", unlockSeek, { once: true, passive: true });
-  document.addEventListener("click", unlockSeek, { once: true });
+  document.addEventListener("touchstart", unlockSeek, { passive: true });
+  document.addEventListener("pointerdown", unlockSeek);
+  window.addEventListener("scroll", unlockSeek, { passive: true });
   gsap.ticker.add(tick);
+  unlockSeek();
 
   return () => {
     gsap.ticker.remove(tick);
     video.removeEventListener("loadedmetadata", onMeta);
+    document.removeEventListener("touchstart", unlockSeek);
+    document.removeEventListener("pointerdown", unlockSeek);
+    window.removeEventListener("scroll", unlockSeek);
   };
 }

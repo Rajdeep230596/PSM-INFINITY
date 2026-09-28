@@ -32,18 +32,6 @@ function PavilionIcon() {
   );
 }
 
-function CypressTerraceIcon() {
-  return (
-    <svg className={iconClass} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M18 40V16" />
-      <path d="M18 8c-4 3.2-6.5 8.2-6.5 13.2 0 4.4 2.6 7.6 6.5 9.8 3.9-2.2 6.5-5.4 6.5-9.8C24.5 16.2 22 11.2 18 8z" />
-      <path d="M6 40h36" />
-      <path d="M28 40V27h14v13" />
-      <path d="M28 33.5h14" />
-    </svg>
-  );
-}
-
 function BotanicalFountainIcon() {
   return (
     <svg className={iconClass} viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -101,17 +89,8 @@ export const GROUND_ZERO_CARDS: GroundZeroCardData[] = [
     icon: <PavilionIcon />,
   },
   {
-    id: "landscaping",
-    eyebrow: "03 / Masterplan",
-    title: "Landscaping Masterplans",
-    description: "Integrated architectural terrain, estate hardscaping, and seamless indoor-outdoor living design.",
-    href: "/ground-zero/landscaping",
-    actionLabel: "Commission Plan",
-    icon: <CypressTerraceIcon />,
-  },
-  {
     id: "gardens",
-    eyebrow: "04 / Botanical",
+    eyebrow: "03 / Botanical",
     title: "Private Botanical Gardens",
     description: "Manicured grand emerald lawns, private sculpted groves, water sanctuaries, and curated flora.",
     href: "/ground-zero/gardens",
@@ -120,7 +99,7 @@ export const GROUND_ZERO_CARDS: GroundZeroCardData[] = [
   },
   {
     id: "collectibles",
-    eyebrow: "05 / Calibre & Chassis",
+    eyebrow: "04 / Calibre & Chassis",
     title: "Curated Collectibles",
     description: "Ultra-rare horological masterworks paired with bespoke hypercars and limited coachbuilt chassis.",
     href: "/ground-zero/collectibles",

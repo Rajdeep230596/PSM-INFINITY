@@ -11,7 +11,7 @@ import { SkydeckSpaceTags } from "@/components/skydeck/SkydeckSpaceTags";
 import { SKYDECK_BACKDROP_FIRST, SKYDECK_BACKDROP_SECOND } from "@/content/skydeck";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { useDeferredVideoSource } from "@/lib/deferred-video";
-import { HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING } from "@/lib/home-scroll";
+import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle, prefersReducedMotion } from "@/lib/home-scroll";
 import { attachScrollVideo } from "@/lib/scroll-video";
 import {
   mapToSkydeck,
@@ -92,11 +92,8 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
       const video = videoRef.current;
       if (!section || !video || !videoSrc) return;
 
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const coarse = window.matchMedia("(pointer: coarse)").matches;
-      const compact = window.matchMedia("(max-width: 700px)").matches;
-      const loopFallback = reduceMotion || coarse || compact;
-      const allowCardPause = !hideHeroRef.current && !reduceMotion && !coarse;
+      const reduceMotion = prefersReducedMotion();
+      const allowCardPause = !hideHeroRef.current && !reduceMotion;
       let lastCardPhase: CardPhase = cardPhaseFromProgress(0);
 
       const trigger = ScrollTrigger.create({
@@ -121,7 +118,7 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
         },
       });
 
-      if (loopFallback) {
+      if (reduceMotion) {
         video.loop = true;
         video.muted = true;
         video.playsInline = true;
@@ -162,6 +159,7 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
       ref={sectionRef}
       id="skydeck"
       className="home-scrolly-chapter first-ascent first-ascent-flush relative bg-[#080808] text-white selection:bg-white/20"
+      style={homeChapterStyle(HOME_CHAPTER_VIDEO_SECONDS.skydeck)}
       aria-label="Level Three Skydeck"
     >
       <div ref={videoWrapRef} className="sticky top-0 z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">

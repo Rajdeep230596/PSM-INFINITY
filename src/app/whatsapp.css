@@ -28,23 +28,32 @@
 
 .ambient-audio-toggle {
   position: fixed;
+  top: calc(var(--header, 80px) + 12px);
   right: 1.25rem;
-  bottom: 4.85rem;
-  z-index: 50;
+  z-index: 60;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.6rem;
-  height: 2.6rem;
-  border: 1px solid rgba(197, 168, 128, 0.45);
+  gap: 0.45rem;
+  min-height: 2.5rem;
+  padding: 0.55rem 0.95rem;
+  border: 1px solid rgba(197, 168, 128, 0.55);
   border-radius: 999px;
-  background: rgba(8, 8, 10, 0.82);
+  background: rgba(8, 8, 10, 0.88);
   color: #c5a880;
   cursor: pointer;
   transform: translateZ(0);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.ambient-audio-toggle span {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 .ambient-audio-toggle:hover {

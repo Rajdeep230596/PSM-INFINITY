@@ -10,14 +10,14 @@ import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components
 import { SkydeckSpaceTags } from "@/components/skydeck/SkydeckSpaceTags";
 import { SKYDECK_BACKDROP_FIRST, SKYDECK_BACKDROP_SECOND } from "@/content/skydeck";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
-import { useDeferredVideoSource } from "@/lib/deferred-video";
-import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle, prefersReducedMotion } from "@/lib/home-scroll";
+import { markVideoReady, useDeferredVideoSource } from "@/lib/deferred-video";
+import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
+import { prefersReducedMotion } from "@/lib/media-capability";
 import { attachScrollVideo } from "@/lib/scroll-video";
 import {
   mapToSkydeck,
   SECOND_ASCENT_VIDEO_SRC,
   SKYDECK_CARDS_HIDE_AT,
-  SKYDECK_HANDOFF_AT,
   SKYDECK_LOUNGE_AT,
   SKYDECK_POOL_AT,
   skydeckProgressForTime,
@@ -63,9 +63,11 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, SECOND_ASCENT_VIDEO_SRC);
+  const videoSrc = useDeferredVideoSource(sectionRef, SECOND_ASCENT_VIDEO_SRC, { eager: true });
   const hideHeroRef = useRef(hideHero);
-  hideHeroRef.current = hideHero;
+  useEffect(() => {
+    hideHeroRef.current = hideHero;
+  }, [hideHero]);
   const [beat, setBeat] = useState<EditorialBeat | null>(BEATS[0]);
   const [cardPhase, setCardPhase] = useState<CardPhase>("hidden");
   const router = useRouter();
@@ -122,16 +124,16 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
         video.loop = true;
         video.muted = true;
         video.playsInline = true;
-        const startAtHandoff = () => {
-          if (video.duration && video.currentTime < SKYDECK_HANDOFF_AT) {
-            video.currentTime = SKYDECK_HANDOFF_AT;
-          }
-        };
-        video.addEventListener("loadedmetadata", startAtHandoff, { once: true });
-        if (video.readyState >= 1) startAtHandoff();
+        video.disablePictureInPicture = true;
+        video.setAttribute("playsinline", "");
+        video.setAttribute("webkit-playsinline", "");
+        const onReady = () => markVideoReady(video);
+        video.addEventListener("canplay", onReady);
+        if (video.readyState >= 3) onReady();
         const play = video.play();
         if (play && typeof play.then === "function") play.catch(() => {});
         return () => {
+          video.removeEventListener("canplay", onReady);
           trigger.kill();
           clearScrollPause();
         };
@@ -142,7 +144,7 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
         mapProgress: mapToSkydeck,
         smoothing: HOME_VIDEO_SMOOTHING,
         frameRate: 30,
-        preload: "auto",
+        preload: "metadata",
       });
 
       return () => {
@@ -168,11 +170,9 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
           src={videoSrc}
           muted
           playsInline
-          preload={videoSrc ? "auto" : "none"}
-          onLoadedMetadata={(event) => {
-            event.currentTarget.currentTime = SKYDECK_HANDOFF_AT;
-          }}
-          className="gpu-media absolute inset-0 h-full w-full object-cover will-change-transform"
+          disablePictureInPicture
+          preload={videoSrc ? "metadata" : "none"}
+          className="gpu-media absolute inset-0 h-full w-full object-cover"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
         {!hideHero ? (

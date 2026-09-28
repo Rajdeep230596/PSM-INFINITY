@@ -19,6 +19,9 @@ export function homeChapterStyle(videoSeconds: number) {
   return { height: `calc(100vh + ${extra}vh)` };
 }
 
-export function prefersReducedMotion() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
+export const HOME_VIDEO = {
+  landing: "/media/backdrop.mp4?v=10",
+  landingPoster: "/media/backdrop-poster.png",
+  groundZero: "/videos/ground-zero-arrival.mp4?v=3",
+  skyTerrace: "/videos/sky-terrace-arrival.mp4?v=3",
+} as const;

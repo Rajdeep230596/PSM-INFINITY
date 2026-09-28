@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { FIRST_ASCENT_LINKS } from "@/content/first-ascent";
 import { GROUND_ZERO_LINKS } from "@/content/ground-zero";
 import { SECOND_ASCENT_LINKS } from "@/content/second-ascent";
 import { site } from "@/content/site";
 import { getWhatsAppUrl } from "@/lib/constants";
+import { pathMatches } from "@/lib/path";
 
 function NavDropdown({
   href,
@@ -46,17 +47,19 @@ function NavDropdown({
         {label}
       </Link>
       <div className="nav-dropdown">
-        {links.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            prefetch={true}
-            className={pathname === link.href ? "active" : undefined}
-            onClick={onNavigate}
-          >
-            {link.label}
-          </Link>
-        ))}
+        <div className="nav-dropdown-panel">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              prefetch={false}
+              className={pathMatches(pathname, link.href) ? "active" : undefined}
+              onClick={onNavigate}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
       </div>
     </li>
   );
@@ -64,9 +67,19 @@ function NavDropdown({
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const menuId = useId();
   const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [navPath, setNavPath] = useState(pathname);
+  const menuRef = useRef<HTMLUListElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+
+  if (pathname !== navPath) {
+    setNavPath(pathname);
+    setOpen(false);
+    setHovered(null);
+  }
 
   useEffect(() => {
     let frame = 0;
@@ -87,20 +100,70 @@ export function SiteHeader() {
   }, []);
 
   useEffect(() => {
-    setOpen(false);
-    setHovered(null);
     const focused = document.activeElement;
     if (focused instanceof HTMLElement && focused.closest(".site-header")) {
       focused.blur();
     }
   }, [pathname]);
 
-  const groundZeroActive = pathname === "/ground-zero" || pathname.startsWith("/ground-zero/");
-  const firstAscentActive = pathname === "/first-ascent" || pathname.startsWith("/first-ascent/");
-  const secondAscentActive = pathname === "/second-ascent" || pathname.startsWith("/second-ascent/");
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        toggleRef.current?.focus();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const root = menuRef.current;
+      if (!root) return;
+      const items = Array.from(root.querySelectorAll<HTMLElement>("a, button"));
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    window.addEventListener("keydown", onKey);
+    const firstLink = menuRef.current?.querySelector<HTMLElement>("a");
+    firstLink?.focus();
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    const onResize = () => {
+      if (window.matchMedia("(min-width: 768px)").matches) setOpen(false);
+    };
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const groundZeroActive = pathMatches(pathname, "/ground-zero");
+  const firstAscentActive = pathMatches(pathname, "/first-ascent");
+  const secondAscentActive = pathMatches(pathname, "/second-ascent");
 
   return (
     <header className={scrolled ? "site-header scrolled" : "site-header"}>
+      {open ? (
+        <button type="button" className="nav-overlay" aria-label="Close menu" onClick={() => setOpen(false)} />
+      ) : null}
       <div className="nav-wrap">
         <Link className="logo" href="/" prefetch={true} aria-label={`${site.name} home`}>
           <img
@@ -109,10 +172,12 @@ export function SiteHeader() {
             className="logo-mark"
             width={129}
             height={77}
+            decoding="async"
+            fetchPriority="high"
           />
         </Link>
         <nav>
-          <ul className={open ? "nav-links open" : "nav-links"}>
+          <ul id={menuId} ref={menuRef} className={open ? "nav-links open" : "nav-links"}>
             {site.navigation.map((item) => {
               if (item.href === "/ground-zero") {
                 return (
@@ -162,7 +227,7 @@ export function SiteHeader() {
                   />
                 );
               }
-              const active = pathname === item.href;
+              const active = pathMatches(pathname, item.href);
               return (
                 <li key={item.href}>
                   <Link
@@ -188,10 +253,12 @@ export function SiteHeader() {
             Get in touch
           </a>
           <button
+            ref={toggleRef}
             className="menu-toggle"
             type="button"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
+            aria-controls={menuId}
             onClick={() => setOpen((value) => !value)}
           >
             <span />

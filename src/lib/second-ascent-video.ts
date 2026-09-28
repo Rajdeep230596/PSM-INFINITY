@@ -1,4 +1,4 @@
-export const SECOND_ASCENT_VIDEO_SRC = "/videos/second-ascent-backdrop.mp4?v=8";
+export const SECOND_ASCENT_VIDEO_SRC = "/videos/second-ascent-backdrop.mp4?v=10";
 export const SECOND_ASCENT_VIDEO_DURATION = 30.814;
 /** Elevator arrival — Level Two ends here; Level Three: Skydeck begins. */
 export const SKYDECK_HANDOFF_AT = 14.2;

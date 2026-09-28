@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
 
 import { AmbientAudio } from "@/components/layout/ambient-audio";
@@ -21,11 +21,19 @@ const outfit = Outfit({
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "600"],
   style: ["normal", "italic"],
   variable: "--font-cormorant",
   display: "swap",
+  preload: false,
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#08080A",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),

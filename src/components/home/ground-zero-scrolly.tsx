@@ -8,8 +8,9 @@ import { useEffect, useRef, useState } from "react";
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
 import { GroundZeroCard, GROUND_ZERO_CARDS } from "@/components/home/ground-zero-card";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
-import { useDeferredVideoSource } from "@/lib/deferred-video";
-import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle, prefersReducedMotion } from "@/lib/home-scroll";
+import { markVideoReady, useDeferredVideoSource } from "@/lib/deferred-video";
+import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
+import { prefersReducedMotion } from "@/lib/media-capability";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -37,7 +38,10 @@ const BEATS: EditorialBeat[] = [
 export function GroundZeroScrollySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, "/videos/ground-zero-arrival.mp4");
+  const videoSrc = useDeferredVideoSource(sectionRef, HOME_VIDEO.groundZero, {
+    eager: true,
+    prefetch: HOME_VIDEO.skyTerrace,
+  });
   const [revealed, setRevealed] = useState(false);
   const [beat, setBeat] = useState<EditorialBeat | null>(BEATS[0]);
 
@@ -82,9 +86,18 @@ export function GroundZeroScrollySection() {
         video.loop = true;
         video.muted = true;
         video.playsInline = true;
+        video.disablePictureInPicture = true;
+        video.setAttribute("playsinline", "");
+        video.setAttribute("webkit-playsinline", "");
+        const onReady = () => markVideoReady(video);
+        video.addEventListener("canplay", onReady);
+        if (video.readyState >= 3) onReady();
         const play = video.play();
         if (play && typeof play.then === "function") play.catch(() => {});
-        return () => trigger.kill();
+        return () => {
+          video.removeEventListener("canplay", onReady);
+          trigger.kill();
+        };
       }
 
       const detach = attachScrollVideo(video, {
@@ -115,7 +128,8 @@ export function GroundZeroScrollySection() {
           src={videoSrc}
           muted
           playsInline
-          preload={videoSrc ? "auto" : "none"}
+          disablePictureInPicture
+          preload={videoSrc ? "metadata" : "none"}
           className="gpu-media absolute inset-0 h-full w-full object-cover"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/40" />

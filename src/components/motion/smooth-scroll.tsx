@@ -7,6 +7,8 @@ import { setSiteLenis } from "@/lib/site-lenis";
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    if (window.matchMedia("(max-width: 700px)").matches) return;
 
     let cancelled = false;
     let teardown = () => {};

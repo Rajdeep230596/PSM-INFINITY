@@ -1,5 +1,7 @@
+import { HomePreload } from "@/components/home/home-preload";
 import {
   CinematicWalkthroughLazy,
+  DeferredChapter,
   FirstAscentGalleryLazy,
   GroundZeroScrollyLazy,
   SkyTerraceArrivalLazy,
@@ -9,11 +11,20 @@ import {
 export default function HomePage() {
   return (
     <>
+      <HomePreload />
       <CinematicWalkthroughLazy />
-      <GroundZeroScrollyLazy />
-      <SkyTerraceArrivalLazy />
-      <FirstAscentGalleryLazy hideHero />
-      <SkydeckArrivalLazy hideHero />
+      <DeferredChapter>
+        <GroundZeroScrollyLazy />
+      </DeferredChapter>
+      <DeferredChapter>
+        <SkyTerraceArrivalLazy />
+      </DeferredChapter>
+      <DeferredChapter>
+        <FirstAscentGalleryLazy hideHero />
+      </DeferredChapter>
+      <DeferredChapter rootMargin="80% 0px">
+        <SkydeckArrivalLazy hideHero />
+      </DeferredChapter>
     </>
   );
 }

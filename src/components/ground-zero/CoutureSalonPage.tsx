@@ -108,6 +108,8 @@ export function CoutureSalonPage() {
             <img
               src="/assets/couture/hero-gown.jpg"
               alt="Black velvet haute couture gown with gold embroidery on a salon mannequin"
+              fetchPriority="high"
+              decoding="async"
               className="aspect-[4/5] h-full w-full object-cover object-center sm:aspect-[5/4] lg:aspect-[16/11] lg:min-h-[460px]"
             />
             <div
@@ -145,7 +147,7 @@ export function CoutureSalonPage() {
         </ul>
       </nav>
 
-      <section className="mx-auto mb-24! grid max-w-7xl grid-cols-1 gap-6 px-6! md:grid-cols-3">
+      <section className="mx-auto mb-24! grid max-w-7xl grid-cols-1 gap-6 px-6! md:grid-cols-2 lg:grid-cols-3">
         {COUTURE_SPOTLIGHTS.map((card) => (
           <article
             key={card.id}
@@ -203,7 +205,13 @@ export function CoutureSalonPage() {
             >
               <div>
                 <div className="mb-4! aspect-[4/5] overflow-hidden rounded-xl bg-neutral-900">
-                  <img src={item.image} alt={item.imageAlt} className="h-full w-full object-cover object-center" />
+                  <img
+                    src={item.image}
+                    alt={item.imageAlt}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover object-center"
+                  />
                 </div>
                 <p className="mb-1.5! flex items-center gap-1 font-mono text-[10px] text-[#C5A880]">
                   ★★★★★ {item.rating} · {item.classification}
@@ -270,7 +278,7 @@ export function CoutureSalonPage() {
           </button>
         </div>
 
-        <div className="mx-auto mb-24! grid max-w-7xl grid-cols-1 gap-6 px-6! md:grid-cols-3">
+        <div className="mx-auto mb-24! grid max-w-7xl grid-cols-1 gap-6 px-6! md:grid-cols-2 lg:grid-cols-3">
           {COUTURE_JOURNAL.map((entry) => (
             <article
               key={entry.id}

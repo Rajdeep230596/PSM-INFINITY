@@ -39,8 +39,8 @@ export function SkydeckDetailTemplate({ page }: { page: SkydeckSpace }) {
                 prefetch={true}
                 className={
                   active
-                    ? "rounded-full bg-[#E8D8C8] px-4 py-2 font-mono text-[10px] tracking-[0.18em] text-black uppercase shadow-sm"
-                    : "rounded-full border border-white/25 bg-black/35 px-4 py-2 font-mono text-[10px] tracking-[0.18em] text-white uppercase transition-colors duration-300 hover:border-amber-300/60 hover:text-amber-100"
+                    ? "inline-flex min-h-11 items-center rounded-full bg-[#E8D8C8] px-4 py-2 font-mono text-[10px] tracking-[0.18em] text-black uppercase shadow-sm"
+                    : "inline-flex min-h-11 items-center rounded-full border border-white/25 bg-black/35 px-4 py-2 font-mono text-[10px] tracking-[0.18em] text-white uppercase transition-colors duration-300 hover:border-amber-300/60 hover:text-amber-100"
                 }
               >
                 {item.tag}

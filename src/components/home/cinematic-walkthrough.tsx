@@ -7,7 +7,9 @@ import { useEffect, useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
-import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle, prefersReducedMotion } from "@/lib/home-scroll";
+import { markVideoReady, prefetchVideo } from "@/lib/deferred-video";
+import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
+import { isConstrainedNetwork, prefersReducedMotion } from "@/lib/media-capability";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -95,13 +97,30 @@ export function CinematicWalkthrough() {
         },
       });
 
+      const warmNext = () => {
+        if (!isConstrainedNetwork()) prefetchVideo(HOME_VIDEO.groundZero);
+      };
+      const warmTimer = window.setTimeout(warmNext, 900);
+      video.addEventListener("loadeddata", warmNext, { once: true });
+      if (video.readyState >= 2) warmNext();
+
       if (reduceMotion) {
         video.loop = true;
         video.muted = true;
         video.playsInline = true;
+        video.disablePictureInPicture = true;
+        video.setAttribute("playsinline", "");
+        video.setAttribute("webkit-playsinline", "");
+        const onReady = () => markVideoReady(video);
+        video.addEventListener("canplay", onReady);
+        if (video.readyState >= 3) onReady();
         const play = video.play();
         if (play && typeof play.then === "function") play.catch(() => {});
-        return () => trigger.kill();
+        return () => {
+          window.clearTimeout(warmTimer);
+          video.removeEventListener("canplay", onReady);
+          trigger.kill();
+        };
       }
 
       const detach = attachScrollVideo(video, {
@@ -111,6 +130,7 @@ export function CinematicWalkthrough() {
       });
 
       return () => {
+        window.clearTimeout(warmTimer);
         detach();
         trigger.kill();
       };
@@ -127,14 +147,24 @@ export function CinematicWalkthrough() {
       aria-label="Master landing sequence"
     >
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black gpu-layer">
+        <img
+          src={HOME_VIDEO.landingPoster}
+          alt=""
+          aria-hidden="true"
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
         <video
           ref={videoRef}
           muted
           playsInline
-          preload="auto"
-          className="gpu-media h-full w-full object-cover"
+          disablePictureInPicture
+          preload="metadata"
+          poster={HOME_VIDEO.landingPoster}
+          className="gpu-media relative z-[1] h-full w-full object-cover"
         >
-          <source src="/media/backdrop.mp4?v=7" type="video/mp4" />
+          <source src={HOME_VIDEO.landing} type="video/mp4" />
         </video>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
         <EditorialMilestone

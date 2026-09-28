@@ -1,38 +1,64 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 
 import { BootMark } from "@/components/layout/boot-mark";
 import { prewarmExperience } from "@/lib/prewarm";
 
+const REVEALED_KEY = "psm-revealed";
+
+function markRevealed(html: HTMLElement) {
+  html.classList.remove("is-booting");
+  html.classList.add("is-revealed");
+  try {
+    sessionStorage.setItem(REVEALED_KEY, "1");
+  } catch {
+    // Private mode can block storage.
+  }
+}
+
+function alreadyRevealed() {
+  try {
+    return sessionStorage.getItem(REVEALED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
 export function BootLoader() {
   const [phase, setPhase] = useState<"booting" | "exiting" | "done">("booting");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const html = document.documentElement;
+    if (alreadyRevealed() || html.classList.contains("is-revealed")) {
+      markRevealed(html);
+      setPhase("done");
+      return;
+    }
+
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     html.classList.add("is-booting");
 
     let cancelled = false;
-    const fadeMs = reducedMotion ? 0 : 560;
+    const fadeMs = reducedMotion ? 0 : 280;
 
-    void prewarmExperience({ reducedMotion }).then(() => {
-      if (cancelled) return;
-      html.classList.remove("is-booting");
-      html.classList.add("is-revealed");
-      if (reducedMotion) {
-        setPhase("done");
-        return;
-      }
-      setPhase("exiting");
-      window.setTimeout(() => {
-        if (!cancelled) setPhase("done");
-      }, fadeMs);
-    });
+    void prewarmExperience({ reducedMotion })
+      .catch(() => undefined)
+      .then(() => {
+        if (cancelled) return;
+        markRevealed(html);
+        if (reducedMotion) {
+          setPhase("done");
+          return;
+        }
+        setPhase("exiting");
+        window.setTimeout(() => {
+          if (!cancelled) setPhase("done");
+        }, fadeMs);
+      });
 
     return () => {
       cancelled = true;
-      html.classList.remove("is-booting");
     };
   }, []);
 

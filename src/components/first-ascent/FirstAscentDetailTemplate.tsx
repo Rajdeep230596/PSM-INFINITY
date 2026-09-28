@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import type { FirstAscentPageContent } from "@/content/first-ascent";
 import { FIRST_ASCENT_LINKS } from "@/content/first-ascent";
 import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
+import { SiteImage } from "@/components/media/site-image";
 
 const BespokeConciergeDesk = dynamic(
   () => import("@/components/first-ascent/BespokeConciergeDesk").then((module) => module.BespokeConciergeDesk),
@@ -143,7 +144,7 @@ function AllocationImage({ src, fallback, alt }: { src: string; fallback: string
   const current = failedSrc === src ? fallback : src;
 
   return (
-    <img
+    <SiteImage
       src={current}
       alt={alt}
       className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"

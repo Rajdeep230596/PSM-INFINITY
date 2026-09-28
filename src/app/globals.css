@@ -480,6 +480,7 @@ textarea {
 }
 
 .nav-dropdown {
+  display: none;
   position: absolute;
   top: 100%;
   left: 50%;
@@ -496,6 +497,7 @@ textarea {
 }
 
 .nav-item-dropdown.is-open .nav-dropdown {
+  display: block;
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
@@ -1667,6 +1669,7 @@ textarea {
   }
 
   .nav-dropdown {
+    display: block;
     position: static;
     left: auto;
     top: auto;

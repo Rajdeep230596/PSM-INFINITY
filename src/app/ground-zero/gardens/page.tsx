@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { GardensSalonPageLazy } from "@/components/lazy/salons";
+import { LcpPreload } from "@/components/media/site-image";
 import { GROUND_ZERO_PAGES } from "@/content/ground-zero";
 
 const page = GROUND_ZERO_PAGES.gardens;
@@ -11,5 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default function GroundZeroGardensPage() {
-  return <GardensSalonPageLazy />;
+  return (
+    <>
+      <LcpPreload src="/assets/gardens/hero-estate-garden.jpg" />
+      <GardensSalonPageLazy />
+    </>
+  );
 }

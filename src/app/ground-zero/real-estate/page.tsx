@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { EstatesSalonPageLazy } from "@/components/lazy/salons";
+import { LcpPreload } from "@/components/media/site-image";
 
 export const metadata: Metadata = {
   title: "Real Estate Portfolios — Ground Zero",
@@ -9,5 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default function GroundZeroRealEstatePage() {
-  return <EstatesSalonPageLazy />;
+  return (
+    <>
+      <LcpPreload src="/assets/estates/hero-lake-como.jpg" />
+      <EstatesSalonPageLazy />
+    </>
+  );
 }

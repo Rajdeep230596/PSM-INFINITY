@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppCta } from "@/components/layout/whatsapp-cta";
 import { BootLoader } from "@/components/motion/boot-loader";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
+import { siteImageSrc } from "@/components/media/site-image";
 import { site } from "@/content/site";
 
 import "./globals.css";
@@ -50,6 +51,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${outfit.variable} ${cormorant.variable} is-booting`} data-scroll-behavior="smooth">
       <body>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){function reveal(){var h=document.documentElement;h.classList.remove("is-booting");h.classList.add("is-revealed");try{sessionStorage.setItem("psm-revealed","1")}catch(e){}var n=document.querySelectorAll(".boot-loader");for(var i=0;i<n.length;i++)n[i].remove();}try{if(sessionStorage.getItem("psm-revealed")==="1"){reveal();return;}}catch(e){}window.addEventListener("error",function(e){if(e.target&&(e.target.tagName==="SCRIPT"||e.target.tagName==="LINK"))reveal();},true);setTimeout(function(){if(document.documentElement.classList.contains("is-booting"))reveal();},1400);})();`,
+          }}
+        />
+        <link rel="preload" href={siteImageSrc("/brand/psm-infinity-logo.png")!} as="image" type="image/webp" fetchPriority="high" />
         <noscript>
           <style>{`.boot-loader{display:none!important}html.is-booting{overflow:auto!important}`}</style>
         </noscript>

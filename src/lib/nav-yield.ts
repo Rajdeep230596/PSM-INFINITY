@@ -34,14 +34,24 @@ export function isNavigating() {
   return navigating;
 }
 
+function detachMediaElement(media: HTMLMediaElement) {
+  try {
+    media.pause();
+  } catch {
+    // Decoder shutdown is best-effort.
+  }
+  media.querySelectorAll("source").forEach((source) => source.remove());
+  media.removeAttribute("src");
+  media.preload = "none";
+  try {
+    media.load();
+  } catch {
+    // Aborting an in-flight buffer can throw in older WebKit.
+  }
+}
+
 function freezePageMedia() {
-  document.querySelectorAll("video").forEach((video) => {
-    try {
-      video.pause();
-    } catch {
-      // Decoder shutdown is best-effort.
-    }
-  });
+  document.querySelectorAll("video").forEach((video) => detachMediaElement(video));
   releaseAllVideoPrefetch();
   document
     .querySelectorAll('link[rel="preload"][as="video"], link[data-home-video-preload], link[data-video-prefetch]')
@@ -53,7 +63,6 @@ export function beginNavigation() {
   if (navigating) return;
   navigating = true;
   haltSiteScroll();
-  freezePageMedia();
   for (const teardown of [...teardowns]) {
     try {
       teardown();
@@ -61,6 +70,10 @@ export function beginNavigation() {
       // A failed teardown must not block the rest.
     }
   }
+  queueMicrotask(freezePageMedia);
+  window.setTimeout(() => {
+    if (navigating) endNavigation();
+  }, 2500);
 }
 
 export function endNavigation() {

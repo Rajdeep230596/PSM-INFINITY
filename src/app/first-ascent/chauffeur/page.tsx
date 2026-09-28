@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import { ChauffeurSalonPageLazy } from "@/components/lazy/salons";
+import { LcpPreload } from "@/components/media/site-image";
+import { CHAUFFEUR_HERO } from "@/content/chauffeur";
 
 export const metadata: Metadata = {
   title: "Chauffeur Fleet — First Ascent",
@@ -9,5 +11,10 @@ export const metadata: Metadata = {
 };
 
 export default function ChauffeurPage() {
-  return <ChauffeurSalonPageLazy />;
+  return (
+    <>
+      <LcpPreload src={CHAUFFEUR_HERO.center.image} />
+      <ChauffeurSalonPageLazy />
+    </>
+  );
 }

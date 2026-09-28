@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { CollectiblesSalonPageLazy } from "@/components/lazy/salons";
+import { LcpPreload } from "@/components/media/site-image";
 
 export const metadata: Metadata = {
   title: "Curated Collectibles — Ground Zero",
@@ -9,5 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default function GroundZeroCollectiblesPage() {
-  return <CollectiblesSalonPageLazy />;
+  return (
+    <>
+      <LcpPreload src="/assets/collectibles/hero-watch-hypercar.jpg" />
+      <CollectiblesSalonPageLazy />
+    </>
+  );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SiteImage } from "@/components/media/site-image";
 
 export const metadata: Metadata = {
   title: "Our Story",
@@ -21,7 +22,7 @@ export default function OurStoryPage() {
       </section>
       <section className="section">
         <div className="container about-grid">
-          <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=80" alt="Warm studio interior" />
+          <SiteImage src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1200&q=80" alt="Warm studio interior" />
           <div>
             <p className="eyebrow">The idea</p>
             <h2 className="section-title">
@@ -95,11 +96,9 @@ export default function OurStoryPage() {
               </Link>
             </div>
           </div>
-          <img
+          <SiteImage
             src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=80"
             alt="Collaborators in a bright studio"
-            loading="lazy"
-            decoding="async"
           />
         </div>
       </section>

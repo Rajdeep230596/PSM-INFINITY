@@ -1,13 +1,15 @@
 import Link from "next/link";
 
 import { SKYDECK_FIND_US_HREF, SKYDECK_SPACES, type SkydeckSpace } from "@/content/skydeck";
+import { SiteImage } from "@/components/media/site-image";
 
 export function SkydeckDetailTemplate({ page }: { page: SkydeckSpace }) {
   return (
     <div className="first-ascent first-ascent-flush relative min-h-screen w-full text-neutral-100">
-      <img
+      <SiteImage
         src={page.image}
         alt={`${page.tag} — ${page.blurb}`}
+        priority
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
 

@@ -1,12 +1,14 @@
 import Link from "next/link";
 
-import { SkyTerraceArrivalLazy } from "@/components/home/lazy-chapters";
+import { IdleChapter, SkyTerraceArrivalLazy } from "@/components/home/lazy-chapters";
 import { FIRST_ASCENT_LINKS } from "@/content/first-ascent";
 
 export default function FirstAscentPortalPage() {
   return (
     <div className="first-ascent first-ascent-flush min-h-screen bg-[#0A0A0B] text-neutral-100">
-      <SkyTerraceArrivalLazy />
+      <IdleChapter>
+        <SkyTerraceArrivalLazy />
+      </IdleChapter>
       <section className="mx-auto max-w-5xl px-8 py-28 text-center md:py-36">
         <p className="mb-4 font-sans text-[11px] tracking-[0.4em] text-amber-300/80 uppercase">
           First Ascent — Global Travel & High-End Mobility

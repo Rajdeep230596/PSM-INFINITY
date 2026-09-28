@@ -28,8 +28,8 @@ export function SecondAscentDetailTemplate({ page }: { page: SecondAscentPageCon
                   prefetch={true}
                   className={
                     active
-                      ? "rounded-full bg-[#E8D8C8] px-5 py-2 text-xs font-medium text-black shadow-sm"
-                      : "rounded-full border border-white/[0.08] bg-white/[0.02] px-5 py-2 text-xs font-light text-neutral-400 transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-300 hover:border-white/25 hover:text-white"
+                    ? "inline-flex min-h-11 items-center rounded-full bg-[#E8D8C8] px-5 py-2 text-xs font-medium text-black shadow-sm"
+                    : "inline-flex min-h-11 items-center rounded-full border border-white/[0.08] bg-white/[0.02] px-5 py-2 text-xs font-light text-neutral-400 transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-300 hover:border-white/25 hover:text-white"
                   }
                 >
                   {item.label}

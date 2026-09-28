@@ -11,12 +11,14 @@ export default function PartnerPage() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const name = String(data.get("name") ?? "").trim();
+    const phone = String(data.get("phone") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
     const practice = String(data.get("practice") ?? "").trim();
     const city = String(data.get("city") ?? "").trim();
     const timeline = String(data.get("timeline") ?? "").trim();
     const message = String(data.get("message") ?? "").trim();
     openWhatsApp(
-      `Hello PSM Infinity, I would like to enquire about a studio partnership. Name: ${name}. Practice: ${practice}. City: ${city}. Timeline: ${timeline}.${message ? ` Notes: ${message}` : ""}`,
+      `Hello PSM Infinity, I would like to enquire about a studio partnership. Name: ${name}. Mobile: ${phone}. Email: ${email}. Practice: ${practice}. City: ${city}. Timeline: ${timeline}.${message ? ` Notes: ${message}` : ""}`,
     );
     setNote("Opening WhatsApp with your partnership brief.");
     event.currentTarget.reset();

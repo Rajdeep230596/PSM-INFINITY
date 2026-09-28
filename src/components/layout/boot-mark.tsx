@@ -7,6 +7,8 @@ export function BootMark() {
         className="boot-logo"
         width={258}
         height={155}
+        decoding="async"
+        fetchPriority="high"
       />
       <div className="boot-bar" aria-hidden="true">
         <span className="boot-bar-fill" />

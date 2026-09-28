@@ -139,7 +139,7 @@ export function EstatesSalonPage() {
         </ul>
       </nav>
 
-      <section className="mx-auto mb-24! grid max-w-7xl grid-cols-1 gap-6 px-6! md:grid-cols-3">
+      <section className="mx-auto mb-24! grid max-w-7xl grid-cols-1 gap-6 px-6! md:grid-cols-2 lg:grid-cols-3">
         {ESTATES_SPOTLIGHTS.map((card) => (
           <article
             key={card.id}
@@ -208,7 +208,13 @@ export function EstatesSalonPage() {
             >
               <div>
                 <div className="mb-4! aspect-[4/5] overflow-hidden rounded-xl bg-neutral-900">
-                  <img src={item.image} alt={item.imageAlt} className="h-full w-full object-cover object-center" />
+                  <img
+                    src={item.image}
+                    alt={item.imageAlt}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover object-center"
+                  />
                 </div>
                 <p className="mb-1.5! flex items-center gap-1 font-mono text-[10px] text-[#C5A880]">
                   ★★★★★ {item.rating} · {item.classification}
@@ -281,7 +287,7 @@ export function EstatesSalonPage() {
           </button>
         </div>
 
-        <div className="mx-auto mb-24! grid max-w-7xl grid-cols-1 gap-6 px-6! md:grid-cols-3">
+        <div className="mx-auto mb-24! grid max-w-7xl grid-cols-1 gap-6 px-6! md:grid-cols-2 lg:grid-cols-3">
           {ESTATES_JOURNAL.map((entry) => (
             <article
               key={entry.id}

@@ -44,7 +44,7 @@ html.skydeck-page body::before {
 }
 
 html.first-ascent-page .first-ascent:not(.first-ascent-flush):not(.first-ascent-editorial) {
-  padding-top: var(--header, 80px);
+  padding-top: var(--header-offset, 80px);
 }
 
 html.first-ascent-page .first-ascent-editorial {
@@ -52,7 +52,7 @@ html.first-ascent-page .first-ascent-editorial {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding-top: 9rem;
+  padding-top: max(9rem, calc(var(--header-offset, 80px) + 2.75rem));
   padding-bottom: 10rem;
 }
 
@@ -72,6 +72,17 @@ html.first-ascent-page .first-ascent-editorial {
   margin-right: auto;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
+}
+
+@media (min-width: 1600px) {
+  .first-ascent-editorial .fa-shell {
+    max-width: 100rem;
+  }
+
+  .first-ascent-editorial .fa-pillars,
+  .first-ascent-editorial .fa-portfolio {
+    max-width: 100rem;
+  }
 }
 
 @media (min-width: 640px) {
@@ -129,7 +140,7 @@ html.first-ascent-page .first-ascent-editorial {
   gap: 2rem;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .first-ascent-editorial .fa-pillars-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -217,10 +228,6 @@ html.first-ascent-page .first-ascent-editorial {
     flex-direction: row;
     align-items: center;
   }
-
-  .first-ascent-editorial .fa-desk-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (min-width: 768px) {
@@ -235,6 +242,10 @@ html.first-ascent-page .first-ascent-editorial {
 
   .first-ascent-editorial .fa-desk-panel {
     padding: 3rem;
+  }
+
+  .first-ascent-editorial .fa-desk-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .first-ascent-editorial .fa-card-grid {
@@ -257,14 +268,14 @@ html.first-ascent-page .first-ascent-editorial {
 }
 
 html.first-ascent-page .whatsapp-cta {
-  right: 1.5rem;
-  bottom: 1.5rem;
+  right: max(1.5rem, env(safe-area-inset-right, 0px));
+  bottom: max(1.5rem, env(safe-area-inset-bottom, 0px));
   z-index: 40;
 }
 
 html.first-ascent-page .ambient-audio-toggle {
-  right: 1.5rem;
-  bottom: 5.15rem;
+  right: max(1.5rem, env(safe-area-inset-right, 0px));
+  bottom: calc(5.15rem + env(safe-area-inset-bottom, 0px));
   z-index: 40;
 }
 
@@ -275,6 +286,17 @@ html.first-ascent-page .site-footer {
 .first-ascent {
   font-family: var(--font-sans), sans-serif;
   color-scheme: dark;
+}
+
+@media (max-width: 1024px) {
+  .first-ascent a[class*="rounded-full"],
+  .first-ascent button[class*="rounded-full"] {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
 }
 
 .first-ascent-editorial select option {
@@ -354,6 +376,12 @@ html.first-ascent-page .site-footer {
   }
 }
 
+@media (min-width: 1920px) {
+  .first-ascent .mx-auto.max-w-7xl {
+    max-width: 100rem;
+  }
+}
+
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -390,11 +418,41 @@ html.first-ascent-page .site-footer {
 }
 
 .gz-card-face {
-  height: min(470px, calc(100vh - 11rem));
+  height: min(380px, calc(100vh - 11rem));
 }
 
 .gz-card-cta-label {
-  white-space: nowrap;
+  white-space: normal;
+  line-height: 1.35;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .gz-card-track {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+    gap: 1.15rem;
+    padding: 0;
+    mask-image: none;
+    scroll-snap-type: none;
+  }
+
+  .gz-card-slide {
+    flex: unset;
+    width: auto;
+    min-width: 0;
+  }
+
+  .gz-card-face {
+    height: min(400px, calc(100vh - 12rem));
+  }
+}
+
+@media (min-width: 1024px) {
+  .gz-card-track {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 1280px) {

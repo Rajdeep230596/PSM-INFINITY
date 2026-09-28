@@ -93,7 +93,7 @@ export function EventsSalonPage({
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="relative flex min-h-[480px] flex-col items-center justify-center overflow-hidden rounded-t-[140px] border-x-2 border-t-2 border-[#C5A880]/30 bg-gradient-to-b from-white/[0.02] to-transparent p-8! text-center lg:col-span-3 lg:min-h-[580px]"
+            className="relative flex min-h-[300px] flex-col items-center justify-center overflow-hidden rounded-t-[72px] border-x-2 border-t-2 border-[#C5A880]/30 bg-gradient-to-b from-white/[0.02] to-transparent p-6! text-center md:min-h-[480px] md:rounded-t-[140px] md:p-8! lg:col-span-3 lg:min-h-[580px]"
           >
             <img
               src={dossier.atmosphere}
@@ -149,7 +149,7 @@ export function EventsSalonPage({
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-            className="flex min-h-[480px] flex-col items-center justify-center rounded-t-[140px] border-x-2 border-t-2 border-[#C5A880]/30 bg-gradient-to-b from-white/[0.02] to-transparent p-8! text-center lg:col-span-3 lg:min-h-[580px]"
+            className="flex min-h-[300px] flex-col items-center justify-center rounded-t-[72px] border-x-2 border-t-2 border-[#C5A880]/30 bg-gradient-to-b from-white/[0.02] to-transparent p-6! text-center md:min-h-[480px] md:rounded-t-[140px] md:p-8! lg:col-span-3 lg:min-h-[580px]"
           >
             <p className="mb-4! font-mono text-[10px] tracking-[0.35em] text-[#C5A880] uppercase">
               {hero.right.eyebrow}
@@ -243,7 +243,13 @@ export function EventsSalonPage({
           {dossier.specs.map((spec) => (
             <article key={spec.id} className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#101014]">
               <div className="aspect-[16/9] overflow-hidden">
-                <img src={spec.image} alt={spec.imageAlt} className="h-full w-full object-cover" />
+                <img
+                  src={spec.image}
+                  alt={spec.imageAlt}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div className="flex items-end justify-between gap-3 p-4!">
                 <div>

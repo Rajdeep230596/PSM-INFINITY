@@ -52,6 +52,7 @@ export const FOOTER_DOMAINS = [
   { href: "/ground-zero", label: "Ground Zero — Duplex Atelier" },
   { href: "/ground-zero/couture", label: "Haute Couture & Wardrobes" },
   { href: "/ground-zero/real-estate", label: "Architectural Portfolios" },
+  { href: "/ground-zero/landscaping", label: "Landscaping Masterplans" },
   { href: "/ground-zero/gardens", label: "Private Botanical Gardens" },
   { href: "/ground-zero/collectibles", label: "Curated Collectibles & Chassis" },
   { href: "/first-ascent/itineraries", label: "First Ascent — Private Aviation" },

@@ -67,7 +67,7 @@ export function SiteFooter() {
             </span>
             <ul className="space-y-3! font-sans text-xs font-light text-neutral-300">
               {FOOTER_DOMAINS.map((item, index) => (
-                <li key={item.href} className={index === 5 ? "pt-2!" : undefined}>
+                <li key={item.href} className={index === 6 ? "pt-2!" : undefined}>
                   <Link
                     href={item.href}
                     prefetch={true}

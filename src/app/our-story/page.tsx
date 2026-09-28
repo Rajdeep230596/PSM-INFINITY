@@ -95,7 +95,12 @@ export default function OurStoryPage() {
               </Link>
             </div>
           </div>
-          <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=80" alt="Collaborators in a bright studio" />
+          <img
+            src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=80"
+            alt="Collaborators in a bright studio"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
       </section>
     </>

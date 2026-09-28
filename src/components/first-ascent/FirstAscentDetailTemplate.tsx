@@ -58,8 +58,8 @@ export function FirstAscentDetailTemplate({ page }: { page: FirstAscentPageConte
                 prefetch={true}
                 className={
                   active
-                    ? "rounded-full bg-[#E8D8C8] px-5 py-2 text-xs font-medium text-black shadow-sm"
-                    : "rounded-full border border-white/[0.08] bg-white/[0.02] px-5 py-2 text-xs font-light text-neutral-400 transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-300 hover:border-white/25 hover:text-white"
+                    ? "inline-flex min-h-11 items-center rounded-full bg-[#E8D8C8] px-5 py-2 text-xs font-medium text-black shadow-sm"
+                    : "inline-flex min-h-11 items-center rounded-full border border-white/[0.08] bg-white/[0.02] px-5 py-2 text-xs font-light text-neutral-400 transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-300 hover:border-white/25 hover:text-white"
                 }
               >
                 {item.label}
@@ -139,11 +139,8 @@ export function FirstAscentDetailTemplate({ page }: { page: FirstAscentPageConte
 }
 
 function AllocationImage({ src, fallback, alt }: { src: string; fallback: string; alt: string }) {
-  const [current, setCurrent] = useState(src);
-
-  useEffect(() => {
-    setCurrent(src);
-  }, [src]);
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const current = failedSrc === src ? fallback : src;
 
   return (
     <img
@@ -151,7 +148,7 @@ function AllocationImage({ src, fallback, alt }: { src: string; fallback: string
       alt={alt}
       className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
       onError={() => {
-        if (current !== fallback) setCurrent(fallback);
+        if (failedSrc !== src) setFailedSrc(src);
       }}
     />
   );

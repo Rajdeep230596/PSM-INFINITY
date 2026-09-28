@@ -1,6 +1,6 @@
 "use client";
 
-import { gsap } from "gsap";
+import { markVideoReady, seekIfBuffered, timeIsBuffered } from "@/lib/deferred-video";
 
 type ScrollVideoOptions = {
   getProgress: () => number;
@@ -24,16 +24,24 @@ export function attachScrollVideo(
   video.loop = false;
   video.preload = options.preload ?? "metadata";
   video.disablePictureInPicture = true;
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+  video.setAttribute("muted", "");
 
   if (reduceMotion || options.enabled === false) {
     video.pause();
+    if (video.readyState >= 2) markVideoReady(video);
+    else video.addEventListener("loadeddata", () => markVideoReady(video), { once: true });
     return () => {};
   }
 
   const smoothing = options.smoothing ?? 0.16;
   const minStep = 1 / (options.frameRate ?? 30);
+  const frameMs = 1000 / (options.frameRate ?? 30);
   let duration = 0;
   let displayed = 0;
+  let raf = 0;
+  let lastPaint = 0;
 
   const endTime = () => Math.max(0, duration - minStep);
 
@@ -42,6 +50,14 @@ export function attachScrollVideo(
     const progress = options.mapProgress ? options.mapProgress(raw) : raw;
     if (duration <= 0) return 0;
     return progress >= 0.995 ? endTime() : progress * endTime();
+  };
+
+  const revealIfPainted = () => {
+    if (video.readyState < 2 || duration <= 0) return;
+    const target = targetFromProgress();
+    if (timeIsBuffered(video, target) && Math.abs(video.currentTime - target) < 0.45) {
+      markVideoReady(video);
+    }
   };
 
   const unlockSeek = () => {
@@ -58,36 +74,49 @@ export function attachScrollVideo(
   };
 
   const tick = () => {
-    if (duration <= 0 || video.readyState < 1) return;
+    if (duration <= 0 || video.readyState < 2) return;
 
     const target = targetFromProgress();
     displayed += (target - displayed) * smoothing;
     if (Math.abs(target - displayed) < minStep) displayed = target;
 
-    if (Math.abs(video.currentTime - displayed) < minStep) return;
-    if (video.seeking) return;
-    try {
-      video.currentTime = displayed;
-    } catch {
-      // Safari can throw if a seek lands before the buffer is ready.
+    if (seekIfBuffered(video, displayed)) {
+      markVideoReady(video);
     }
+  };
+
+  const loop = (now: number) => {
+    raf = window.requestAnimationFrame(loop);
+    if (now - lastPaint < frameMs) return;
+    lastPaint = now;
+    tick();
   };
 
   const onMeta = () => {
     duration = video.duration || 0;
     displayed = targetFromProgress();
-    if (duration > 0) video.currentTime = displayed;
+    seekIfBuffered(video, displayed);
+    revealIfPainted();
   };
 
   video.addEventListener("loadedmetadata", onMeta);
+  video.addEventListener("loadeddata", revealIfPainted);
+  video.addEventListener("canplay", revealIfPainted);
+  video.addEventListener("progress", tick);
   if (video.readyState >= 1) onMeta();
   video.addEventListener("loadeddata", unlockSeek, { once: true });
   document.addEventListener("touchstart", unlockSeek, { once: true, passive: true });
   document.addEventListener("click", unlockSeek, { once: true });
-  gsap.ticker.add(tick);
+  raf = window.requestAnimationFrame(loop);
 
   return () => {
-    gsap.ticker.remove(tick);
+    window.cancelAnimationFrame(raf);
     video.removeEventListener("loadedmetadata", onMeta);
+    video.removeEventListener("loadeddata", revealIfPainted);
+    video.removeEventListener("canplay", revealIfPainted);
+    video.removeEventListener("progress", tick);
+    video.removeEventListener("loadeddata", unlockSeek);
+    document.removeEventListener("touchstart", unlockSeek);
+    document.removeEventListener("click", unlockSeek);
   };
 }

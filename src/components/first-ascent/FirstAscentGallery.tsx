@@ -9,10 +9,11 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
-import { useDeferredVideoSource } from "@/lib/deferred-video";
+import { markVideoReady, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING } from "@/lib/home-scroll";
 import { attachScrollVideo } from "@/lib/scroll-video";
 import { mapToLevelTwo, SECOND_ASCENT_VIDEO_SRC, SKYDECK_HANDOFF_AT } from "@/lib/second-ascent-video";
+import { shouldLoopScrollVideo } from "@/lib/media-capability";
 
 const EVENT_CTAS = [
   { id: "private-events", label: "Private Events", href: "/second-ascent/private-events", icon: Calendar },
@@ -38,7 +39,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, SECOND_ASCENT_VIDEO_SRC);
+  const videoSrc = useDeferredVideoSource(sectionRef, SECOND_ASCENT_VIDEO_SRC, { eager: true });
   const [phase, setPhase] = useState<ScrollPhase>("intro");
   const revealed = phase === "cta" || phase === "rest";
   const ctaVisible = phase === "cta";
@@ -56,10 +57,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
       const video = videoRef.current;
       if (!section || !video || !videoSrc) return;
 
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const coarse = window.matchMedia("(pointer: coarse)").matches;
-      const compact = window.matchMedia("(max-width: 700px)").matches;
-      const loopFallback = reduceMotion || coarse || compact;
+      const loopFallback = shouldLoopScrollVideo();
 
       const trigger = ScrollTrigger.create({
         trigger: section,
@@ -76,9 +74,18 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
         video.loop = true;
         video.muted = true;
         video.playsInline = true;
+        video.disablePictureInPicture = true;
+        video.setAttribute("playsinline", "");
+        video.setAttribute("webkit-playsinline", "");
+        const onReady = () => markVideoReady(video);
+        video.addEventListener("canplay", onReady);
+        if (video.readyState >= 3) onReady();
         const play = video.play();
         if (play && typeof play.then === "function") play.catch(() => {});
-        return () => trigger.kill();
+        return () => {
+          video.removeEventListener("canplay", onReady);
+          trigger.kill();
+        };
       }
 
       const detach = attachScrollVideo(video, {
@@ -86,7 +93,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
         mapProgress: mapToLevelTwo,
         smoothing: HOME_VIDEO_SMOOTHING,
         frameRate: 30,
-        preload: "auto",
+        preload: "metadata",
       });
 
       return () => {
@@ -110,8 +117,9 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
           src={videoSrc}
           muted
           playsInline
-          preload={videoSrc ? "auto" : "none"}
-          className="gpu-media absolute inset-0 h-full w-full object-cover will-change-transform"
+          disablePictureInPicture
+          preload={videoSrc ? "metadata" : "none"}
+          className="gpu-media absolute inset-0 h-full w-full object-cover"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
 

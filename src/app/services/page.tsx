@@ -112,7 +112,7 @@ export default function ServicesPage() {
           <div className="menu-list">
             {items.map((item) => (
               <article className="menu-item" key={item.name}>
-                <img src={item.image} alt={item.name} />
+                <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
                 <div>
                   <span className="tag">{item.tag}</span>
                   <h3>{item.name}</h3>

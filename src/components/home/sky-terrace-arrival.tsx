@@ -9,8 +9,10 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
-import { useDeferredVideoSource } from "@/lib/deferred-video";
-import { HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING } from "@/lib/home-scroll";
+import { markVideoReady, useDeferredVideoSource } from "@/lib/deferred-video";
+import { HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING } from "@/lib/home-scroll";
+import { SECOND_ASCENT_VIDEO_SRC } from "@/lib/second-ascent-video";
+import { shouldLoopScrollVideo } from "@/lib/media-capability";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -65,7 +67,10 @@ const SERVICES = [
 export function SkyTerraceArrival() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, "/videos/sky-terrace-arrival.mp4");
+  const videoSrc = useDeferredVideoSource(sectionRef, HOME_VIDEO.skyTerrace, {
+    eager: true,
+    prefetch: SECOND_ASCENT_VIDEO_SRC,
+  });
   const [revealed, setRevealed] = useState(false);
   const [beat, setBeat] = useState<EditorialBeat | null>(BEATS[0]);
 
@@ -75,10 +80,7 @@ export function SkyTerraceArrival() {
       const video = videoRef.current;
       if (!section || !video || !videoSrc) return;
 
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const coarse = window.matchMedia("(pointer: coarse)").matches;
-      const compact = window.matchMedia("(max-width: 700px)").matches;
-      const loopFallback = reduceMotion || coarse || compact;
+      const loopFallback = shouldLoopScrollVideo();
 
       const trigger = ScrollTrigger.create({
         trigger: section,
@@ -97,9 +99,18 @@ export function SkyTerraceArrival() {
         video.loop = true;
         video.muted = true;
         video.playsInline = true;
+        video.disablePictureInPicture = true;
+        video.setAttribute("playsinline", "");
+        video.setAttribute("webkit-playsinline", "");
+        const onReady = () => markVideoReady(video);
+        video.addEventListener("canplay", onReady);
+        if (video.readyState >= 3) onReady();
         const play = video.play();
         if (play && typeof play.then === "function") play.catch(() => {});
-        return () => trigger.kill();
+        return () => {
+          video.removeEventListener("canplay", onReady);
+          trigger.kill();
+        };
       }
 
       const detach = attachScrollVideo(video, {
@@ -129,7 +140,8 @@ export function SkyTerraceArrival() {
           src={videoSrc}
           muted
           playsInline
-          preload={videoSrc ? "auto" : "none"}
+          disablePictureInPicture
+          preload={videoSrc ? "metadata" : "none"}
           className="gpu-media absolute inset-0 h-full w-full object-cover"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />

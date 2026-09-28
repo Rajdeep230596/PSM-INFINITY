@@ -13,7 +13,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export function PageBackdrop() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(wrapRef, "/media/backdrop.mp4?v=7");
+  const videoSrc = useDeferredVideoSource(wrapRef, "/media/backdrop.mp4?v=10");
 
   useGSAP(
     () => {
@@ -60,7 +60,7 @@ export function PageBackdrop() {
   return (
     <div className="page-backdrop" id="pageBackdrop" ref={wrapRef} aria-hidden="true">
       <div className="page-backdrop-media">
-        <video ref={videoRef} src={videoSrc} muted playsInline preload={videoSrc ? "auto" : "none"} className="gpu-media" />
+        <video ref={videoRef} src={videoSrc} muted playsInline disablePictureInPicture preload={videoSrc ? "metadata" : "none"} className="gpu-media" />
         <div className="page-backdrop-wash" />
       </div>
     </div>

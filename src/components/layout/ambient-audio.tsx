@@ -6,9 +6,15 @@ import { useEffect, useRef, useState } from "react";
 const SRC = "/audio/the-amber-gate.mp3";
 const VOLUME = 0.38;
 
+function stopAudio(audio: HTMLAudioElement) {
+  audio.pause();
+  audio.removeAttribute("src");
+}
+
 export function AmbientAudio() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
+  const wantPlayback = useRef(false);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -16,10 +22,11 @@ export function AmbientAudio() {
 
     audio.loop = true;
     audio.volume = VOLUME;
+    audio.preload = "none";
 
     let pendingUnlock = true;
 
-    const teardown = () => {
+    const teardownUnlock = () => {
       window.removeEventListener("pointerdown", unlock);
       window.removeEventListener("keydown", unlock);
       window.removeEventListener("touchstart", unlock);
@@ -27,17 +34,18 @@ export function AmbientAudio() {
 
     const unlock = () => {
       if (!pendingUnlock) return;
+      if (!audio.src) audio.src = SRC;
       void audio
         .play()
         .then(() => {
           pendingUnlock = false;
+          wantPlayback.current = true;
           setPlaying(true);
-          teardown();
+          teardownUnlock();
         })
         .catch(() => {});
     };
 
-    unlock();
     window.addEventListener("pointerdown", unlock);
     window.addEventListener("keydown", unlock);
     window.addEventListener("touchstart", unlock, { passive: true });
@@ -47,10 +55,38 @@ export function AmbientAudio() {
     audio.addEventListener("play", onPlay);
     audio.addEventListener("pause", onPause);
 
+    const onVisibility = () => {
+      if (document.hidden) {
+        audio.pause();
+        return;
+      }
+      if (wantPlayback.current && audio.src) {
+        void audio.play().catch(() => {});
+      }
+    };
+
+    const onPageHide = () => {
+      audio.pause();
+    };
+
+    const onUnload = () => {
+      stopAudio(audio);
+      wantPlayback.current = false;
+    };
+
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("beforeunload", onUnload);
+
     return () => {
-      teardown();
+      teardownUnlock();
       audio.removeEventListener("play", onPlay);
       audio.removeEventListener("pause", onPause);
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("beforeunload", onUnload);
+      wantPlayback.current = false;
+      stopAudio(audio);
     };
   }, []);
 
@@ -58,17 +94,20 @@ export function AmbientAudio() {
     const audio = audioRef.current;
     if (!audio) return;
     if (audio.paused) {
+      if (!audio.src) audio.src = SRC;
       audio.volume = VOLUME;
+      wantPlayback.current = true;
       void audio.play().then(() => setPlaying(true)).catch(() => {});
       return;
     }
+    wantPlayback.current = false;
     audio.pause();
     setPlaying(false);
   }
 
   return (
     <>
-      <audio ref={audioRef} src={SRC} autoPlay loop preload="auto" playsInline />
+      <audio ref={audioRef} loop preload="none" playsInline />
       <button
         type="button"
         className="ambient-audio-toggle"

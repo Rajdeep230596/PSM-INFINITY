@@ -56,7 +56,7 @@ export function ItinerariesSalonPage() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="relative flex min-h-[480px] flex-col items-center justify-center overflow-hidden rounded-t-[140px] border-x-2 border-t-2 border-[#C5A880]/30 bg-gradient-to-b from-white/[0.02] to-transparent p-8! text-center lg:col-span-3 lg:min-h-[580px]"
+            className="relative flex min-h-[300px] flex-col items-center justify-center overflow-hidden rounded-t-[72px] border-x-2 border-t-2 border-[#C5A880]/30 bg-gradient-to-b from-white/[0.02] to-transparent p-6! text-center md:min-h-[480px] md:rounded-t-[140px] md:p-8! lg:col-span-3 lg:min-h-[580px]"
           >
             <img
               src={ITINERARIES_DOSSIER.chart}
@@ -97,6 +97,8 @@ export function ItinerariesSalonPage() {
             <img
               src={ITINERARIES_HERO.center.image}
               alt={ITINERARIES_HERO.center.imageAlt}
+              fetchPriority="high"
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover object-[center_70%]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#070709] via-transparent to-[#070709]/25" />
@@ -114,7 +116,7 @@ export function ItinerariesSalonPage() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-            className="flex min-h-[480px] flex-col items-center justify-center rounded-t-[140px] border-x-2 border-t-2 border-[#C5A880]/30 bg-gradient-to-b from-white/[0.02] to-transparent p-8! text-center lg:col-span-3 lg:min-h-[580px]"
+            className="flex min-h-[300px] flex-col items-center justify-center rounded-t-[72px] border-x-2 border-t-2 border-[#C5A880]/30 bg-gradient-to-b from-white/[0.02] to-transparent p-6! text-center md:min-h-[480px] md:rounded-t-[140px] md:p-8! lg:col-span-3 lg:min-h-[580px]"
           >
             <p className="mb-4! font-mono text-[10px] tracking-[0.35em] text-[#C5A880] uppercase">
               {ITINERARIES_HERO.right.eyebrow}
@@ -139,11 +141,11 @@ export function ItinerariesSalonPage() {
         {ITINERARIES_STRIP}
       </p>
 
-      <section className="mx-auto mb-28! grid max-w-7xl grid-cols-1 gap-8 px-6! md:grid-cols-3">
+      <section className="mx-auto mb-28! grid max-w-7xl grid-cols-1 gap-8 px-6! md:grid-cols-2 lg:grid-cols-3">
         {ITINERARIES_AIRFRAMES.map((airframe) => (
           <article
             key={airframe.id}
-            className="group relative flex min-h-[540px] flex-col items-center justify-between rounded-3xl border border-white/[0.08] bg-gradient-to-b from-[#131317] to-[#0A0A0C] p-8! text-center transition-all duration-500 hover:border-[#C5A880]/50"
+            className="group relative flex min-h-[400px] flex-col items-center justify-between rounded-3xl border border-white/[0.08] bg-gradient-to-b from-[#131317] to-[#0A0A0C] p-6! text-center transition-all duration-500 hover:border-[#C5A880]/50 md:min-h-[540px] md:p-8!"
           >
             <div className="pointer-events-none absolute inset-3" aria-hidden="true">
               <span className="absolute top-0 left-0 h-4 w-4 border-t border-l border-[#C5A880]/50" />
@@ -155,7 +157,7 @@ export function ItinerariesSalonPage() {
               {airframe.index}
             </div>
 
-            <div className="relative my-6! flex h-[260px] w-full items-center justify-center">
+            <div className="relative my-6! flex h-[180px] w-full items-center justify-center md:h-[260px]">
               <div
                 aria-hidden="true"
                 className="absolute bottom-4 left-1/2 h-28 w-48 -translate-x-1/2 rounded-[100%] bg-[radial-gradient(ellipse_at_center,rgba(197,168,128,0.38),transparent_70%)] blur-md"
@@ -192,7 +194,7 @@ export function ItinerariesSalonPage() {
           <h2 className="font-serif text-2xl tracking-tight text-white uppercase md:text-3xl">Luxury Flight Tiers.</h2>
           <span className="hidden h-px flex-1 bg-white/[0.08] sm:block" />
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {ITINERARIES_TIERS.map((tier) => {
             const Icon = TIER_ICONS[tier.icon];
             return (
@@ -200,7 +202,7 @@ export function ItinerariesSalonPage() {
                 key={tier.id}
                 type="button"
                 onClick={() => openWhatsAppEnquiry(tier.label)}
-                className="flex h-[180px] flex-col justify-between rounded-2xl border border-white/[0.06] bg-[#101014] p-6! text-left transition-all hover:border-[#C5A880]/30"
+                className="flex min-h-[7.5rem] flex-col justify-between gap-4 rounded-2xl border border-white/[0.06] bg-[#101014] p-5! text-left transition-all hover:border-[#C5A880]/30 md:h-[180px] md:min-h-0 md:p-6!"
               >
                 <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#C5A880]/40 text-[#C5A880] shadow-[0_0_18px_rgba(197,168,128,0.18)]">
                   <Icon size={18} strokeWidth={1.4} />
@@ -210,7 +212,7 @@ export function ItinerariesSalonPage() {
             );
           })}
 
-          <article className="group relative h-[180px] overflow-hidden rounded-2xl border border-[#C5A880]/40">
+          <article className="group relative min-h-[7.5rem] overflow-hidden rounded-2xl border border-[#C5A880]/40 md:h-[180px]">
             <img
               src={ITINERARIES_CABIN.image}
               alt={ITINERARIES_CABIN.imageAlt}
@@ -254,7 +256,13 @@ export function ItinerariesSalonPage() {
               className="overflow-hidden rounded-2xl border border-white/[0.08] bg-[#101014]"
             >
               <div className="aspect-[16/9] overflow-hidden">
-                <img src={spec.image} alt={spec.imageAlt} className="h-full w-full object-cover" />
+                <img
+                  src={spec.image}
+                  alt={spec.imageAlt}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div className="p-4!">
                 <p className="mb-1! font-mono text-[10px] tracking-[0.3em] text-[#C5A880] uppercase">{spec.eyebrow}</p>

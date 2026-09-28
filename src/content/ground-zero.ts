@@ -1,7 +1,6 @@
 export const GROUND_ZERO_LINKS = [
   { href: "/ground-zero/couture", label: "Haute Couture & Wardrobes" },
   { href: "/ground-zero/real-estate", label: "Real Estate Portfolios" },
-  { href: "/ground-zero/landscaping", label: "Landscaping Masterplans" },
   { href: "/ground-zero/gardens", label: "Private Botanical Gardens" },
   { href: "/ground-zero/collectibles", label: "Curated Collectibles" },
 ] as const;
@@ -44,23 +43,9 @@ export const GROUND_ZERO_PAGES: Record<string, GroundZeroPageContent> = {
       { title: "Quiet Approach", body: "Viewings staged without boards, drones, or a public showing calendar." },
     ],
   },
-  landscaping: {
-    slug: "landscaping",
-    code: "03",
-    heading: "Landscaping Masterplans",
-    subhead:
-      "Integrated architectural terrain, estate hardscaping, and indoor-outdoor living drawn as one composition with the house.",
-    cta: "Commission Estate Grounds",
-    pillars: [
-      { title: "Garden as Architecture", body: "Axes, water, and canopy planned with the same discipline as the house." },
-      { title: "Climate Honesty", body: "Planting that holds in the actual weather, not a catalogue of wishful exotics." },
-      { title: "Staffed Grounds", body: "A grounds programme the house team can live with after the designers leave." },
-      { title: "Night Rooms", body: "Lighting and scent considered for evening use, not only the daytime photograph." },
-    ],
-  },
   gardens: {
     slug: "gardens",
-    code: "04",
+    code: "03",
     heading: "Private Botanical Gardens",
     subhead:
       "Manicured emerald lawns, sculpted groves, water sanctuaries, and curated flora held as a private outdoor room.",
@@ -74,7 +59,7 @@ export const GROUND_ZERO_PAGES: Record<string, GroundZeroPageContent> = {
   },
   collectibles: {
     slug: "collectibles",
-    code: "05",
+    code: "04",
     heading: "Curated Collectibles",
     subhead:
       "Ultra-rare horological masterworks paired with bespoke hypercars and limited coachbuilt chassis.",

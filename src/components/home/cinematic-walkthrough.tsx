@@ -8,8 +8,8 @@ import { useEffect, useRef, useState } from "react";
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { markVideoReady, prefetchVideo } from "@/lib/deferred-video";
-import { HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING } from "@/lib/home-scroll";
-import { isConstrainedNetwork, shouldLoopScrollVideo } from "@/lib/media-capability";
+import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
+import { isConstrainedNetwork, prefersReducedMotion } from "@/lib/media-capability";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -84,7 +84,7 @@ export function CinematicWalkthrough() {
       const video = videoRef.current;
       if (!section || !video) return;
 
-      const loopFallback = shouldLoopScrollVideo();
+      const reduceMotion = prefersReducedMotion();
 
       const trigger = ScrollTrigger.create({
         trigger: section,
@@ -104,7 +104,7 @@ export function CinematicWalkthrough() {
       video.addEventListener("loadeddata", warmNext, { once: true });
       if (video.readyState >= 2) warmNext();
 
-      if (loopFallback) {
+      if (reduceMotion) {
         video.loop = true;
         video.muted = true;
         video.playsInline = true;
@@ -143,6 +143,7 @@ export function CinematicWalkthrough() {
       ref={sectionRef}
       id="landing-hero"
       className="home-scrolly-chapter relative w-full bg-black"
+      style={homeChapterStyle(HOME_CHAPTER_VIDEO_SECONDS.landing)}
       aria-label="Master landing sequence"
     >
       <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black gpu-layer">

@@ -42,6 +42,7 @@ export function attachScrollVideo(
   let displayed = 0;
   let raf = 0;
   let lastPaint = 0;
+  let unlocked = false;
 
   const endTime = () => Math.max(0, duration - minStep);
 
@@ -61,15 +62,16 @@ export function attachScrollVideo(
   };
 
   const unlockSeek = () => {
+    if (unlocked) return;
     const play = video.play();
-    if (play && typeof play.then === "function") {
-      play
-        .then(() => {
-          video.pause();
-        })
-        .catch(() => {});
-    } else {
+    const finish = () => {
       video.pause();
+      unlocked = true;
+    };
+    if (play && typeof play.then === "function") {
+      play.then(finish).catch(() => {});
+    } else {
+      finish();
     }
   };
 
@@ -105,9 +107,11 @@ export function attachScrollVideo(
   video.addEventListener("progress", tick);
   if (video.readyState >= 1) onMeta();
   video.addEventListener("loadeddata", unlockSeek, { once: true });
-  document.addEventListener("touchstart", unlockSeek, { once: true, passive: true });
-  document.addEventListener("click", unlockSeek, { once: true });
+  document.addEventListener("touchstart", unlockSeek, { passive: true });
+  document.addEventListener("pointerdown", unlockSeek);
+  window.addEventListener("scroll", unlockSeek, { passive: true });
   raf = window.requestAnimationFrame(loop);
+  unlockSeek();
 
   return () => {
     window.cancelAnimationFrame(raf);
@@ -117,6 +121,7 @@ export function attachScrollVideo(
     video.removeEventListener("progress", tick);
     video.removeEventListener("loadeddata", unlockSeek);
     document.removeEventListener("touchstart", unlockSeek);
-    document.removeEventListener("click", unlockSeek);
+    document.removeEventListener("pointerdown", unlockSeek);
+    window.removeEventListener("scroll", unlockSeek);
   };
 }

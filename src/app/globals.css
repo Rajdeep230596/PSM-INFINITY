@@ -188,8 +188,7 @@ a {
   transform: translate3d(0, 0, 0);
 }
 
-html.cinematic-hero-active .whatsapp-cta,
-html.cinematic-hero-active .ambient-audio-toggle {
+html.cinematic-hero-active .whatsapp-cta {
   opacity: 0 !important;
   visibility: hidden;
   pointer-events: none !important;
@@ -588,9 +587,9 @@ textarea {
   background: #fff;
 }
 
-/* Homepage chapters share one scroll travel so wheel speed stays even. */
+/* Homepage chapters set height from mapped video duration so wheel pace stays even. */
 .home-scrolly-chapter {
-  height: 400vh;
+  position: relative;
 }
 
 @media (max-width: 700px) {

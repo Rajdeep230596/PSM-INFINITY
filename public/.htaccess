@@ -12,6 +12,7 @@ ErrorDocument 404 /404.html
 
   RewriteRule ^about/?$ /our-story/ [L,R=301]
   RewriteRule ^ground-zero/shopping/?$ /ground-zero/couture/ [L,R=301]
+  RewriteRule ^ground-zero/landscaping/?$ /ground-zero/gardens/ [L,R=301]
 </IfModule>
 
 <IfModule mod_expires.c>

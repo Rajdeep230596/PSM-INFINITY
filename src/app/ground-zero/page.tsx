@@ -12,10 +12,10 @@ export default function GroundZeroPortalPage() {
           Ground Zero — Foundation Tier
         </p>
         <h1 className="font-serif text-4xl leading-[1.1] font-light tracking-tight text-[#F5F2EC] md:text-6xl">
-          Five desks. One atelier.
+          Four desks. One atelier.
         </h1>
         <p className="mx-auto mt-6 max-w-2xl font-sans text-base leading-relaxed font-light text-neutral-400">
-          Wardrobe, residence, landscape, gardens, and collectibles — commissioned as a living foundation before
+          Wardrobe, residence, gardens, and collectibles — commissioned as a living foundation before
           travel ever begins.
         </p>
         <div className="mt-16 grid gap-8 text-left sm:grid-cols-2">

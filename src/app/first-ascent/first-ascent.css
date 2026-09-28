@@ -274,9 +274,9 @@ html.first-ascent-page .whatsapp-cta {
 }
 
 html.first-ascent-page .ambient-audio-toggle {
+  top: calc(var(--header, 80px) + 12px);
   right: max(1.5rem, env(safe-area-inset-right, 0px));
-  bottom: calc(5.15rem + env(safe-area-inset-bottom, 0px));
-  z-index: 40;
+  z-index: 60;
 }
 
 html.first-ascent-page .site-footer {
@@ -393,6 +393,7 @@ html.first-ascent-page .site-footer {
 
 .gz-card-overlay {
   padding: 6rem 1.5rem 2.5rem;
+  pointer-events: none;
 }
 
 @media (min-width: 768px) {
@@ -404,7 +405,9 @@ html.first-ascent-page .site-footer {
 .gz-card-track {
   display: flex;
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  overflow-y: clip;
+  overscroll-behavior: contain;
+  scroll-snap-type: x proximity;
   gap: 1.5rem;
   padding: 0 0.5rem 0.5rem;
   width: 100%;
@@ -415,6 +418,11 @@ html.first-ascent-page .site-footer {
 .gz-card-slide {
   flex: 0 0 min(82vw, 21rem);
   scroll-snap-align: center;
+  pointer-events: none;
+}
+
+.gz-card-overlay.is-revealed .gz-card-slide {
+  pointer-events: auto;
 }
 
 .gz-card-face {
@@ -458,7 +466,7 @@ html.first-ascent-page .site-footer {
 @media (min-width: 1280px) {
   .gz-card-track {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     overflow: visible;
     gap: 1.15rem;
     padding: 0;

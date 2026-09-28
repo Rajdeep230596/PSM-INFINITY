@@ -23,5 +23,5 @@ export function isConstrainedNetwork() {
 }
 
 export function shouldLoopScrollVideo() {
-  return prefersReducedMotion() || isCoarsePointer() || isCompactViewport();
+  return prefersReducedMotion();
 }

@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
 import { SiteImage } from "@/components/media/site-image";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
-import { markVideoReady, prefetchVideo } from "@/lib/deferred-video";
+import { playMutedLoop, prefetchVideo } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { isConstrainedNetwork, prefersReducedMotion } from "@/lib/media-capability";
 import { bindNavYield } from "@/lib/nav-yield";
@@ -62,20 +62,7 @@ export function CinematicWalkthrough() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [beat, setBeat] = useState<EditorialBeat | null>(null);
-  const [videoSrc, setVideoSrc] = useState<string | undefined>();
-
-  useEffect(() => {
-    let cancelled = false;
-    const paint = window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
-        if (!cancelled) setVideoSrc(HOME_VIDEO.landing);
-      });
-    });
-    return () => {
-      cancelled = true;
-      window.cancelAnimationFrame(paint);
-    };
-  }, []);
+  const [videoSrc, setVideoSrc] = useState(HOME_VIDEO.landing);
 
   useEffect(() => {
     const node = sectionRef.current;
@@ -123,22 +110,11 @@ export function CinematicWalkthrough() {
       if (video.readyState >= 2) warmNext();
 
       if (reduceMotion) {
-        video.loop = true;
-        video.muted = true;
-        video.playsInline = true;
-        video.disablePictureInPicture = true;
-        video.setAttribute("playsinline", "");
-        video.setAttribute("webkit-playsinline", "");
-        const onReady = () => markVideoReady(video);
-        video.addEventListener("canplay", onReady);
-        if (video.readyState >= 3) onReady();
-        const play = video.play();
-        if (play && typeof play.then === "function") play.catch(() => {});
+        const stopLoop = playMutedLoop(video);
         return bindNavYield(() => {
           cancelled = true;
           window.clearTimeout(warmTimer);
-          video.pause();
-          video.removeEventListener("canplay", onReady);
+          stopLoop();
           trigger.kill();
         });
       }

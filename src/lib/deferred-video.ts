@@ -68,6 +68,39 @@ export function markVideoReady(video: HTMLVideoElement) {
   video.classList.add("is-ready");
 }
 
+/** Reveal as soon as a frame exists. Never wait on canplaythrough — cache restores skip it. */
+export function armVideoReveal(video: HTMLVideoElement) {
+  const reveal = () => markVideoReady(video);
+  if (video.readyState >= 2) {
+    reveal();
+    return () => {};
+  }
+  video.addEventListener("loadeddata", reveal);
+  video.addEventListener("canplay", reveal);
+  const timer = window.setTimeout(reveal, 360);
+  return () => {
+    video.removeEventListener("loadeddata", reveal);
+    video.removeEventListener("canplay", reveal);
+    window.clearTimeout(timer);
+  };
+}
+
+export function playMutedLoop(video: HTMLVideoElement) {
+  video.loop = true;
+  video.muted = true;
+  video.playsInline = true;
+  video.disablePictureInPicture = true;
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+  const disarm = armVideoReveal(video);
+  const play = video.play();
+  if (play && typeof play.then === "function") play.catch(() => {});
+  return () => {
+    disarm();
+    video.pause();
+  };
+}
+
 export function seekIfBuffered(video: HTMLVideoElement, time: number) {
   if (!Number.isFinite(time) || time < 0) return false;
   if (video.seeking) return false;
@@ -101,19 +134,8 @@ export function useDeferredVideoSource(
 
   useEffect(() => {
     if (!eager) return;
-    let cancelled = false;
-    const arm = () => {
-      if (cancelled) return;
-      setActiveSrc(src);
-      if (prefetch) prefetchVideo(prefetch);
-    };
-    const paint = window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(arm);
-    });
-    return () => {
-      cancelled = true;
-      window.cancelAnimationFrame(paint);
-    };
+    setActiveSrc(src);
+    if (prefetch) prefetchVideo(prefetch);
   }, [eager, prefetch, src]);
 
   useEffect(() => {

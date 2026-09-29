@@ -79,6 +79,7 @@ html.is-booting body {
 video.gpu-media {
   opacity: 0;
   background-color: #08080a;
+  pointer-events: none;
   transition: opacity 0.45s ease;
 }
 
@@ -1819,6 +1820,10 @@ textarea {
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   will-change: opacity;
+}
+
+html.is-revealed .boot-loader {
+  display: none !important;
 }
 
 .boot-loader-inline {

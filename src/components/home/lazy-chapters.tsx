@@ -72,25 +72,25 @@ export function DeferredChapter({
 
 export const CinematicWalkthroughLazy = dynamic(
   () => import("@/components/home/cinematic-walkthrough").then((module) => module.CinematicWalkthrough),
-  { ssr: false, loading: ChapterFrame },
+  { loading: ChapterFrame },
 );
 
 export const GroundZeroScrollyLazy = dynamic(
   () => import("@/components/home/ground-zero-scrolly").then((module) => module.GroundZeroScrollySection),
-  { ssr: false, loading: ChapterFrame },
+  { loading: ChapterFrame },
 );
 
 export const SkyTerraceArrivalLazy = dynamic(
   () => import("@/components/home/sky-terrace-arrival").then((module) => module.SkyTerraceArrival),
-  { ssr: false, loading: ChapterFrame },
+  { loading: ChapterFrame },
 );
 
 export const FirstAscentGalleryLazy = dynamic(
   () => import("@/components/first-ascent/FirstAscentGallery").then((module) => module.FirstAscentGallery),
-  { ssr: false, loading: ChapterFrame },
+  { loading: ChapterFrame },
 );
 
 export const SkydeckArrivalLazy = dynamic(
   () => import("@/components/home/skydeck-arrival").then((module) => module.SkydeckArrival),
-  { ssr: false, loading: ChapterFrame },
+  { loading: ChapterFrame },
 );

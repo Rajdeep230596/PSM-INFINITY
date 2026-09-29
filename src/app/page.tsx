@@ -1,6 +1,6 @@
+import { CinematicWalkthrough } from "@/components/home/cinematic-walkthrough";
 import { HomePreload } from "@/components/home/home-preload";
 import {
-  CinematicWalkthroughLazy,
   DeferredChapter,
   FirstAscentGalleryLazy,
   GroundZeroScrollyLazy,
@@ -12,7 +12,7 @@ export default function HomePage() {
   return (
     <>
       <HomePreload />
-      <CinematicWalkthroughLazy />
+      <CinematicWalkthrough />
       <DeferredChapter>
         <GroundZeroScrollyLazy />
       </DeferredChapter>

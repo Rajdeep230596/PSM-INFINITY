@@ -1,13 +1,14 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { beginNavigation, endNavigation, isInternalRouteChange } from "@/lib/nav-yield";
+import { commitFullNavigation, endNavigation, isInternalRouteChange } from "@/lib/nav-yield";
 
 export function RouteProgress() {
   const pathname = usePathname();
   const [phase, setPhase] = useState<"idle" | "active" | "finishing">("idle");
+  const seenPath = useRef(false);
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
@@ -16,31 +17,22 @@ export function RouteProgress() {
       const anchor = target.closest("a");
       if (!(anchor instanceof HTMLAnchorElement)) return;
       if (!isInternalRouteChange(anchor, event)) return;
-      beginNavigation();
+      event.preventDefault();
+      event.stopImmediatePropagation();
       setPhase("active");
-    };
-
-    const onPop = () => {
-      beginNavigation();
-      setPhase("active");
+      commitFullNavigation(anchor.href);
     };
 
     document.addEventListener("click", onClick, true);
-    window.addEventListener("popstate", onPop);
-    return () => {
-      document.removeEventListener("click", onClick, true);
-      window.removeEventListener("popstate", onPop);
-    };
+    return () => document.removeEventListener("click", onClick, true);
   }, []);
 
   useEffect(() => {
-    if (phase !== "active") return;
-    const timer = window.setTimeout(() => setPhase("finishing"), 4000);
-    return () => window.clearTimeout(timer);
-  }, [phase]);
-
-  useEffect(() => {
-    endNavigation();
+    if (!seenPath.current) {
+      seenPath.current = true;
+      return;
+    }
+    endNavigation({ resetScroll: true });
     setPhase((current) => (current === "active" ? "finishing" : "idle"));
   }, [pathname]);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { markVideoReady, seekIfBuffered, timeIsBuffered } from "@/lib/deferred-video";
+import { armVideoReveal, markVideoReady, seekIfBuffered, timeIsBuffered } from "@/lib/deferred-video";
 import { registerNavYield } from "@/lib/nav-yield";
 
 type ScrollVideoOptions = {
@@ -31,9 +31,8 @@ export function attachScrollVideo(
 
   if (reduceMotion || options.enabled === false) {
     video.pause();
-    if (video.readyState >= 2) markVideoReady(video);
-    else video.addEventListener("loadeddata", () => markVideoReady(video), { once: true });
-    return () => {};
+    const disarm = armVideoReveal(video);
+    return () => disarm();
   }
 
   const smoothing = options.smoothing ?? 0.16;
@@ -66,10 +65,10 @@ export function attachScrollVideo(
 
   const unlockSeek = () => {
     if (stopped || unlocked) return;
+    unlocked = true;
     const play = video.play();
     const finish = () => {
-      video.pause();
-      unlocked = true;
+      if (!stopped) video.pause();
     };
     if (play && typeof play.then === "function") {
       play.then(finish).catch(() => {});
@@ -128,14 +127,19 @@ export function attachScrollVideo(
   );
   io.observe(video);
 
+  const forceReveal = () => {
+    if (!stopped) markVideoReady(video);
+  };
+
   video.addEventListener("loadedmetadata", onMeta);
   video.addEventListener("loadeddata", revealIfPainted);
   video.addEventListener("canplay", revealIfPainted);
   video.addEventListener("progress", tick);
   if (video.readyState >= 1) onMeta();
   video.addEventListener("loadeddata", unlockSeek, { once: true });
-  video.addEventListener("pointerdown", unlockSeek, { passive: true });
-  window.addEventListener("scroll", unlockSeek, { passive: true });
+  video.addEventListener("pointerdown", unlockSeek, { passive: true, once: true });
+  const revealTimer = window.setTimeout(forceReveal, 360);
+  if (video.readyState >= 2) revealIfPainted();
   unlockSeek();
 
   const stop = () => {
@@ -144,6 +148,7 @@ export function attachScrollVideo(
     visible = false;
     window.cancelAnimationFrame(raf);
     raf = 0;
+    window.clearTimeout(revealTimer);
     io.disconnect();
     video.pause();
     video.removeEventListener("loadedmetadata", onMeta);
@@ -152,7 +157,6 @@ export function attachScrollVideo(
     video.removeEventListener("progress", tick);
     video.removeEventListener("loadeddata", unlockSeek);
     video.removeEventListener("pointerdown", unlockSeek);
-    window.removeEventListener("scroll", unlockSeek);
   };
 
   const unregister = registerNavYield(stop);

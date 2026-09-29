@@ -26,7 +26,9 @@ function alreadyRevealed() {
 }
 
 export function BootLoader() {
-  const [phase, setPhase] = useState<"booting" | "exiting" | "done">("booting");
+  const [phase, setPhase] = useState<"booting" | "exiting" | "done">(() =>
+    typeof window !== "undefined" && alreadyRevealed() ? "done" : "booting",
+  );
 
   useLayoutEffect(() => {
     const html = document.documentElement;

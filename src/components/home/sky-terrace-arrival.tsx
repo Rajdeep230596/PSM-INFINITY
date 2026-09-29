@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
-import { markVideoReady, useDeferredVideoSource } from "@/lib/deferred-video";
+import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { prefersReducedMotion } from "@/lib/media-capability";
 import { bindNavYield } from "@/lib/nav-yield";
@@ -93,20 +93,9 @@ export function SkyTerraceArrival() {
       });
 
       if (reduceMotion) {
-        video.loop = true;
-        video.muted = true;
-        video.playsInline = true;
-        video.disablePictureInPicture = true;
-        video.setAttribute("playsinline", "");
-        video.setAttribute("webkit-playsinline", "");
-        const onReady = () => markVideoReady(video);
-        video.addEventListener("canplay", onReady);
-        if (video.readyState >= 3) onReady();
-        const play = video.play();
-        if (play && typeof play.then === "function") play.catch(() => {});
+        const stopLoop = playMutedLoop(video);
         return bindNavYield(() => {
-          video.pause();
-          video.removeEventListener("canplay", onReady);
+          stopLoop();
           trigger.kill();
         });
       }

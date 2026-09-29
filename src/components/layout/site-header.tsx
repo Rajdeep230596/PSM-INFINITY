@@ -53,7 +53,7 @@ function NavDropdown({
             <Link
               key={link.href}
               href={link.href}
-              prefetch={false}
+              prefetch={true}
               className={pathMatches(pathname, link.href) ? "active" : undefined}
               onClick={onNavigate}
             >

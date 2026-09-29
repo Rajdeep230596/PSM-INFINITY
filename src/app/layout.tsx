@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
 
 import { AmbientAudio } from "@/components/layout/ambient-audio";
+import { RoutePrefetch } from "@/components/layout/route-prefetch";
 import { RouteProgress } from "@/components/layout/route-progress";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
@@ -53,7 +54,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){function reveal(){var h=document.documentElement;h.classList.remove("is-booting");h.classList.add("is-revealed");try{sessionStorage.setItem("psm-revealed","1")}catch(e){}var n=document.querySelectorAll(".boot-loader");for(var i=0;i<n.length;i++)n[i].remove();}try{if(sessionStorage.getItem("psm-revealed")==="1"){reveal();return;}}catch(e){}window.addEventListener("error",function(e){if(e.target&&(e.target.tagName==="SCRIPT"||e.target.tagName==="LINK"))reveal();},true);setTimeout(function(){if(document.documentElement.classList.contains("is-booting"))reveal();},1400);})();`,
+            __html: `(function(){function reveal(){var h=document.documentElement;h.classList.remove("is-booting");h.classList.add("is-revealed");try{sessionStorage.setItem("psm-revealed","1")}catch(e){}var n=document.querySelectorAll(".boot-loader");for(var i=0;i<n.length;i++)n[i].remove();}try{if(sessionStorage.getItem("psm-revealed")==="1")reveal();}catch(e){}window.addEventListener("error",function(e){if(e.target&&(e.target.tagName==="SCRIPT"||e.target.tagName==="LINK"))reveal();},true);setTimeout(function(){if(!document.documentElement.classList.contains("is-revealed"))reveal();},1200);})();`,
           }}
         />
         <link rel="preload" href={siteImageSrc("/brand/psm-infinity-logo.png")!} as="image" type="image/webp" fetchPriority="high" />
@@ -62,6 +63,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </noscript>
         <BootLoader />
         <RouteProgress />
+        <RoutePrefetch />
         <SmoothScroll>
           <a className="skip-link" href="#content">
             Skip to content

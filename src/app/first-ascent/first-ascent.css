@@ -15,7 +15,7 @@
 
 @theme {
   --font-sans: var(--font-outfit), "Segoe UI", sans-serif;
-  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-serif: "Diastema", var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --color-obsidian: #0a0a0b;
 }
 

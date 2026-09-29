@@ -16,9 +16,34 @@
   --header: 80px;
   --safe-top: env(safe-area-inset-top, 0px);
   --header-offset: calc(var(--header) + var(--safe-top));
-  --font-display: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-display: "Diastema", var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --font-script: "Italianno", cursive;
   --font-body: var(--font-outfit), "Outfit", system-ui, sans-serif;
+}
+
+@font-face {
+  font-family: "Diastema";
+  src:
+    local("Diastema"),
+    local("Diastema Regular"),
+    url("/fonts/Diastema-Regular.woff2") format("woff2"),
+    url("/fonts/Diastema-Regular.otf") format("opentype"),
+    url("/fonts/Diastema-Regular.ttf") format("truetype");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Diastema";
+  src:
+    local("Diastema Italic"),
+    url("/fonts/Diastema-Italic.woff2") format("woff2"),
+    url("/fonts/Diastema-Italic.otf") format("opentype"),
+    url("/fonts/Diastema-Italic.ttf") format("truetype");
+  font-weight: 300 700;
+  font-style: italic;
+  font-display: swap;
 }
 
 @font-face {
@@ -60,6 +85,13 @@ body {
   overflow-x: clip;
 }
 
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+}
+
 html.is-booting,
 html.is-booting body {
   overflow: hidden;
@@ -85,6 +117,32 @@ video.gpu-media {
 
 video.gpu-media.is-ready {
   opacity: 1;
+}
+
+.editorial-wash {
+  filter: blur(48px);
+}
+
+@media (max-width: 700px), (pointer: coarse) {
+  .editorial-wash {
+    filter: none;
+  }
+
+  .skydeck-stage,
+  .skydeck-stage .gpu-media {
+    transform: none;
+    backface-visibility: visible;
+  }
+
+  .skydeck-stage .drop-shadow-xl,
+  .skydeck-stage .drop-shadow-md {
+    filter: none;
+  }
+
+  .skydeck-room-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
 }
 
 img {

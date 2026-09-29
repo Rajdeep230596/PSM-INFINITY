@@ -14,7 +14,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export function PageBackdrop() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(wrapRef, "/media/backdrop.mp4?v=10");
+  const videoSrc = useDeferredVideoSource(wrapRef, "/media/backdrop.mp4?v=12");
 
   useGSAP(
     () => {

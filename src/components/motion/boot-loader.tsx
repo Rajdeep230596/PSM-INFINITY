@@ -26,9 +26,7 @@ function alreadyRevealed() {
 }
 
 export function BootLoader() {
-  const [phase, setPhase] = useState<"booting" | "exiting" | "done">(() =>
-    typeof window !== "undefined" && alreadyRevealed() ? "done" : "booting",
-  );
+  const [phase, setPhase] = useState<"booting" | "exiting" | "done">("booting");
 
   useLayoutEffect(() => {
     const html = document.documentElement;
@@ -44,23 +42,35 @@ export function BootLoader() {
     let cancelled = false;
     const fadeMs = reducedMotion ? 0 : 280;
 
+    const finish = () => {
+      if (cancelled || html.classList.contains("is-revealed")) return;
+      markRevealed(html);
+      if (reducedMotion) {
+        setPhase("done");
+        return;
+      }
+      setPhase("exiting");
+      window.setTimeout(() => {
+        if (!cancelled) setPhase("done");
+      }, fadeMs);
+    };
+
+    const onResourceError = (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLScriptElement || target instanceof HTMLLinkElement) finish();
+    };
+
+    window.addEventListener("error", onResourceError, true);
+    const failsafe = window.setTimeout(finish, 1200);
+
     void prewarmExperience({ reducedMotion })
       .catch(() => undefined)
-      .then(() => {
-        if (cancelled) return;
-        markRevealed(html);
-        if (reducedMotion) {
-          setPhase("done");
-          return;
-        }
-        setPhase("exiting");
-        window.setTimeout(() => {
-          if (!cancelled) setPhase("done");
-        }, fadeMs);
-      });
+      .then(finish);
 
     return () => {
       cancelled = true;
+      window.clearTimeout(failsafe);
+      window.removeEventListener("error", onResourceError, true);
     };
   }, []);
 

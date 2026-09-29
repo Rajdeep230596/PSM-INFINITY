@@ -1,6 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+
+import { isMotionLite } from "@/lib/media-capability";
 
 export type EditorialBeat = {
   id: string;
@@ -36,6 +39,43 @@ export function activeBeat<T extends { start: number; end: number }>(progress: n
   return { beat: current, visibility };
 }
 
+function BeatCopy({
+  beat,
+  cta,
+}: {
+  beat: EditorialBeat;
+  cta?: { label: string; onClick: () => void };
+}) {
+  return (
+    <>
+      <span className="mb-3 block font-mono text-[10px] font-semibold tracking-[0.35em] text-[#C5A880] uppercase drop-shadow-md md:text-[11px]">
+        {beat.eyebrow}
+      </span>
+      <h2 className="font-serif text-3xl leading-[1.08] font-light tracking-tight text-white drop-shadow-xl sm:text-4xl md:text-6xl">
+        {beat.headline.map((line) => (
+          <span key={line} className="block">
+            {line}
+          </span>
+        ))}
+      </h2>
+      {beat.subtext ? (
+        <p className="mt-4 max-w-lg font-sans text-xs leading-relaxed font-light text-neutral-300 drop-shadow-md md:text-sm">
+          {beat.subtext}
+        </p>
+      ) : null}
+      {cta ? (
+        <button
+          type="button"
+          onClick={cta.onClick}
+          className="pointer-events-auto mt-8 rounded-full bg-white px-5 py-2.5 text-xs font-semibold tracking-tight text-black shadow-[0_2px_16px_rgba(255,255,255,0.18)] transition-colors hover:bg-neutral-200"
+        >
+          {cta.label}
+        </button>
+      ) : null}
+    </>
+  );
+}
+
 export function EditorialMilestone({
   beat,
   cta,
@@ -43,48 +83,38 @@ export function EditorialMilestone({
   beat: EditorialBeat | null;
   cta?: { label: string; onClick: () => void };
 }) {
+  const [lite, setLite] = useState(true);
+  useEffect(() => {
+    setLite(isMotionLite());
+  }, []);
+
   return (
     <div className="pointer-events-none absolute inset-0 z-20 flex items-end">
       <div className="mx-auto w-full max-w-7xl px-8 pb-28 md:px-16 md:pb-36 lg:px-20">
         <div className="relative max-w-xl text-left">
-          <div className="pointer-events-none absolute -inset-10 -z-10 bg-gradient-to-tr from-black/85 via-black/40 to-transparent blur-3xl" />
-          <AnimatePresence mode="wait">
-            {beat ? (
-              <motion.div
-                key={beat.id}
-                className="gpu-surface"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12, transition: { duration: 0.4, ease: "easeIn" } }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              >
-                <span className="mb-3 block font-mono text-[10px] font-semibold tracking-[0.35em] text-rose-400 uppercase drop-shadow-md md:text-[11px]">
-                  {beat.eyebrow}
-                </span>
-                <h2 className="font-serif text-3xl leading-[1.08] font-light tracking-tight text-white drop-shadow-xl sm:text-4xl md:text-6xl">
-                  {beat.headline.map((line) => (
-                    <span key={line} className="block">
-                      {line}
-                    </span>
-                  ))}
-                </h2>
-                {beat.subtext ? (
-                  <p className="mt-4 max-w-lg font-sans text-xs leading-relaxed font-light text-neutral-300 drop-shadow-md md:text-sm">
-                    {beat.subtext}
-                  </p>
-                ) : null}
-                {cta ? (
-                  <button
-                    type="button"
-                    onClick={cta.onClick}
-                    className="pointer-events-auto mt-8 rounded-full bg-white px-5 py-2.5 text-xs font-semibold tracking-tight text-black shadow-[0_2px_16px_rgba(255,255,255,0.18)] transition-colors hover:bg-neutral-200"
-                  >
-                    {cta.label}
-                  </button>
-                ) : null}
-              </motion.div>
-            ) : null}
-          </AnimatePresence>
+          <div className="editorial-wash pointer-events-none absolute -inset-10 -z-10 bg-gradient-to-tr from-black/85 via-black/40 to-transparent" />
+          {lite ? (
+            beat ? (
+              <div key={beat.id}>
+                <BeatCopy beat={beat} cta={cta} />
+              </div>
+            ) : null
+          ) : (
+            <AnimatePresence mode="wait">
+              {beat ? (
+                <motion.div
+                  key={beat.id}
+                  className="gpu-surface"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12, transition: { duration: 0.4, ease: "easeIn" } }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                >
+                  <BeatCopy beat={beat} cta={cta} />
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          )}
         </div>
       </div>
     </div>

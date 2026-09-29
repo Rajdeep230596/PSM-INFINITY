@@ -25,3 +25,8 @@ export function isConstrainedNetwork() {
 export function shouldLoopScrollVideo() {
   return prefersReducedMotion();
 }
+
+/** Phones and tablets — cheaper video, no glass blur, fewer seeks. */
+export function isMotionLite() {
+  return isCompactViewport() || isCoarsePointer();
+}

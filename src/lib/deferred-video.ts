@@ -133,13 +133,13 @@ export function useDeferredVideoSource(
   const [activeSrc, setActiveSrc] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (!eager) return;
+    if (!src || !eager) return;
     setActiveSrc(src);
     if (prefetch) prefetchVideo(prefetch);
   }, [eager, prefetch, src]);
 
   useEffect(() => {
-    if (eager) return;
+    if (!src || eager) return;
 
     const node = targetRef.current;
     if (!node) return;

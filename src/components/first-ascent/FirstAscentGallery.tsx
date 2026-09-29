@@ -164,7 +164,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
             <div className="pointer-events-none absolute -inset-10 -z-10 bg-gradient-to-tr from-black/85 via-black/40 to-transparent blur-3xl" />
             {hideHero ? (
               <>
-                <p className="mb-3 block font-mono text-[10px] font-semibold tracking-[0.35em] text-rose-400 uppercase drop-shadow-md md:text-[11px]">
+                <p className="mb-3 block font-mono text-[10px] font-semibold tracking-[0.35em] text-[#C5A880] uppercase drop-shadow-md md:text-[11px]">
                   Event Management
                 </p>
                 <h2 className="font-serif text-3xl leading-[1.08] font-light tracking-tight text-white drop-shadow-xl sm:text-4xl md:text-6xl">
@@ -184,7 +184,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
               </>
             ) : (
               <>
-                <p className="mb-3 block font-mono text-[10px] font-semibold tracking-[0.35em] text-rose-400 uppercase drop-shadow-md md:text-[11px]">
+                <p className="mb-3 block font-mono text-[10px] font-semibold tracking-[0.35em] text-[#C5A880] uppercase drop-shadow-md md:text-[11px]">
                   Event Management
                 </p>
                 <h1 className="font-serif text-3xl leading-[1.08] font-light tracking-tight text-white drop-shadow-xl sm:text-4xl md:text-6xl">

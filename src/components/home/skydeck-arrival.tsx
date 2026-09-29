@@ -12,15 +12,16 @@ import { SKYDECK_BACKDROP_FIRST, SKYDECK_BACKDROP_SECOND } from "@/content/skyde
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
-import { prefersReducedMotion } from "@/lib/media-capability";
+import { isMotionLite, prefersReducedMotion } from "@/lib/media-capability";
 import { bindNavYield } from "@/lib/nav-yield";
 import { attachScrollVideo } from "@/lib/scroll-video";
 import {
-  mapToSkydeck,
-  SECOND_ASCENT_VIDEO_SRC,
   SKYDECK_CARDS_HIDE_AT,
   SKYDECK_LOUNGE_AT,
   SKYDECK_POOL_AT,
+  SKYDECK_VIDEO_MOBILE_SRC,
+  SKYDECK_VIDEO_POSTER,
+  SKYDECK_VIDEO_SRC,
   skydeckProgressForTime,
 } from "@/lib/second-ascent-video";
 import { clearScrollPause, pauseSiteScroll } from "@/lib/site-lenis";
@@ -64,7 +65,11 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, SECOND_ASCENT_VIDEO_SRC, { eager: true });
+  const [fileSrc, setFileSrc] = useState("");
+  useEffect(() => {
+    setFileSrc(isMotionLite() ? SKYDECK_VIDEO_MOBILE_SRC : SKYDECK_VIDEO_SRC);
+  }, []);
+  const videoSrc = useDeferredVideoSource(sectionRef, fileSrc, { eager: Boolean(fileSrc) });
   const hideHeroRef = useRef(hideHero);
   useEffect(() => {
     hideHeroRef.current = hideHero;
@@ -96,14 +101,15 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
       if (!section || !video || !videoSrc) return;
 
       const reduceMotion = prefersReducedMotion();
-      const allowCardPause = !hideHeroRef.current && !reduceMotion;
+      const lite = isMotionLite();
+      const allowCardPause = !hideHeroRef.current && !reduceMotion && !lite;
       let lastCardPhase: CardPhase = cardPhaseFromProgress(0);
 
       const trigger = ScrollTrigger.create({
         trigger: section,
         start: "top top",
         end: "bottom bottom",
-        scrub: HOME_SCROLL_SCRUB,
+        scrub: lite ? 1.35 : HOME_SCROLL_SCRUB,
         onUpdate: (self) => {
           const next = activeBeat(self.progress, BEATS).beat;
           setBeat((prev) => (prev?.id === next?.id ? prev : next));
@@ -132,10 +138,9 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
 
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
-        mapProgress: mapToSkydeck,
-        smoothing: HOME_VIDEO_SMOOTHING,
-        frameRate: 30,
-        preload: "metadata",
+        smoothing: lite ? 0.28 : HOME_VIDEO_SMOOTHING,
+        frameRate: lite ? 10 : 24,
+        preload: lite ? "metadata" : "auto",
       });
 
       return bindNavYield(() => {
@@ -155,10 +160,11 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
       style={homeChapterStyle(HOME_CHAPTER_VIDEO_SECONDS.skydeck)}
       aria-label="Level Three Skydeck"
     >
-      <div ref={videoWrapRef} className="sticky top-0 z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
+      <div ref={videoWrapRef} className="skydeck-stage sticky top-0 z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
         <video
           ref={videoRef}
           src={videoSrc}
+          poster={SKYDECK_VIDEO_POSTER}
           muted
           playsInline
           disablePictureInPicture

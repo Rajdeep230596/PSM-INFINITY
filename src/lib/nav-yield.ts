@@ -1,7 +1,8 @@
 "use client";
 
+import { clearCinematicChapters } from "@/lib/cinematic-hero";
 import { releaseAllVideoPrefetch } from "@/lib/deferred-video";
-import { haltSiteScroll, resumeSiteScroll } from "@/lib/site-lenis";
+import { haltSiteScroll, resetRouteScroll, resumeSiteScroll } from "@/lib/site-lenis";
 
 type Teardown = () => void;
 
@@ -34,35 +35,28 @@ export function isNavigating() {
   return navigating;
 }
 
-function detachMediaElement(media: HTMLMediaElement) {
+function pauseMediaElement(media: HTMLMediaElement) {
   try {
     media.pause();
   } catch {
     // Decoder shutdown is best-effort.
   }
-  media.querySelectorAll("source").forEach((source) => source.remove());
-  media.removeAttribute("src");
-  media.preload = "none";
-  try {
-    media.load();
-  } catch {
-    // Aborting an in-flight buffer can throw in older WebKit.
-  }
 }
 
 function freezePageMedia() {
-  document.querySelectorAll("video").forEach((video) => detachMediaElement(video));
+  document.querySelectorAll("video").forEach(pauseMediaElement);
   releaseAllVideoPrefetch();
   document
     .querySelectorAll('link[rel="preload"][as="video"], link[data-home-video-preload], link[data-video-prefetch]')
     .forEach((node) => node.remove());
 }
 
-/** Abort scroll/video work immediately so the click can be handled on this frame. */
-export function beginNavigation() {
-  if (navigating) return;
-  navigating = true;
-  haltSiteScroll();
+function stopScrollWork() {
+  clearCinematicChapters();
+  document.documentElement.classList.remove("is-booting");
+  document.documentElement.classList.add("is-revealed");
+  document.body.style.overflow = "";
+  document.documentElement.style.overflow = "";
   for (const teardown of [...teardowns]) {
     try {
       teardown();
@@ -70,14 +64,30 @@ export function beginNavigation() {
       // A failed teardown must not block the rest.
     }
   }
-  queueMicrotask(freezePageMedia);
-  window.setTimeout(() => {
-    if (navigating) endNavigation();
-  }, 2500);
+  freezePageMedia();
+  haltSiteScroll();
 }
 
-export function endNavigation() {
+/**
+ * Static export + scroll-video cannot complete App Router client transitions.
+ * Direct HTML loads are already fast — use those instead of the SPA router.
+ */
+export function commitFullNavigation(url: string) {
+  if (navigating) return;
+  navigating = true;
+  stopScrollWork();
+  window.location.assign(url);
+}
+
+export function beginNavigation() {
+  if (navigating) return;
+  navigating = true;
+  stopScrollWork();
+}
+
+export function endNavigation(options?: { resetScroll?: boolean }) {
   navigating = false;
+  if (options?.resetScroll !== false && !window.location.hash) resetRouteScroll();
   resumeSiteScroll();
 }
 

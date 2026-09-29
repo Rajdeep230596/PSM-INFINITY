@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
-import { markVideoReady, useDeferredVideoSource } from "@/lib/deferred-video";
+import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { prefersReducedMotion } from "@/lib/media-capability";
 import { bindNavYield } from "@/lib/nav-yield";
@@ -72,20 +72,9 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
       });
 
       if (reduceMotion) {
-        video.loop = true;
-        video.muted = true;
-        video.playsInline = true;
-        video.disablePictureInPicture = true;
-        video.setAttribute("playsinline", "");
-        video.setAttribute("webkit-playsinline", "");
-        const onReady = () => markVideoReady(video);
-        video.addEventListener("canplay", onReady);
-        if (video.readyState >= 3) onReady();
-        const play = video.play();
-        if (play && typeof play.then === "function") play.catch(() => {});
+        const stopLoop = playMutedLoop(video);
         return bindNavYield(() => {
-          video.pause();
-          video.removeEventListener("canplay", onReady);
+          stopLoop();
           trigger.kill();
         });
       }

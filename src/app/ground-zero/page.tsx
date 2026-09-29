@@ -1,14 +1,12 @@
 import Link from "next/link";
 
-import { GroundZeroScrollyLazy, IdleChapter } from "@/components/home/lazy-chapters";
+import { GroundZeroScrollyLazy } from "@/components/home/lazy-chapters";
 import { GROUND_ZERO_LINKS } from "@/content/ground-zero";
 
 export default function GroundZeroPortalPage() {
   return (
     <div className="first-ascent first-ascent-flush min-h-screen bg-[#0A0A0B] text-neutral-100">
-      <IdleChapter>
-        <GroundZeroScrollyLazy />
-      </IdleChapter>
+      <GroundZeroScrollyLazy />
       <section className="mx-auto max-w-5xl px-8 py-28 text-center md:py-36">
         <p className="mb-4 font-sans text-[11px] tracking-[0.4em] text-amber-300/80 uppercase">
           Ground Zero — Foundation Tier

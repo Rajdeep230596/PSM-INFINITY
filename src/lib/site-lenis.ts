@@ -47,3 +47,24 @@ export function resumeSiteScroll() {
   paused = false;
   siteLenis?.start();
 }
+
+export function resetRouteScroll() {
+  window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  siteLenis?.scrollTo(0, { immediate: true, force: true });
+}
+
+let killScrollTriggers: (() => void) | null = null;
+
+export function setScrollTriggerKiller(kill: (() => void) | null) {
+  killScrollTriggers = kill;
+}
+
+export function killTrackedScrollTriggers() {
+  try {
+    killScrollTriggers?.();
+  } catch {
+    // ScrollTrigger may already have been torn down with the page.
+  }
+}

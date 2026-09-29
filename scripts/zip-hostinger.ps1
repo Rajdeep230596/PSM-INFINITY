@@ -16,6 +16,13 @@ New-Item -ItemType Directory -Path (Split-Path $nextHtaccess) -Force | Out-Null
   Allow from all
 </IfModule>
 Options -Indexes +FollowSymLinks
+<IfModule mod_headers.c>
+  Header set Cache-Control "public, max-age=31536000, immutable"
+</IfModule>
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 year"
+</IfModule>
 '@ | Set-Content -Path $nextHtaccess -Encoding ascii
 
 $video = Join-Path $out "assets\videos\luxury-walkthrough.mp4"

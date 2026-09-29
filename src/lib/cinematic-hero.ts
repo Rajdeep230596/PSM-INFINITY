@@ -6,3 +6,9 @@ export function setCinematicChapter(id: string, active: boolean) {
   else activeChapters.delete(id);
   document.documentElement.classList.toggle("cinematic-hero-active", activeChapters.size > 0);
 }
+
+export function clearCinematicChapters() {
+  activeChapters.clear();
+  if (typeof document === "undefined") return;
+  document.documentElement.classList.remove("cinematic-hero-active");
+}

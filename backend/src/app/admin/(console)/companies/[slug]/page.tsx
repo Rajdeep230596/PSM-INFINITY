@@ -14,27 +14,36 @@ export default async function EditCompanyPage({ params }: { params: Promise<{ sl
   const industries = await listIndustries(false);
 
   return (
-    <main style={{ padding: 32, display: "grid", gap: 16, maxWidth: 960 }}>
-      <p>
-        <Link href="/admin/companies">← Companies</Link>
-      </p>
-      <h1>Edit company</h1>
-      <CompanyForm
-        mode="edit"
-        currentSlug={row.slug}
-        ownerId={row.id}
-        industries={industries.map((industry) => ({ id: industry.id, name: industry.name }))}
-        initial={{
-          slug: row.slug,
-          name: row.name,
-          industry_id: row.industry_id,
-          summary: row.summary,
-          positioning: row.positioning ?? "",
-          logo_url: row.logo_url ?? "",
-          website_url: row.website_url ?? "",
-          published: Boolean(row.published),
-        }}
-      />
-    </main>
+    <div className="admin-grid">
+      <Link href="/admin/companies" className="admin-back">
+        ← Companies
+      </Link>
+      <header className="admin-page-header">
+        <div>
+          <h1>Edit company</h1>
+          <p>
+            <code>{row.slug}</code>
+          </p>
+        </div>
+      </header>
+      <section className="admin-card">
+        <CompanyForm
+          mode="edit"
+          currentSlug={row.slug}
+          ownerId={row.id}
+          industries={industries.map((industry) => ({ id: industry.id, name: industry.name }))}
+          initial={{
+            slug: row.slug,
+            name: row.name,
+            industry_id: row.industry_id,
+            summary: row.summary,
+            positioning: row.positioning ?? "",
+            logo_url: row.logo_url ?? "",
+            website_url: row.website_url ?? "",
+            published: Boolean(row.published),
+          }}
+        />
+      </section>
+    </div>
   );
 }

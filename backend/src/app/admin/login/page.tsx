@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
@@ -28,24 +29,30 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <main style={{ maxWidth: 420, margin: "12vh auto", padding: 24 }}>
-      <h1>PSM Infinity</h1>
-      <p>Owner login</p>
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 12 }}>
-        <label>
-          Email
-          <input name="email" type="email" required style={{ width: "100%", padding: 8 }} />
-        </label>
-        <label>
-          Password
-          <input name="password" type="password" required minLength={8} style={{ width: "100%", padding: 8 }} />
-        </label>
-        <button type="submit">Sign in</button>
-        {error ? <p>{error}</p> : null}
-      </form>
-      <p>
-        <a href="/admin/forgot-password">Forgot password?</a>
-      </p>
+    <main className="admin-auth">
+      <div className="admin-auth-card">
+        <h1>PSM Infinity</h1>
+        <p className="lede">Owner login for the catalogue console.</p>
+        <form onSubmit={onSubmit} className="admin-form">
+          <label className="admin-field">
+            <span>Email</span>
+            <input name="email" type="email" required autoComplete="username" />
+          </label>
+          <label className="admin-field">
+            <span>Password</span>
+            <input name="password" type="password" required minLength={8} autoComplete="current-password" />
+          </label>
+          <div className="admin-actions">
+            <button type="submit" className="admin-btn">
+              Sign in
+            </button>
+          </div>
+          {error ? <p className="admin-error">{error}</p> : null}
+        </form>
+        <p className="admin-muted" style={{ marginTop: 18 }}>
+          <Link href="/admin/forgot-password">Forgot password?</Link>
+        </p>
+      </div>
     </main>
   );
 }

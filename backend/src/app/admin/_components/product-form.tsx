@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { buttonStyle, fieldStyle, inputStyle, readError, slugify } from "./form-styles";
+import { readError, slugify } from "./form-styles";
 import { MediaUploader } from "./media-uploader";
 
 type ProductValues = {
@@ -90,14 +90,13 @@ export function ProductForm({
   };
 
   return (
-    <form onSubmit={onSubmit} style={{ display: "grid", gap: 12, maxWidth: 640 }}>
-      <label style={fieldStyle}>
-        Name
+    <form onSubmit={onSubmit} className="admin-form">
+      <label className="admin-field">
+        <span>Name</span>
         <input
           name="name"
           required
           defaultValue={initial?.name}
-          style={inputStyle}
           onChange={(event) => {
             if (slugTouched) return;
             const slugInput = event.currentTarget.form?.elements.namedItem("slug");
@@ -105,19 +104,13 @@ export function ProductForm({
           }}
         />
       </label>
-      <label style={fieldStyle}>
-        Slug
-        <input
-          name="slug"
-          required
-          defaultValue={initial?.slug}
-          style={inputStyle}
-          onChange={() => setSlugTouched(true)}
-        />
+      <label className="admin-field">
+        <span>Slug</span>
+        <input name="slug" required defaultValue={initial?.slug} onChange={() => setSlugTouched(true)} />
       </label>
-      <label style={fieldStyle}>
-        Company
-        <select name="company_id" required defaultValue={initial?.company_id ?? ""} style={inputStyle}>
+      <label className="admin-field">
+        <span>Company</span>
+        <select name="company_id" required defaultValue={initial?.company_id ?? ""}>
           <option value="" disabled>
             Select company
           </option>
@@ -128,13 +121,13 @@ export function ProductForm({
           ))}
         </select>
       </label>
-      <label style={fieldStyle}>
-        Summary
-        <textarea name="summary" required defaultValue={initial?.summary} rows={3} style={inputStyle} />
+      <label className="admin-field">
+        <span>Summary</span>
+        <textarea name="summary" required defaultValue={initial?.summary} rows={3} />
       </label>
-      <label style={fieldStyle}>
-        Destination URL
-        <input name="destination_url" defaultValue={initial?.destination_url} style={inputStyle} />
+      <label className="admin-field">
+        <span>Destination URL</span>
+        <input name="destination_url" defaultValue={initial?.destination_url} />
       </label>
       <MediaUploader
         ownerType="product"
@@ -142,25 +135,25 @@ export function ProductForm({
         label="Upload product media"
         onUploaded={(url) => setUploadNote(`Uploaded: ${url}`)}
       />
-      {uploadNote ? <p>{uploadNote}</p> : null}
-      <label style={fieldStyle}>
-        Specs (one per line: Label: Value)
-        <textarea name="specs" defaultValue={initial?.specsText} rows={5} style={inputStyle} />
+      {uploadNote ? <p className="admin-muted">{uploadNote}</p> : null}
+      <label className="admin-field">
+        <span>Specs (one per line: Label: Value)</span>
+        <textarea name="specs" defaultValue={initial?.specsText} rows={5} />
       </label>
-      <label>
+      <label className="admin-check">
         <input name="published" type="checkbox" defaultChecked={initial?.published !== false} /> Published
       </label>
-      <div style={{ display: "flex", gap: 8 }}>
-        <button type="submit" style={buttonStyle}>
-          {mode === "create" ? "Create" : "Save"}
+      <div className="admin-actions">
+        <button type="submit" className="admin-btn">
+          {mode === "create" ? "Create product" : "Save changes"}
         </button>
         {mode === "edit" ? (
-          <button type="button" onClick={onDelete} style={buttonStyle}>
+          <button type="button" onClick={onDelete} className="admin-btn danger">
             Delete
           </button>
         ) : null}
       </div>
-      {error ? <p>{error}</p> : null}
+      {error ? <p className="admin-error">{error}</p> : null}
     </form>
   );
 }

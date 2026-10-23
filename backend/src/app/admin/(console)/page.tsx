@@ -14,21 +14,28 @@ export default async function AdminHomePage() {
   const products = await listProducts({}).catch(() => []);
 
   return (
-    <main style={{ padding: 32, maxWidth: 960, margin: "0 auto" }}>
-      <p>Signed in as {email}</p>
-      <h1>Dashboard</h1>
-      <ul>
-        <li>
-          <Link href="/admin/industries">Industries: {industries.length}</Link>
-        </li>
-        <li>
-          <Link href="/admin/companies">Companies: {companies.length}</Link>
-        </li>
-        <li>
-          <Link href="/admin/products">Products: {products.length}</Link>
-        </li>
-      </ul>
-      <p>Unpublished rows stay out of the public API used by the marketing site.</p>
-    </main>
+    <>
+      <header className="admin-page-header">
+        <div>
+          <h1>Dashboard</h1>
+          <p>Signed in as {email}. Unpublished rows stay off the public website API.</p>
+        </div>
+      </header>
+
+      <section className="admin-grid stats">
+        <Link href="/admin/industries" className="admin-card admin-stat">
+          <span className="label">Industries</span>
+          <span className="value">{industries.length}</span>
+        </Link>
+        <Link href="/admin/companies" className="admin-card admin-stat">
+          <span className="label">Companies</span>
+          <span className="value">{companies.length}</span>
+        </Link>
+        <Link href="/admin/products" className="admin-card admin-stat">
+          <span className="label">Products</span>
+          <span className="value">{products.length}</span>
+        </Link>
+      </section>
+    </>
   );
 }

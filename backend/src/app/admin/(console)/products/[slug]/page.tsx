@@ -14,26 +14,35 @@ export default async function EditProductPage({ params }: { params: Promise<{ sl
   const [companies, specs] = await Promise.all([listCompanies({}), listSpecs(row.id)]);
 
   return (
-    <main style={{ padding: 32, display: "grid", gap: 16, maxWidth: 960 }}>
-      <p>
-        <Link href="/admin/products">← Products</Link>
-      </p>
-      <h1>Edit product</h1>
-      <ProductForm
-        mode="edit"
-        currentSlug={row.slug}
-        ownerId={row.id}
-        companies={companies.map((company) => ({ id: company.id, name: company.name }))}
-        initial={{
-          slug: row.slug,
-          name: row.name,
-          company_id: row.company_id,
-          summary: row.summary,
-          destination_url: row.destination_url ?? "",
-          published: Boolean(row.published),
-          specsText: specs.map((spec) => `${spec.label}: ${spec.value}`).join("\n"),
-        }}
-      />
-    </main>
+    <div className="admin-grid">
+      <Link href="/admin/products" className="admin-back">
+        ← Products
+      </Link>
+      <header className="admin-page-header">
+        <div>
+          <h1>Edit product</h1>
+          <p>
+            <code>{row.slug}</code>
+          </p>
+        </div>
+      </header>
+      <section className="admin-card">
+        <ProductForm
+          mode="edit"
+          currentSlug={row.slug}
+          ownerId={row.id}
+          companies={companies.map((company) => ({ id: company.id, name: company.name }))}
+          initial={{
+            slug: row.slug,
+            name: row.name,
+            company_id: row.company_id,
+            summary: row.summary,
+            destination_url: row.destination_url ?? "",
+            published: Boolean(row.published),
+            specsText: specs.map((spec) => `${spec.label}: ${spec.value}`).join("\n"),
+          }}
+        />
+      </section>
+    </div>
   );
 }

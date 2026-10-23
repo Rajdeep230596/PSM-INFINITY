@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { buttonStyle, readError } from "./form-styles";
+import { readError } from "./form-styles";
 
 export function MediaDeleteButton({ id }: { id: number }) {
   const router = useRouter();
@@ -21,10 +21,10 @@ export function MediaDeleteButton({ id }: { id: number }) {
 
   return (
     <div>
-      <button type="button" onClick={onClick} style={buttonStyle}>
+      <button type="button" onClick={onClick} className="admin-btn danger">
         Delete
       </button>
-      {error ? <p>{error}</p> : null}
+      {error ? <p className="admin-error">{error}</p> : null}
     </div>
   );
 }

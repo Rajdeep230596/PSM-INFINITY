@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { inputStyle, readError } from "./form-styles";
+import { readError } from "./form-styles";
 
 export function MediaUploader({
   ownerType,
@@ -19,7 +19,7 @@ export function MediaUploader({
   const [busy, setBusy] = useState(false);
 
   if (!ownerId) {
-    return <p style={{ opacity: 0.7 }}>Save the record first, then upload media.</p>;
+    return <p className="admin-muted">Save the record first, then upload media.</p>;
   }
 
   const onChange = async (file: File | null) => {
@@ -41,19 +41,16 @@ export function MediaUploader({
   };
 
   return (
-    <div style={{ display: "grid", gap: 8 }}>
-      <label>
-        {label}
-        <input
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm"
-          disabled={busy}
-          style={{ ...inputStyle, marginTop: 6 }}
-          onChange={(event) => onChange(event.target.files?.[0] ?? null)}
-        />
-      </label>
-      {busy ? <p>Uploading…</p> : null}
-      {error ? <p>{error}</p> : null}
+    <div className="admin-field">
+      <span>{label}</span>
+      <input
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm"
+        disabled={busy}
+        onChange={(event) => onChange(event.target.files?.[0] ?? null)}
+      />
+      {busy ? <p className="admin-muted">Uploading…</p> : null}
+      {error ? <p className="admin-error">{error}</p> : null}
     </div>
   );
 }

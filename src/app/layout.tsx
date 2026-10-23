@@ -7,6 +7,8 @@ import { RouteProgress } from "@/components/layout/route-progress";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppCta } from "@/components/layout/whatsapp-cta";
+import { AiConcierge } from "@/components/catalogue/ai-concierge";
+import { SiteSearch } from "@/components/catalogue/site-search";
 import { BootLoader } from "@/components/motion/boot-loader";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { siteImageSrc } from "@/components/media/site-image";
@@ -14,6 +16,7 @@ import { site } from "@/content/site";
 
 import "./globals.css";
 import "./whatsapp.css";
+import "./catalogue-tools.css";
 import "./first-ascent/first-ascent.css";
 
 const outfit = Outfit({
@@ -67,6 +70,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main id="content">{children}</main>
           <SiteFooter />
           <AmbientAudio />
+          <SiteSearch />
+          <AiConcierge />
           <WhatsAppCta />
         </SmoothScroll>
       </body>

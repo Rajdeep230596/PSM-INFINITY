@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { buttonStyle, fieldStyle, inputStyle, readError, slugify } from "./form-styles";
+import { readError, slugify } from "./form-styles";
 import { MediaUploader } from "./media-uploader";
 
 type CompanyValues = {
@@ -79,14 +79,13 @@ export function CompanyForm({
   };
 
   return (
-    <form onSubmit={onSubmit} style={{ display: "grid", gap: 12, maxWidth: 640 }}>
-      <label style={fieldStyle}>
-        Name
+    <form onSubmit={onSubmit} className="admin-form">
+      <label className="admin-field">
+        <span>Name</span>
         <input
           name="name"
           required
           defaultValue={initial?.name}
-          style={inputStyle}
           onChange={(event) => {
             if (slugTouched) return;
             const slugInput = event.currentTarget.form?.elements.namedItem("slug");
@@ -94,19 +93,13 @@ export function CompanyForm({
           }}
         />
       </label>
-      <label style={fieldStyle}>
-        Slug
-        <input
-          name="slug"
-          required
-          defaultValue={initial?.slug}
-          style={inputStyle}
-          onChange={() => setSlugTouched(true)}
-        />
+      <label className="admin-field">
+        <span>Slug</span>
+        <input name="slug" required defaultValue={initial?.slug} onChange={() => setSlugTouched(true)} />
       </label>
-      <label style={fieldStyle}>
-        Industry
-        <select name="industry_id" required defaultValue={initial?.industry_id ?? ""} style={inputStyle}>
+      <label className="admin-field">
+        <span>Industry</span>
+        <select name="industry_id" required defaultValue={initial?.industry_id ?? ""}>
           <option value="" disabled>
             Select industry
           </option>
@@ -117,42 +110,37 @@ export function CompanyForm({
           ))}
         </select>
       </label>
-      <label style={fieldStyle}>
-        Summary
-        <textarea name="summary" required defaultValue={initial?.summary} rows={3} style={inputStyle} />
+      <label className="admin-field">
+        <span>Summary</span>
+        <textarea name="summary" required defaultValue={initial?.summary} rows={3} />
       </label>
-      <label style={fieldStyle}>
-        Positioning
-        <textarea name="positioning" defaultValue={initial?.positioning} rows={3} style={inputStyle} />
+      <label className="admin-field">
+        <span>Positioning</span>
+        <textarea name="positioning" defaultValue={initial?.positioning} rows={3} />
       </label>
-      <label style={fieldStyle}>
-        Logo URL
-        <input
-          name="logo_url"
-          value={logoUrl}
-          onChange={(event) => setLogoUrl(event.target.value)}
-          style={inputStyle}
-        />
+      <label className="admin-field">
+        <span>Logo URL</span>
+        <input name="logo_url" value={logoUrl} onChange={(event) => setLogoUrl(event.target.value)} />
       </label>
       <MediaUploader ownerType="company" ownerId={ownerId} onUploaded={setLogoUrl} label="Upload logo" />
-      <label style={fieldStyle}>
-        Website URL
-        <input name="website_url" defaultValue={initial?.website_url} style={inputStyle} />
+      <label className="admin-field">
+        <span>Website URL</span>
+        <input name="website_url" defaultValue={initial?.website_url} />
       </label>
-      <label>
+      <label className="admin-check">
         <input name="published" type="checkbox" defaultChecked={initial?.published !== false} /> Published
       </label>
-      <div style={{ display: "flex", gap: 8 }}>
-        <button type="submit" style={buttonStyle}>
-          {mode === "create" ? "Create" : "Save"}
+      <div className="admin-actions">
+        <button type="submit" className="admin-btn">
+          {mode === "create" ? "Create company" : "Save changes"}
         </button>
         {mode === "edit" ? (
-          <button type="button" onClick={onDelete} style={buttonStyle}>
+          <button type="button" onClick={onDelete} className="admin-btn danger">
             Delete
           </button>
         ) : null}
       </div>
-      {error ? <p>{error}</p> : null}
+      {error ? <p className="admin-error">{error}</p> : null}
     </form>
   );
 }

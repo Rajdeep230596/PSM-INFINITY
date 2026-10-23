@@ -11,28 +11,25 @@ export default async function AdminMediaPage() {
   const rows = await listMedia().catch(() => []);
 
   return (
-    <main style={{ padding: 32, display: "grid", gap: 24, maxWidth: 960 }}>
-      <section>
-        <h1>Media</h1>
-        <p>
-          Upload from an industry, company, or product edit form after the record exists. Files land in{" "}
-          <code>/public/assets/uploads/</code> (disk adapter — swappable after the GoDaddy persistence test).
-        </p>
-        {rows.length === 0 ? <p>No media yet.</p> : null}
-        <ul style={{ display: "grid", gap: 12, padding: 0, listStyle: "none" }}>
+    <div className="admin-grid">
+      <header className="admin-page-header">
+        <div>
+          <h1>Media</h1>
+          <p>
+            Upload from an industry, company, or product edit form. Files are stored under{" "}
+            <code>/public/assets/uploads/</code>.
+          </p>
+        </div>
+      </header>
+
+      <section className="admin-card">
+        <h2>Library</h2>
+        {rows.length === 0 ? <p className="admin-muted">No media yet.</p> : null}
+        <div className="admin-media-grid">
           {rows.map((row) => {
             const abs = toAbsoluteUrl(row.url);
             return (
-              <li
-                key={row.id}
-                style={{
-                  display: "grid",
-                  gap: 6,
-                  padding: 12,
-                  border: "1px solid #333",
-                  borderRadius: 6,
-                }}
-              >
+              <article key={row.id} className="admin-media-item">
                 <div>
                   #{row.id} · {row.owner_type} #{row.owner_id} · {row.kind}
                   {row.original_name ? ` · ${row.original_name}` : ""}
@@ -42,14 +39,14 @@ export default async function AdminMediaPage() {
                 </Link>
                 {row.kind === "image" ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={abs} alt={row.alt || ""} style={{ maxWidth: 220, maxHeight: 140, objectFit: "contain" }} />
+                  <img src={abs} alt={row.alt || ""} />
                 ) : null}
                 <MediaDeleteButton id={row.id} />
-              </li>
+              </article>
             );
           })}
-        </ul>
+        </div>
       </section>
-    </main>
+    </div>
   );
 }

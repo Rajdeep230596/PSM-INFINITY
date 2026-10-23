@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (!pathname.startsWith("/admin") || pathname.startsWith("/admin/login")) {
+  const publicAdmin =
+    pathname.startsWith("/admin/login") ||
+    pathname.startsWith("/admin/forgot-password") ||
+    pathname.startsWith("/admin/reset-password");
+  if (!pathname.startsWith("/admin") || publicAdmin) {
     return NextResponse.next();
   }
   if (!request.cookies.get("psm_admin")) {

@@ -20,6 +20,7 @@ export default async function EditIndustryPage({ params }: { params: Promise<{ s
       <IndustryForm
         mode="edit"
         currentSlug={row.slug}
+        ownerId={row.id}
         initial={{
           slug: row.slug,
           name: row.name,

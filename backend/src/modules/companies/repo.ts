@@ -112,6 +112,12 @@ export async function deleteCompany(id: number) {
 export async function searchCatalogue(query: string) {
   const pool = getPool();
   const like = `%${query}%`;
+  const [industries] = await pool.query(
+    `SELECT id, slug, name, summary, 'industry' AS type FROM industries
+     WHERE published = 1 AND (name LIKE ? OR summary LIKE ? OR IFNULL(description,'') LIKE ?)
+     LIMIT 20`,
+    [like, like, like],
+  );
   const [companies] = await pool.query(
     `SELECT id, slug, name, summary, 'company' AS type FROM companies WHERE published = 1 AND (name LIKE ? OR summary LIKE ?) LIMIT 20`,
     [like, like],
@@ -120,5 +126,5 @@ export async function searchCatalogue(query: string) {
     `SELECT id, slug, name, summary, 'product' AS type FROM products WHERE published = 1 AND (name LIKE ? OR summary LIKE ?) LIMIT 20`,
     [like, like],
   );
-  return { companies, products };
+  return { industries, companies, products };
 }

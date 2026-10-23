@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { buttonStyle, fieldStyle, inputStyle, readError, slugify } from "./form-styles";
+import { MediaUploader } from "./media-uploader";
 
 type CompanyValues = {
   slug: string;
@@ -19,17 +20,20 @@ type CompanyValues = {
 export function CompanyForm({
   mode,
   currentSlug,
+  ownerId,
   industries,
   initial,
 }: {
   mode: "create" | "edit";
   currentSlug?: string;
+  ownerId?: number;
   industries: Array<{ id: number; name: string }>;
   initial?: Partial<CompanyValues>;
 }) {
   const router = useRouter();
   const [error, setError] = useState("");
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
+  const [logoUrl, setLogoUrl] = useState(initial?.logo_url ?? "");
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -41,7 +45,7 @@ export function CompanyForm({
       industry_id: Number(form.get("industry_id")),
       summary: String(form.get("summary") || ""),
       positioning: String(form.get("positioning") || "") || null,
-      logo_url: String(form.get("logo_url") || "") || null,
+      logo_url: logoUrl || null,
       website_url: String(form.get("website_url") || "") || null,
       published: form.get("published") === "on",
     };
@@ -52,6 +56,11 @@ export function CompanyForm({
     });
     if (!response.ok) {
       setError(await readError(response));
+      return;
+    }
+    if (mode === "create") {
+      router.push(`/admin/companies/${body.slug}`);
+      router.refresh();
       return;
     }
     router.push("/admin/companies");
@@ -118,8 +127,14 @@ export function CompanyForm({
       </label>
       <label style={fieldStyle}>
         Logo URL
-        <input name="logo_url" defaultValue={initial?.logo_url} style={inputStyle} />
+        <input
+          name="logo_url"
+          value={logoUrl}
+          onChange={(event) => setLogoUrl(event.target.value)}
+          style={inputStyle}
+        />
       </label>
+      <MediaUploader ownerType="company" ownerId={ownerId} onUploaded={setLogoUrl} label="Upload logo" />
       <label style={fieldStyle}>
         Website URL
         <input name="website_url" defaultValue={initial?.website_url} style={inputStyle} />

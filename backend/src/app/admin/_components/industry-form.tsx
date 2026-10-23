@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { buttonStyle, fieldStyle, inputStyle, readError, slugify } from "./form-styles";
+import { MediaUploader } from "./media-uploader";
 
 type IndustryValues = {
   slug: string;
@@ -18,15 +19,18 @@ type IndustryValues = {
 export function IndustryForm({
   mode,
   currentSlug,
+  ownerId,
   initial,
 }: {
   mode: "create" | "edit";
   currentSlug?: string;
+  ownerId?: number;
   initial?: Partial<IndustryValues>;
 }) {
   const router = useRouter();
   const [error, setError] = useState("");
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
+  const [heroUrl, setHeroUrl] = useState(initial?.hero_media_url ?? "");
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -37,7 +41,7 @@ export function IndustryForm({
       slug: String(form.get("slug") || ""),
       summary: String(form.get("summary") || ""),
       description: String(form.get("description") || "") || null,
-      hero_media_url: String(form.get("hero_media_url") || "") || null,
+      hero_media_url: heroUrl || null,
       sort_order: Number(form.get("sort_order") || 0),
       published: form.get("published") === "on",
     };
@@ -49,6 +53,14 @@ export function IndustryForm({
     if (!response.ok) {
       setError(await readError(response));
       return;
+    }
+    if (mode === "create") {
+      const payload = (await response.json()) as { id?: number };
+      if (payload.id) {
+        router.push(`/admin/industries/${body.slug}`);
+        router.refresh();
+        return;
+      }
     }
     router.push("/admin/industries");
     router.refresh();
@@ -101,8 +113,14 @@ export function IndustryForm({
       </label>
       <label style={fieldStyle}>
         Hero media URL
-        <input name="hero_media_url" defaultValue={initial?.hero_media_url} style={inputStyle} />
+        <input
+          name="hero_media_url"
+          value={heroUrl}
+          onChange={(event) => setHeroUrl(event.target.value)}
+          style={inputStyle}
+        />
       </label>
+      <MediaUploader ownerType="industry" ownerId={ownerId} onUploaded={setHeroUrl} label="Upload hero media" />
       <label style={fieldStyle}>
         Sort order
         <input name="sort_order" type="number" defaultValue={initial?.sort_order ?? 0} style={inputStyle} />

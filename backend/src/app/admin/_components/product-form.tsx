@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { buttonStyle, fieldStyle, inputStyle, readError, slugify } from "./form-styles";
+import { MediaUploader } from "./media-uploader";
 
 type ProductValues = {
   slug: string;
@@ -31,17 +32,20 @@ function parseSpecs(text: string) {
 export function ProductForm({
   mode,
   currentSlug,
+  ownerId,
   companies,
   initial,
 }: {
   mode: "create" | "edit";
   currentSlug?: string;
+  ownerId?: number;
   companies: Array<{ id: number; name: string }>;
   initial?: Partial<ProductValues>;
 }) {
   const router = useRouter();
   const [error, setError] = useState("");
   const [slugTouched, setSlugTouched] = useState(mode === "edit");
+  const [uploadNote, setUploadNote] = useState("");
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -63,6 +67,11 @@ export function ProductForm({
     });
     if (!response.ok) {
       setError(await readError(response));
+      return;
+    }
+    if (mode === "create") {
+      router.push(`/admin/products/${body.slug}`);
+      router.refresh();
       return;
     }
     router.push("/admin/products");
@@ -127,6 +136,13 @@ export function ProductForm({
         Destination URL
         <input name="destination_url" defaultValue={initial?.destination_url} style={inputStyle} />
       </label>
+      <MediaUploader
+        ownerType="product"
+        ownerId={ownerId}
+        label="Upload product media"
+        onUploaded={(url) => setUploadNote(`Uploaded: ${url}`)}
+      />
+      {uploadNote ? <p>{uploadNote}</p> : null}
       <label style={fieldStyle}>
         Specs (one per line: Label: Value)
         <textarea name="specs" defaultValue={initial?.specsText} rows={5} style={inputStyle} />

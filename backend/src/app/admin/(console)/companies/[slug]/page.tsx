@@ -22,6 +22,7 @@ export default async function EditCompanyPage({ params }: { params: Promise<{ sl
       <CompanyForm
         mode="edit"
         currentSlug={row.slug}
+        ownerId={row.id}
         industries={industries.map((industry) => ({ id: industry.id, name: industry.name }))}
         initial={{
           slug: row.slug,

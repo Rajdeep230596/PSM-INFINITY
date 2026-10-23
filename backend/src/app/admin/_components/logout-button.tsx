@@ -2,8 +2,6 @@
 
 import { useRouter } from "next/navigation";
 
-import { buttonStyle } from "./form-styles";
-
 export function LogoutButton() {
   const router = useRouter();
 
@@ -14,7 +12,7 @@ export function LogoutButton() {
   };
 
   return (
-    <button type="button" onClick={onClick} style={buttonStyle}>
+    <button type="button" onClick={onClick} className="admin-btn secondary">
       Sign out
     </button>
   );

@@ -93,7 +93,10 @@ export async function searchCatalogueForChat(query: string, limit = 8): Promise<
   return [...scored.values()]
     .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name))
     .slice(0, safeLimit)
-    .map(({ score: _score, ...link }) => link);
+    .map(({ score, ...link }) => {
+      void score;
+      return link;
+    });
 }
 
 export async function snapshotPublishedCatalogue(limitPerType = 12) {

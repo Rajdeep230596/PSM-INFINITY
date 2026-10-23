@@ -34,35 +34,42 @@ function ResetForm() {
   };
 
   if (!token) {
-    return <p>Missing reset token.</p>;
+    return <p className="admin-error">Missing reset token.</p>;
   }
 
   return (
-    <form onSubmit={onSubmit} style={{ display: "grid", gap: 12 }}>
-      <label>
-        New password
-        <input name="password" type="password" required minLength={8} style={{ width: "100%", padding: 8 }} />
+    <form onSubmit={onSubmit} className="admin-form">
+      <label className="admin-field">
+        <span>New password</span>
+        <input name="password" type="password" required minLength={8} />
       </label>
-      <label>
-        Confirm password
-        <input name="confirm" type="password" required minLength={8} style={{ width: "100%", padding: 8 }} />
+      <label className="admin-field">
+        <span>Confirm password</span>
+        <input name="confirm" type="password" required minLength={8} />
       </label>
-      <button type="submit">Update password</button>
-      {error ? <p>{error}</p> : null}
+      <div className="admin-actions">
+        <button type="submit" className="admin-btn">
+          Update password
+        </button>
+      </div>
+      {error ? <p className="admin-error">{error}</p> : null}
     </form>
   );
 }
 
 export default function ResetPasswordPage() {
   return (
-    <main style={{ maxWidth: 420, margin: "12vh auto", padding: 24 }}>
-      <h1>Reset password</h1>
-      <Suspense fallback={<p>Loading…</p>}>
-        <ResetForm />
-      </Suspense>
-      <p>
-        <Link href="/admin/login">Back to login</Link>
-      </p>
+    <main className="admin-auth">
+      <div className="admin-auth-card">
+        <h1>Reset password</h1>
+        <p className="lede">Choose a new password for the owner account.</p>
+        <Suspense fallback={<p className="admin-muted">Loading…</p>}>
+          <ResetForm />
+        </Suspense>
+        <p className="admin-muted" style={{ marginTop: 18 }}>
+          <Link href="/admin/login">Back to login</Link>
+        </p>
+      </div>
     </main>
   );
 }

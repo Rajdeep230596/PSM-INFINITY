@@ -1,30 +1,43 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import { LogoutButton } from "../_components/logout-button";
 
+const links = [
+  { href: "/admin", label: "Dashboard", exact: true },
+  { href: "/admin/industries", label: "Industries" },
+  { href: "/admin/companies", label: "Companies" },
+  { href: "/admin/products", label: "Products" },
+  { href: "/admin/media", label: "Media" },
+];
+
 export default function AdminConsoleLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+
   return (
-    <div>
-      <header
-        style={{
-          display: "flex",
-          gap: 16,
-          alignItems: "center",
-          padding: "12px 32px",
-          borderBottom: "1px solid #333",
-        }}
-      >
-        <strong>PSM Admin</strong>
-        <nav style={{ display: "flex", gap: 12, flex: 1 }}>
-          <Link href="/admin">Dashboard</Link>
-          <Link href="/admin/industries">Industries</Link>
-          <Link href="/admin/companies">Companies</Link>
-          <Link href="/admin/products">Products</Link>
-          <Link href="/admin/media">Media</Link>
+    <div className="admin-shell">
+      <aside className="admin-sidebar">
+        <div className="admin-brand">
+          <strong>PSM Infinity</strong>
+          <span>Owner console</span>
+        </div>
+        <nav className="admin-nav" aria-label="Admin">
+          {links.map((link) => {
+            const active = link.exact ? pathname === link.href : pathname.startsWith(link.href);
+            return (
+              <Link key={link.href} href={link.href} className={active ? "is-active" : undefined}>
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
-        <LogoutButton />
-      </header>
-      {children}
+        <div className="admin-sidebar-foot">
+          <LogoutButton />
+        </div>
+      </aside>
+      <div className="admin-main">{children}</div>
     </div>
   );
 }

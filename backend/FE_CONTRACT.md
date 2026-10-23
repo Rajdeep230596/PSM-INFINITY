@@ -3,6 +3,12 @@
 Base URL (local): `http://localhost:4000`  
 Set `NEXT_PUBLIC_API_URL` on the marketing site to this origin.
 
+Shipped on the marketing site (global layout):
+- **Search** control (top-left) → `GET /api/v1/search`
+- **AI Concierge** control (above WhatsApp) → `POST /api/v1/chat`
+
+Catalogue detail links use `pathHint` defaults (`/catalogue/{type}s/{slug}`) until dedicated pages exist.
+
 All public GETs return `{ data: ... }`. Unpublished rows are omitted.
 
 | Method | Path | Notes |

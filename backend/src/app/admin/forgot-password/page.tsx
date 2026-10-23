@@ -23,25 +23,31 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <main style={{ maxWidth: 420, margin: "12vh auto", padding: 24 }}>
-      <h1>Forgot password</h1>
-      <p>We will email a one-hour reset link if the owner account exists.</p>
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 12 }}>
-        <label>
-          Email
-          <input name="email" type="email" required style={{ width: "100%", padding: 8 }} />
-        </label>
-        <button type="submit">Send reset link</button>
-      </form>
-      {message ? <p>{message}</p> : null}
-      {debugLink ? (
-        <p>
-          Dev link: <Link href={debugLink}>{debugLink}</Link>
+    <main className="admin-auth">
+      <div className="admin-auth-card">
+        <h1>Forgot password</h1>
+        <p className="lede">We will email a one-hour reset link if the owner account exists.</p>
+        <form onSubmit={onSubmit} className="admin-form">
+          <label className="admin-field">
+            <span>Email</span>
+            <input name="email" type="email" required />
+          </label>
+          <div className="admin-actions">
+            <button type="submit" className="admin-btn">
+              Send reset link
+            </button>
+          </div>
+        </form>
+        {message ? <p className="admin-muted" style={{ marginTop: 16 }}>{message}</p> : null}
+        {debugLink ? (
+          <p className="admin-muted" style={{ marginTop: 8 }}>
+            Dev link: <Link href={debugLink}>{debugLink}</Link>
+          </p>
+        ) : null}
+        <p className="admin-muted" style={{ marginTop: 18 }}>
+          <Link href="/admin/login">Back to login</Link>
         </p>
-      ) : null}
-      <p>
-        <Link href="/admin/login">Back to login</Link>
-      </p>
+      </div>
     </main>
   );
 }

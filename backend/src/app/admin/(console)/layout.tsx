@@ -20,6 +20,7 @@ export default function AdminConsoleLayout({ children }: { children: React.React
           <Link href="/admin/industries">Industries</Link>
           <Link href="/admin/companies">Companies</Link>
           <Link href="/admin/products">Products</Link>
+          <Link href="/admin/media">Media</Link>
         </nav>
         <LogoutButton />
       </header>

@@ -1,0 +1,50 @@
+{
+  "_meta": {
+    "status": "DRAFT — replace with client-approved copy before production",
+    "updated": "2026-10-23"
+  },
+  "brand": {
+    "name": "PSM Infinity",
+    "tagline": "Curated B2B discovery hub for industries, companies, and products.",
+    "what_we_are": [
+      "A marketing and discovery platform connecting visitors with approved partner companies and products.",
+      "Content is curated and maintained by PSM Infinity."
+    ],
+    "what_we_are_not": [
+      "Not an e-commerce checkout or payment gateway.",
+      "Not a dropshipping marketplace or vendor self-service portal.",
+      "We do not process orders, stock, or commissions on this site."
+    ]
+  },
+  "contact": {
+    "phones": ["9007331000", "9007431000"],
+    "whatsapp_e164": "919007331000",
+    "emails": ["info@psminfinity.com"],
+    "address": "Amritkunj, Kolkata (confirm exact address with client)",
+    "website": "https://psminfinity.com"
+  },
+  "faqs": [
+    {
+      "q": "How do I enquire about a company or product?",
+      "a": "Use the WhatsApp enquiry button on the site, or ask me to prepare a WhatsApp message summarising what you are looking for."
+    },
+    {
+      "q": "Can I buy products directly on this website?",
+      "a": "No. This site is for discovery. External partner links and WhatsApp help you continue the conversation with PSM Infinity."
+    },
+    {
+      "q": "Who manages the catalogue?",
+      "a": "The PSM Infinity owner maintains industries, companies, and products through a private admin area."
+    },
+    {
+      "q": "Where is PSM Infinity based?",
+      "a": "Kolkata, India. Exact address and visiting hours should be confirmed with the studio."
+    }
+  ],
+  "discovery_tips": [
+    "Ask what industry or use-case the visitor cares about.",
+    "Offer matching published companies and products from the live catalogue.",
+    "If unsure, say you only answer from approved PSM Infinity content.",
+    "Never invent prices, stock levels, delivery times, or unlisted partners."
+  ]
+}

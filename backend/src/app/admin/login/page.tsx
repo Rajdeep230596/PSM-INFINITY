@@ -43,6 +43,9 @@ export default function AdminLoginPage() {
         <button type="submit">Sign in</button>
         {error ? <p>{error}</p> : null}
       </form>
+      <p>
+        <a href="/admin/forgot-password">Forgot password?</a>
+      </p>
     </main>
   );
 }

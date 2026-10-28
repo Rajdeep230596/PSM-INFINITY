@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
 import { GroundZeroCard, GROUND_ZERO_CARDS } from "@/components/home/ground-zero-card";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
-import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
+import { playMutedLoop, useDeferredVideoSource, useResponsiveVideoSrc } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { prefersReducedMotion } from "@/lib/media-capability";
 import { bindNavYield } from "@/lib/nav-yield";
@@ -39,7 +39,8 @@ const BEATS: EditorialBeat[] = [
 export function GroundZeroScrollySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, HOME_VIDEO.groundZero, { eager: true });
+  const fileSrc = useResponsiveVideoSrc(HOME_VIDEO.groundZero, HOME_VIDEO.groundZeroMobile);
+  const videoSrc = useDeferredVideoSource(sectionRef, fileSrc, { eager: Boolean(fileSrc) });
   const [revealed, setRevealed] = useState(false);
   const [beat, setBeat] = useState<EditorialBeat | null>(BEATS[0]);
 

@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 import { useDeferredVideoSource } from "@/lib/deferred-video";
+import { HOME_VIDEO } from "@/lib/home-scroll";
 import { bindNavYield } from "@/lib/nav-yield";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
@@ -14,7 +15,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export function PageBackdrop() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(wrapRef, "/media/backdrop.mp4?v=14");
+  const videoSrc = useDeferredVideoSource(wrapRef, HOME_VIDEO.landing);
 
   useGSAP(
     () => {

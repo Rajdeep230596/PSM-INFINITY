@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
 import { SiteImage } from "@/components/media/site-image";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
-import { playMutedLoop, prefetchVideo } from "@/lib/deferred-video";
+import { pickResponsiveVideoSrc, playMutedLoop, prefetchVideo } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { isConstrainedNetwork, prefersReducedMotion } from "@/lib/media-capability";
 import { bindNavYield } from "@/lib/nav-yield";
@@ -103,7 +103,7 @@ export function CinematicWalkthrough() {
       let cancelled = false;
       const warmNext = () => {
         if (cancelled || isConstrainedNetwork()) return;
-        prefetchVideo(HOME_VIDEO.groundZero);
+        prefetchVideo(pickResponsiveVideoSrc(HOME_VIDEO.groundZero, HOME_VIDEO.groundZeroMobile));
       };
       const warmTimer = window.setTimeout(warmNext, 900);
       video.addEventListener("loadeddata", warmNext, { once: true });

@@ -2,7 +2,22 @@
 
 import { useEffect, useState, type RefObject } from "react";
 
-import { isConstrainedNetwork } from "@/lib/media-capability";
+import { isConstrainedNetwork, isMotionLite } from "@/lib/media-capability";
+
+/** Phones, tablets, Save-Data, and slow cellular get the 720p file. */
+export function pickResponsiveVideoSrc(desktop: string, mobile?: string) {
+  if (!mobile) return desktop;
+  if (isMotionLite() || isConstrainedNetwork()) return mobile;
+  return desktop;
+}
+
+export function useResponsiveVideoSrc(desktop: string, mobile?: string) {
+  const [src, setSrc] = useState("");
+  useEffect(() => {
+    setSrc(pickResponsiveVideoSrc(desktop, mobile));
+  }, [desktop, mobile]);
+  return src;
+}
 
 const warmed = new Set<string>();
 const warmers = new Map<string, HTMLVideoElement>();

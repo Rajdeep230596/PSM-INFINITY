@@ -7,7 +7,7 @@ export const HOME_VIDEO_SMOOTHING = 0.14;
 export const HOME_EXTRA_VH_PER_SECOND = 20;
 
 export const HOME_CHAPTER_VIDEO_SECONDS = {
-  landing: 9.542,
+  landing: 10,
   groundZero: 12.634,
   firstAscent: 10,
   events: SKYDECK_HANDOFF_AT,
@@ -20,8 +20,8 @@ export function homeChapterStyle(videoSeconds: number) {
 }
 
 export const HOME_VIDEO = {
-  landing: "/media/backdrop.mp4?v=12",
+  landing: "/media/backdrop.mp4?v=14",
   landingPoster: "/media/backdrop-poster.jpg",
-  groundZero: "/videos/ground-zero-arrival.mp4?v=3",
-  skyTerrace: "/videos/sky-terrace-arrival.mp4?v=3",
+  groundZero: "/videos/ground-zero-arrival.mp4?v=4",
+  skyTerrace: "/videos/sky-terrace-arrival.mp4?v=4",
 } as const;

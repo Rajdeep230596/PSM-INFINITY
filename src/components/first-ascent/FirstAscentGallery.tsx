@@ -9,17 +9,12 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
-import { playMutedLoop, useDeferredVideoSource, useResponsiveVideoSrc } from "@/lib/deferred-video";
+import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { prefersReducedMotion } from "@/lib/media-capability";
 import { bindNavYield } from "@/lib/nav-yield";
 import { attachScrollVideo } from "@/lib/scroll-video";
-import {
-  mapToLevelTwo,
-  SECOND_ASCENT_VIDEO_MOBILE_SRC,
-  SECOND_ASCENT_VIDEO_SRC,
-  SKYDECK_HANDOFF_AT,
-} from "@/lib/second-ascent-video";
+import { mapToLevelTwo, SECOND_ASCENT_VIDEO_SRC, SKYDECK_HANDOFF_AT } from "@/lib/second-ascent-video";
 
 const EVENT_CTAS = [
   { id: "private-events", label: "Private Events", href: "/second-ascent/private-events", icon: Calendar },
@@ -45,8 +40,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const fileSrc = useResponsiveVideoSrc(SECOND_ASCENT_VIDEO_SRC, SECOND_ASCENT_VIDEO_MOBILE_SRC);
-  const videoSrc = useDeferredVideoSource(sectionRef, fileSrc, { eager: Boolean(fileSrc) });
+  const videoSrc = useDeferredVideoSource(sectionRef, SECOND_ASCENT_VIDEO_SRC, { eager: true });
   const [phase, setPhase] = useState<ScrollPhase>("intro");
   const revealed = phase === "cta" || phase === "rest";
   const ctaVisible = phase === "cta";

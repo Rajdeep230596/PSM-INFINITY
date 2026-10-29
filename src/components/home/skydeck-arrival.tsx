@@ -10,7 +10,7 @@ import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components
 import { SkydeckSpaceTags } from "@/components/skydeck/SkydeckSpaceTags";
 import { SKYDECK_BACKDROP_FIRST, SKYDECK_BACKDROP_SECOND } from "@/content/skydeck";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
-import { playMutedLoop, useDeferredVideoSource, useResponsiveVideoSrc } from "@/lib/deferred-video";
+import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { isMotionLite, prefersReducedMotion } from "@/lib/media-capability";
 import { bindNavYield } from "@/lib/nav-yield";
@@ -65,7 +65,10 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const fileSrc = useResponsiveVideoSrc(SKYDECK_VIDEO_SRC, SKYDECK_VIDEO_MOBILE_SRC);
+  const [fileSrc, setFileSrc] = useState("");
+  useEffect(() => {
+    setFileSrc(isMotionLite() ? SKYDECK_VIDEO_MOBILE_SRC : SKYDECK_VIDEO_SRC);
+  }, []);
   const videoSrc = useDeferredVideoSource(sectionRef, fileSrc, { eager: Boolean(fileSrc) });
   const hideHeroRef = useRef(hideHero);
   useEffect(() => {

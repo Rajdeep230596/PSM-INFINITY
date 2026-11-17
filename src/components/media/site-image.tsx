@@ -4,7 +4,7 @@ type SiteImageProps = ImgHTMLAttributes<HTMLImageElement> & {
   priority?: boolean;
 };
 
-export const IMAGE_CACHE_TAG = "v=14";
+export const IMAGE_CACHE_TAG = "v=15";
 
 function withCache(src: string | undefined) {
   if (!src || src.startsWith("http") || src.startsWith("data:")) return src;

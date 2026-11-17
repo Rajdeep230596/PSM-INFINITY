@@ -1,8 +1,8 @@
-export const SECOND_ASCENT_VIDEO_SRC = "/videos/second-ascent-backdrop.mp4?v=13";
+export const SECOND_ASCENT_VIDEO_SRC = "/videos/second-ascent-backdrop.mp4?v=14";
 export const SECOND_ASCENT_VIDEO_DURATION = 30.814;
 /** Dedicated Level Three clip — starts at the Skydeck handoff of the shared elevator file. */
-export const SKYDECK_VIDEO_SRC = "/videos/skydeck-arrival.mp4?v=5";
-export const SKYDECK_VIDEO_MOBILE_SRC = "/videos/skydeck-arrival.mp4?v=5";
+export const SKYDECK_VIDEO_SRC = "/videos/skydeck-arrival.mp4?v=6";
+export const SKYDECK_VIDEO_MOBILE_SRC = "/videos/skydeck-arrival.mp4?v=6";
 export const SKYDECK_VIDEO_POSTER = "/videos/skydeck-arrival-poster.jpg";
 export const SKYDECK_VIDEO_DURATION = 16.6;
 /** Elevator arrival — Level Two ends here; Level Three: Skydeck begins. */

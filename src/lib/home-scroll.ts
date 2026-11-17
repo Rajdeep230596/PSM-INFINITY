@@ -20,8 +20,8 @@ export function homeChapterStyle(videoSeconds: number) {
 }
 
 export const HOME_VIDEO = {
-  landing: "/media/backdrop.mp4?v=16",
+  landing: "/media/backdrop.mp4?v=22",
   landingPoster: "/media/backdrop-poster.jpg",
-  groundZero: "/videos/ground-zero-arrival.mp4?v=6",
-  skyTerrace: "/videos/sky-terrace-arrival.mp4?v=6",
+  groundZero: "/videos/ground-zero-arrival.mp4?v=7",
+  skyTerrace: "/videos/sky-terrace-arrival.mp4?v=7",
 } as const;

@@ -63,7 +63,7 @@ export function armFilmSharpness(video: HTMLVideoElement) {
   if (!frame) return () => {};
 
   const apply = () => {
-    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const w = Math.max(1, frame.clientWidth);
     const h = Math.max(1, frame.clientHeight);
     const scale = Math.max(1, Math.min(dpr, FILM_SOURCE_W / w, FILM_SOURCE_H / h));
@@ -74,10 +74,8 @@ export function armFilmSharpness(video: HTMLVideoElement) {
   const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(apply) : null;
   ro?.observe(frame);
   window.addEventListener("orientationchange", apply);
-  window.addEventListener("resize", apply);
   return () => {
     ro?.disconnect();
     window.removeEventListener("orientationchange", apply);
-    window.removeEventListener("resize", apply);
   };
 }

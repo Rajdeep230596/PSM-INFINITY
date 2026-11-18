@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
 import { GroundZeroCard, GROUND_ZERO_CARDS } from "@/components/home/ground-zero-card";
 import { HomeFilmStage } from "@/components/home/home-film-stage";
+import { AscentCardGrid } from "@/components/media/ascent-card";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
@@ -115,17 +116,17 @@ export function GroundZeroScrollySection() {
       aria-label="Ground Zero arrival"
     >
       <HomeFilmStage videoRef={videoRef} src={videoSrc}>
-        <EditorialMilestone beat={beat} />
+        <EditorialMilestone beat={beat} beats={BEATS} />
         <div
           className={`gz-card-overlay absolute inset-0 z-30 flex items-center justify-center ${
-            revealed ? "is-revealed" : "pointer-events-none"
+            revealed ? "is-revealed pointer-events-auto" : "pointer-events-none"
           }`}
         >
-          <div className="gz-card-track no-scrollbar mx-auto w-full max-w-[100rem]">
+          <AscentCardGrid>
             {GROUND_ZERO_CARDS.map((card, index) => (
               <GroundZeroCard key={card.id} card={card} revealed={revealed} index={index} />
             ))}
-          </div>
+          </AscentCardGrid>
         </div>
       </HomeFilmStage>
     </section>

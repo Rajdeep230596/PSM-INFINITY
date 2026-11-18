@@ -156,6 +156,7 @@ export function CinematicWalkthrough() {
       <HomeFilmStage videoRef={videoRef} src={videoSrc} poster={HOME_VIDEO.landingPoster} posterPriority>
         <EditorialMilestone
           beat={beat}
+          beats={BEATS}
           cta={
             beat?.id === "ascent"
               ? {

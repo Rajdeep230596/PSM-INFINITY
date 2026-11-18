@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
 import type { ReactNode } from "react";
-import Link from "next/link";
+
+import { AscentCard } from "@/components/media/ascent-card";
 
 const iconClass = "h-12 w-12";
 
@@ -72,7 +72,7 @@ export type GroundZeroCardData = {
 export const GROUND_ZERO_CARDS: GroundZeroCardData[] = [
   {
     id: "couture",
-    eyebrow: "01 / Atelier",
+    eyebrow: "Atelier",
     title: "Haute Couture & Wardrobes",
     description: "Private salon appointments, archive runway acquisitions, and bespoke designer wardrobe curations.",
     href: "/ground-zero/couture",
@@ -81,7 +81,7 @@ export const GROUND_ZERO_CARDS: GroundZeroCardData[] = [
   },
   {
     id: "real-estate",
-    eyebrow: "02 / Sanctuary",
+    eyebrow: "Sanctuary",
     title: "Real Estate Portfolios",
     description: "Prime architectural estates, private duplexes, and off-market prime residential holdings globally.",
     href: "/ground-zero/real-estate",
@@ -90,7 +90,7 @@ export const GROUND_ZERO_CARDS: GroundZeroCardData[] = [
   },
   {
     id: "gardens",
-    eyebrow: "03 / Botanical",
+    eyebrow: "Botanical",
     title: "Private Botanical Gardens",
     description: "Manicured grand emerald lawns, private sculpted groves, water sanctuaries, and curated flora.",
     href: "/ground-zero/gardens",
@@ -99,7 +99,7 @@ export const GROUND_ZERO_CARDS: GroundZeroCardData[] = [
   },
   {
     id: "collectibles",
-    eyebrow: "04 / Calibre & Chassis",
+    eyebrow: "Calibre & Chassis",
     title: "Curated Collectibles",
     description: "Ultra-rare horological masterworks paired with bespoke hypercars and limited coachbuilt chassis.",
     href: "/ground-zero/collectibles",
@@ -118,48 +118,17 @@ export function GroundZeroCard({
   index: number;
 }) {
   return (
-    <motion.div
-      initial={false}
-      animate={revealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 35 }}
-      transition={{
-        duration: 0.7,
-        delay: revealed ? index * 0.08 : 0,
-        ease: [0.16, 1, 0.3, 1],
-      }}
-      className="gz-card-slide gpu-surface"
-    >
-      <Link href={card.href} prefetch={true} className="group block h-full w-full select-none focus:outline-none">
-        <article className="gz-card-face relative flex w-full flex-col items-center justify-between overflow-hidden rounded-[2rem] border border-white/[0.08] bg-[#0B0B0E]/60 px-6 pt-10 pb-7 text-center shadow-[0_12px_40px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.12)] backdrop-blur-3xl transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-700 ease-out hover:border-amber-300/40 hover:bg-[#111116]/80 hover:shadow-[0_20px_50px_rgba(232,216,200,0.15),inset_0_0_20px_rgba(232,216,200,0.08)] sm:px-7">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-44 rounded-t-[2rem] bg-gradient-to-b from-amber-500/[0.06] via-transparent to-transparent" />
-
-          <div className="relative z-10 flex flex-col items-center">
-            <div className="gz-card-icon-well flex h-24 w-24 items-center justify-center rounded-3xl border border-amber-300/20 bg-white/[0.03] text-amber-200/90 shadow-[0_0_24px_rgba(232,216,200,0.1)] transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-500 group-hover:scale-105 group-hover:border-amber-300/50 group-hover:text-amber-100 group-hover:shadow-[0_0_32px_rgba(232,216,200,0.22)]">
-              {card.icon}
-            </div>
-            <span className="mt-7 block font-mono text-[10px] tracking-[0.32em] text-amber-300/75 uppercase">
-              {card.eyebrow}
-            </span>
-          </div>
-
-          <div className="relative z-10 my-auto py-3">
-            <h3 className="font-serif text-xl leading-snug font-light tracking-tight text-white transition-colors group-hover:text-[#F7F2EC] sm:text-2xl">
-              {card.title}
-            </h3>
-            <p className="mx-auto mt-3 max-w-[230px] text-xs leading-relaxed font-light text-neutral-400 transition-colors group-hover:text-neutral-300 sm:text-sm">
-              {card.description}
-            </p>
-          </div>
-
-          <div className="relative z-10 mt-auto flex w-full items-center justify-center border-t border-white/[0.08] pt-4">
-            <span className="inline-flex items-center justify-center gap-2.5 rounded-full border border-white/[0.12] bg-white/[0.05] px-5 py-2 text-neutral-200 shadow-sm transition-[transform,opacity,color,background-color,border-color,box-shadow] duration-300 group-hover:border-amber-300/40 group-hover:bg-[#E8D8C8] group-hover:text-black sm:px-6">
-              <span className="gz-card-cta-label text-center font-mono text-[10px] font-medium tracking-[0.16em] uppercase sm:text-[11px] sm:tracking-[0.18em]">
-                {card.actionLabel}
-              </span>
-              <span className="text-xs transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">↗</span>
-            </span>
-          </div>
-        </article>
-      </Link>
-    </motion.div>
+    <AscentCard
+      rich
+      href={card.href}
+      index={index + 1}
+      title={card.title}
+      eyebrow={card.eyebrow}
+      description={card.description}
+      action={card.actionLabel}
+      icon={card.icon}
+      revealed={revealed}
+      revealDelay={index * 0.07}
+    />
   );
 }

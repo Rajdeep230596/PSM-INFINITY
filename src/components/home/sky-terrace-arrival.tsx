@@ -1,15 +1,14 @@
 "use client";
 
 import { useGSAP } from "@gsap/react";
-import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Car, Globe, House, Ship } from "lucide-react";
-import Link from "next/link";
 import { useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
 import { HomeFilmStage } from "@/components/home/home-film-stage";
+import { AscentCard, AscentCardGrid } from "@/components/media/ascent-card";
 import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { prefersReducedMotion } from "@/lib/media-capability";
@@ -128,47 +127,28 @@ export function SkyTerraceArrival() {
       aria-label="Sky terrace arrival"
     >
       <HomeFilmStage videoRef={videoRef} src={videoSrc}>
-        <EditorialMilestone beat={beat} />
+        <EditorialMilestone beat={beat} beats={BEATS} />
         <div
-          className={`home-overlay absolute inset-0 z-30 mx-auto flex w-full max-w-6xl items-center justify-center px-6 md:px-10 ${
-            revealed ? "pointer-events-auto" : "pointer-events-none"
+          className={`home-overlay absolute inset-0 z-30 mx-auto flex w-full max-w-6xl items-center justify-center px-4 md:px-10 ${
+            revealed ? "is-revealed pointer-events-auto" : "pointer-events-none"
           }`}
         >
-          <div className="grid w-full grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4 lg:gap-8">
+          <AscentCardGrid>
             {SERVICES.map((service, index) => {
               const Icon = service.icon;
               return (
-                <motion.div
+                <AscentCard
                   key={service.id}
-                  className="gpu-surface"
-                  initial={false}
-                  animate={
-                    revealed ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 28, scale: 0.96 }
-                  }
-                  transition={{
-                    duration: 0.7,
-                    delay: revealed ? index * 0.08 : 0,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  <Link
-                    href={service.href}
-                    prefetch={true}
-                    className="group flex aspect-square flex-col items-center justify-center gap-5 rounded-[1.75rem] border border-white/25 bg-white/12 px-4 text-center shadow-[0_8px_40px_rgba(0,0,0,0.18)] backdrop-blur-2xl transition-colors duration-300 hover:border-white/40 hover:bg-white/18 md:rounded-[2rem]"
-                  >
-                    <Icon
-                      size={36}
-                      strokeWidth={1.15}
-                      className="text-white transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <span className="max-w-[9rem] text-[13px] font-light tracking-wide text-white md:text-sm">
-                      {service.label}
-                    </span>
-                  </Link>
-                </motion.div>
+                  href={service.href}
+                  index={index + 1}
+                  title={service.label}
+                  icon={<Icon strokeWidth={1.15} />}
+                  revealed={revealed}
+                  revealDelay={index * 0.07}
+                />
               );
             })}
-          </div>
+          </AscentCardGrid>
         </div>
       </HomeFilmStage>
     </section>

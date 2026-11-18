@@ -42,7 +42,7 @@ export function HomeFilmStage({
     return releaseFilmSlotWhenHeadReady(video, src);
   }, [posterPriority, src, videoRef]);
 
-  const preload = src ? "auto" : "none";
+  const preload = src ? (posterPriority ? "auto" : "metadata") : "none";
 
   return (
     <div

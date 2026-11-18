@@ -22,7 +22,7 @@ export function attachScrollVideo(
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   armInlineVideo(video);
   video.loop = false;
-  video.preload = options.preload ?? video.preload ?? "auto";
+  video.preload = options.preload ?? video.preload ?? "metadata";
 
   if (reduceMotion || options.enabled === false) {
     video.pause();
@@ -66,7 +66,8 @@ export function attachScrollVideo(
   const holdDecoder = () => {
     if (!ios || stopped || !visible) return;
     video.muted = true;
-    video.playbackRate = 0.0001;
+    if (video.playbackRate !== 0.0001) video.playbackRate = 0.0001;
+    if (!video.paused) return;
     const play = video.play();
     if (play && typeof play.then === "function") play.catch(() => {});
   };
@@ -91,7 +92,6 @@ export function attachScrollVideo(
 
   const tick = () => {
     if (stopped || !visible || duration <= 0 || video.readyState < 2) return;
-    if (ios) holdDecoder();
 
     const target = targetFromProgress();
     displayed = smoothing >= 1 ? target : displayed + (target - displayed) * smoothing;

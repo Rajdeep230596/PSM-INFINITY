@@ -163,7 +163,7 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
         className="skydeck-stage"
       >
         {!hideHero ? (
-          <div className="home-overlay absolute inset-0">
+          <div className={`home-overlay absolute inset-0 ${cardPhase !== "hidden" ? "is-revealed" : ""}`}>
             <SkydeckSpaceTags
               visible={cardPhase !== "hidden"}
               spaces={cardPhase === "second" ? SKYDECK_BACKDROP_SECOND : SKYDECK_BACKDROP_FIRST}
@@ -172,6 +172,7 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
         ) : null}
         <EditorialMilestone
           beat={beat}
+          beats={BEATS}
           cta={
             hideHero
               ? undefined

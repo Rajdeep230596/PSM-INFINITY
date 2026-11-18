@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { AscentCard, AscentCardGrid } from "@/components/media/ascent-card";
 
 type AscentLink = { href: string; label: string };
 
@@ -14,8 +14,8 @@ export function AscentBreak({
   links: readonly AscentLink[];
 }) {
   return (
-    <section className="home-video-break flex items-center px-6 text-white md:px-16" aria-label={title}>
-      <div className="mx-auto w-full max-w-5xl py-16">
+    <section className="home-video-break flex items-center px-5 text-white md:px-16" aria-label={title}>
+      <div className="mx-auto w-full max-w-5xl py-14">
         <p className="mb-3 font-mono text-[10px] font-semibold tracking-[0.35em] text-[#C5A880] uppercase md:text-[11px]">
           {eyebrow}
         </p>
@@ -23,15 +23,11 @@ export function AscentBreak({
           {title}
         </h2>
         <p className="mt-4 max-w-xl text-sm leading-relaxed font-light text-neutral-300">{lede}</p>
-        <ul className="mt-8 grid gap-x-12 gap-y-3 sm:grid-cols-2">
-          {links.map((link) => (
-            <li key={link.href}>
-              <Link href={link.href} className="text-sm tracking-wide text-neutral-200 transition-colors hover:text-white">
-                {link.label}
-              </Link>
-            </li>
+        <AscentCardGrid className="mt-8">
+          {links.map((link, index) => (
+            <AscentCard key={link.href} href={link.href} index={index + 1} title={link.label} action="Enter" />
           ))}
-        </ul>
+        </AscentCardGrid>
       </div>
     </section>
   );

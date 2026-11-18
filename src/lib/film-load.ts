@@ -18,8 +18,8 @@ export function isFilmLite() {
   return filmNeedPx() <= 1080;
 }
 
-export function chapterPreload(_lite: boolean): HTMLVideoElement["preload"] {
-  return "auto";
+export function chapterPreload(lite: boolean): HTMLVideoElement["preload"] {
+  return lite ? "metadata" : "auto";
 }
 
 let inflight = 0;

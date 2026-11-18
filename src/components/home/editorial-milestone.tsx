@@ -39,6 +39,10 @@ export function activeBeat<T extends { start: number; end: number }>(progress: n
   return { beat: current, visibility };
 }
 
+function padScene(value: number) {
+  return String(value).padStart(2, "0");
+}
+
 function BeatCopy({
   beat,
   cta,
@@ -48,7 +52,7 @@ function BeatCopy({
 }) {
   return (
     <>
-      <span className="mb-3 block font-mono text-[10px] font-semibold tracking-[0.35em] text-[#C5A880] uppercase drop-shadow-md md:text-[11px]">
+      <span className="home-copy-eyebrow mb-3 block font-mono text-[10px] font-semibold tracking-[0.35em] text-[#C5A880] uppercase drop-shadow-md md:text-[11px]">
         {beat.eyebrow}
       </span>
       <h2 className="font-serif text-3xl leading-[1.08] font-light tracking-tight text-white drop-shadow-xl sm:text-4xl md:text-6xl">
@@ -78,9 +82,11 @@ function BeatCopy({
 
 export function EditorialMilestone({
   beat,
+  beats,
   cta,
 }: {
   beat: EditorialBeat | null;
+  beats?: EditorialBeat[];
   cta?: { label: string; onClick: () => void };
 }) {
   const [lite, setLite] = useState(true);
@@ -88,10 +94,27 @@ export function EditorialMilestone({
     setLite(isMotionLite());
   }, []);
 
+  const index = beat && beats ? beats.findIndex((item) => item.id === beat.id) : -1;
+  const scene = index >= 0 ? padScene(index + 1) : "";
+  const total = beats?.length ? padScene(beats.length) : "";
+
   return (
     <div className="home-copy pointer-events-none absolute inset-0 z-20 flex items-end">
       <div className="home-copy-inner mx-auto w-full max-w-7xl px-8 pb-28 md:px-16 md:pb-36 lg:px-20">
-        <div className="relative max-w-xl text-left">
+        {scene ? (
+          <span className="home-copy-watermark" aria-hidden="true">
+            {scene}
+          </span>
+        ) : null}
+        <div className="home-copy-main relative max-w-xl text-left">
+          {scene && total ? (
+            <div className="home-copy-kicker">
+              <span>
+                {scene} / {total}
+              </span>
+              <span className="home-copy-kicker-line" />
+            </div>
+          ) : null}
           <div className="editorial-wash pointer-events-none absolute -inset-10 -z-10 bg-gradient-to-tr from-black/85 via-black/40 to-transparent" />
           {lite ? (
             beat ? (
@@ -116,6 +139,26 @@ export function EditorialMilestone({
             </AnimatePresence>
           )}
         </div>
+        {beats && beats.length > 0 ? (
+          <ol className="home-scene-index">
+            {beats.map((item, itemIndex) => (
+              <li key={item.id} className={item.id === beat?.id ? "is-active" : undefined}>
+                <span>{padScene(itemIndex + 1)}</span>
+                <span>{item.eyebrow}</span>
+              </li>
+            ))}
+          </ol>
+        ) : null}
+        {beats && beats.length > 0 ? (
+          <div className="home-copy-footer">
+            <div className="home-beat-rail" aria-hidden="true">
+              {beats.map((item) => (
+                <span key={item.id} className={item.id === beat?.id ? "is-active" : undefined} />
+              ))}
+            </div>
+            {cta ? null : <span className="home-copy-scroll">Scroll</span>}
+          </div>
+        ) : null}
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { HomeFilmStage } from "@/components/home/home-film-stage";
+import { AscentCard, AscentCardGrid } from "@/components/media/ascent-card";
 import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
 import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
@@ -109,42 +110,25 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
       <HomeFilmStage videoRef={videoRef} wrapRef={videoWrapRef} src={videoSrc}>
         <div
           className={`home-overlay absolute inset-0 z-30 flex items-center justify-center ${
-            ctaVisible ? "pointer-events-auto" : "pointer-events-none"
+            ctaVisible ? "is-revealed pointer-events-auto" : "pointer-events-none"
           }`}
         >
-          <div className="event-cta-row flex items-center justify-center gap-[48px]">
+          <AscentCardGrid>
             {EVENT_CTAS.map((item, index) => {
               const Icon = item.icon;
               return (
-                <motion.div
+                <AscentCard
                   key={item.id}
-                  className="gpu-surface"
-                  initial={false}
-                  animate={ctaVisible ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 28, scale: 0.96 }}
-                  transition={{
-                    duration: 0.7,
-                    delay: ctaVisible ? index * 0.08 : 0,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  <Link
-                    href={item.href}
-                    prefetch={true}
-                    className="group flex aspect-square w-[min(42vw,14.75rem)] flex-col items-center justify-center gap-4 rounded-[1.5rem] border border-white/15 bg-black/55 px-4 text-center shadow-[0_8px_40px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition-colors duration-300 hover:border-white/25 hover:bg-black/70 md:w-[16.5rem] md:rounded-[1.75rem]"
-                  >
-                    <Icon
-                      size={32}
-                      strokeWidth={1.15}
-                      className="text-white transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <span className="max-w-[9rem] text-[13px] font-light tracking-wide text-white md:text-sm">
-                      {item.label}
-                    </span>
-                  </Link>
-                </motion.div>
+                  href={item.href}
+                  index={index + 1}
+                  title={item.label}
+                  icon={<Icon strokeWidth={1.15} />}
+                  revealed={ctaVisible}
+                  revealDelay={index * 0.07}
+                />
               );
             })}
-          </div>
+          </AscentCardGrid>
         </div>
 
         <div
@@ -156,7 +140,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
           className="home-copy-inner mx-auto w-full max-w-7xl px-8 pb-28 transition-opacity duration-500 md:px-16 md:pb-36 lg:px-20"
         >
           <div className="relative max-w-xl text-left">
-            <div className="pointer-events-none absolute -inset-10 -z-10 bg-gradient-to-tr from-black/85 via-black/40 to-transparent blur-3xl" />
+            <div className="editorial-wash pointer-events-none absolute -inset-10 -z-10 bg-gradient-to-tr from-black/85 via-black/40 to-transparent blur-3xl" />
             {hideHero ? (
               <>
                 <p className="mb-3 block font-mono text-[10px] font-semibold tracking-[0.35em] text-[#C5A880] uppercase drop-shadow-md md:text-[11px]">

@@ -1,6 +1,7 @@
 "use client";
 
 import { armVideoReveal, markVideoReady, seekIfBuffered, seekToward, timeIsBuffered } from "@/lib/deferred-video";
+import { armInlineVideo, isIosDevice } from "@/lib/media-capability";
 import { registerNavYield } from "@/lib/nav-yield";
 
 type ScrollVideoOptions = {
@@ -19,15 +20,9 @@ export function attachScrollVideo(
   options: ScrollVideoOptions,
 ): () => void {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  video.muted = true;
-  video.defaultMuted = true;
-  video.playsInline = true;
+  armInlineVideo(video);
   video.loop = false;
-  video.preload = options.preload ?? video.preload ?? "metadata";
-  video.disablePictureInPicture = true;
-  video.setAttribute("playsinline", "");
-  video.setAttribute("webkit-playsinline", "");
-  video.setAttribute("muted", "");
+  video.preload = options.preload ?? video.preload ?? "auto";
 
   if (reduceMotion || options.enabled === false) {
     video.pause();
@@ -35,12 +30,16 @@ export function attachScrollVideo(
     return () => disarm();
   }
 
-  const smoothing = options.smoothing ?? 0.16;
-  const minStep = 1 / (options.frameRate ?? 30);
-  const frameMs = 1000 / (options.frameRate ?? 30);
+  const ios = isIosDevice();
+  const lite = ios || window.matchMedia("(max-width: 700px), (pointer: coarse)").matches;
+  const smoothing = lite ? Math.min(options.smoothing ?? 0.2, 0.22) : (options.smoothing ?? 0.16);
+  const frameRate = ios ? 12 : lite ? 12 : (options.frameRate ?? 30);
+  const minStep = 1 / frameRate;
+  const frameMs = 1000 / frameRate;
   let duration = 0;
   let displayed = 0;
   let raf = 0;
+  let timer = 0;
   let lastPaint = 0;
   let unlocked = false;
   let stopped = false;
@@ -63,9 +62,22 @@ export function attachScrollVideo(
     }
   };
 
+  /** Keep the iOS decoder in play-mode so scrub frames stay full-res, not poster thumbnails. */
+  const holdDecoder = () => {
+    if (!ios || stopped || !visible) return;
+    video.muted = true;
+    video.playbackRate = 0.0001;
+    const play = video.play();
+    if (play && typeof play.then === "function") play.catch(() => {});
+  };
+
   const unlockSeek = () => {
     if (stopped || unlocked) return;
     unlocked = true;
+    if (ios) {
+      holdDecoder();
+      return;
+    }
     const play = video.play();
     const finish = () => {
       if (!stopped) video.pause();
@@ -79,6 +91,7 @@ export function attachScrollVideo(
 
   const tick = () => {
     if (stopped || !visible || duration <= 0 || video.readyState < 2) return;
+    if (ios) holdDecoder();
 
     const target = targetFromProgress();
     displayed = smoothing >= 1 ? target : displayed + (target - displayed) * smoothing;
@@ -96,20 +109,44 @@ export function attachScrollVideo(
     }
   };
 
-  const loop = (now: number) => {
+  const stopClock = () => {
+    if (raf) {
+      window.cancelAnimationFrame(raf);
+      raf = 0;
+    }
+    if (timer) {
+      window.clearTimeout(timer);
+      timer = 0;
+    }
+  };
+
+  const loopRaf = (now: number) => {
     if (stopped || !visible) {
       raf = 0;
       return;
     }
-    raf = window.requestAnimationFrame(loop);
+    raf = window.requestAnimationFrame(loopRaf);
     if (now - lastPaint < frameMs) return;
     lastPaint = now;
     tick();
   };
 
+  const loopTimeout = () => {
+    if (stopped || !visible) {
+      timer = 0;
+      return;
+    }
+    tick();
+    timer = window.setTimeout(loopTimeout, frameMs);
+  };
+
   const ensureLoop = () => {
-    if (stopped || !visible || raf) return;
-    raf = window.requestAnimationFrame(loop);
+    if (stopped || !visible) return;
+    if (ios) {
+      if (!timer) loopTimeout();
+      return;
+    }
+    if (!raf) raf = window.requestAnimationFrame(loopRaf);
   };
 
   const onMeta = () => {
@@ -123,29 +160,31 @@ export function attachScrollVideo(
   const io = new IntersectionObserver(
     ([entry]) => {
       visible = Boolean(entry?.isIntersecting);
-      if (visible) ensureLoop();
-      else {
-        window.cancelAnimationFrame(raf);
-        raf = 0;
+      if (visible) {
+        holdDecoder();
+        ensureLoop();
+      } else {
+        stopClock();
         video.pause();
+        video.playbackRate = 1;
       }
     },
-    { rootMargin: "200px 0px", threshold: 0 },
+    { rootMargin: ios ? "80px 0px" : "200px 0px", threshold: 0 },
   );
   io.observe(video);
 
   const forceReveal = () => {
-    if (!stopped) markVideoReady(video);
+    if (!stopped && video.readyState >= 2) markVideoReady(video);
   };
 
   video.addEventListener("loadedmetadata", onMeta);
   video.addEventListener("loadeddata", revealIfPainted);
   video.addEventListener("canplay", revealIfPainted);
-  video.addEventListener("progress", tick);
+  video.addEventListener("seeked", revealIfPainted);
   if (video.readyState >= 1) onMeta();
   video.addEventListener("loadeddata", unlockSeek, { once: true });
   video.addEventListener("pointerdown", unlockSeek, { passive: true, once: true });
-  const revealTimer = window.setTimeout(forceReveal, 360);
+  const revealTimer = window.setTimeout(forceReveal, ios ? 1200 : 360);
   if (video.readyState >= 2) revealIfPainted();
   unlockSeek();
 
@@ -153,15 +192,15 @@ export function attachScrollVideo(
     if (stopped) return;
     stopped = true;
     visible = false;
-    window.cancelAnimationFrame(raf);
-    raf = 0;
+    stopClock();
     window.clearTimeout(revealTimer);
     io.disconnect();
     video.pause();
+    video.playbackRate = 1;
     video.removeEventListener("loadedmetadata", onMeta);
     video.removeEventListener("loadeddata", revealIfPainted);
     video.removeEventListener("canplay", revealIfPainted);
-    video.removeEventListener("progress", tick);
+    video.removeEventListener("seeked", revealIfPainted);
     video.removeEventListener("loadeddata", unlockSeek);
     video.removeEventListener("pointerdown", unlockSeek);
   };

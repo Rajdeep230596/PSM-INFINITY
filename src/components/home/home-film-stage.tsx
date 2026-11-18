@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState, type ReactNode, type RefObject } from "react";
+import { useEffect, type ReactNode, type RefObject } from "react";
 
 import { SiteImage } from "@/components/media/site-image";
-import { chapterPreload, holdFilmSlot, isFilmLite, releaseFilmSlot } from "@/lib/film-load";
+import { holdFilmSlot, releaseFilmSlotWhenHeadReady } from "@/lib/film-load";
+import { armFilmSharpness, armInlineVideo } from "@/lib/media-capability";
 
 type HomeFilmStageProps = {
   videoRef: RefObject<HTMLVideoElement | null>;
@@ -25,31 +26,28 @@ export function HomeFilmStage({
   className = "",
   children,
 }: HomeFilmStageProps) {
-  const [lite, setLite] = useState(true);
-
   useEffect(() => {
-    setLite(isFilmLite());
-  }, []);
+    const video = videoRef.current;
+    if (!video) return;
+    armInlineVideo(video);
+    return armFilmSharpness(video);
+  }, [videoRef]);
 
   useEffect(() => {
     if (!src) return;
     if (posterPriority) holdFilmSlot(src);
     const video = videoRef.current;
-    const done = () => releaseFilmSlot(src);
-    if (video && video.readyState >= 2) done();
-    video?.addEventListener("loadeddata", done);
-    return () => {
-      video?.removeEventListener("loadeddata", done);
-      releaseFilmSlot(src);
-    };
+    if (!video) return;
+    armInlineVideo(video);
+    return releaseFilmSlotWhenHeadReady(video, src);
   }, [posterPriority, src, videoRef]);
 
-  const preload = src ? (posterPriority && !lite ? "auto" : chapterPreload(lite)) : "none";
+  const preload = src ? "auto" : "none";
 
   return (
     <div
       ref={wrapRef}
-      className={`home-stage sticky top-0 z-0 w-full overflow-hidden bg-[#050607] gpu-layer ${className}`.trim()}
+      className={`home-stage sticky top-0 z-0 w-full overflow-hidden bg-[#050607] ${className}`.trim()}
     >
       <div className="home-film-frame">
         {poster ? (
@@ -64,11 +62,14 @@ export function HomeFilmStage({
         <video
           ref={videoRef}
           src={src}
+          width={1920}
+          height={1080}
           muted
           playsInline
           disablePictureInPicture
           preload={preload}
           className="home-film gpu-media"
+          {...{ "webkit-playsinline": "true" }}
         />
         <div className="home-film-shade pointer-events-none" />
       </div>

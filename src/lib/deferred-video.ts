@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type RefObject } from "react";
 
-import { acquireFilmSlot } from "@/lib/film-load";
+import { acquireFilmSlot, isFilmLite } from "@/lib/film-load";
 import { isConstrainedNetwork } from "@/lib/media-capability";
 
 const warmed = new Set<string>();
@@ -12,7 +12,7 @@ const warmers = new Map<string, HTMLVideoElement>();
 export function prefetchVideo(src: string) {
   if (!src || typeof document === "undefined") return;
   if (warmed.has(src) || warmers.has(src)) return;
-  if (isConstrainedNetwork()) return;
+  if (isConstrainedNetwork() || isFilmLite()) return;
   warmed.add(src);
 
   const video = document.createElement("video");

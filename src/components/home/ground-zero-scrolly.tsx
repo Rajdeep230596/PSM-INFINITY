@@ -41,7 +41,7 @@ export function GroundZeroScrollySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoSrc = useDeferredVideoSource(sectionRef, HOME_VIDEO.groundZero, {
-    rootMargin: "55% 0px",
+    rootMargin: "40% 0px",
     prefetch: HOME_VIDEO.skyTerrace,
   });
   const [revealed, setRevealed] = useState(false);

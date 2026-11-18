@@ -43,7 +43,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoSrc = useDeferredVideoSource(sectionRef, LEVEL_TWO_VIDEO_SRC, {
-    rootMargin: "55% 0px",
+    rootMargin: "40% 0px",
     prefetch: SKYDECK_VIDEO_SRC,
   });
   const [phase, setPhase] = useState<ScrollPhase>("intro");

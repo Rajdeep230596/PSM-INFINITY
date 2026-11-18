@@ -61,7 +61,7 @@ export function PageBackdrop() {
   return (
     <div className="page-backdrop" id="pageBackdrop" ref={wrapRef} aria-hidden="true">
       <div className="page-backdrop-media">
-        <video ref={videoRef} src={videoSrc} muted playsInline disablePictureInPicture preload={videoSrc ? "auto" : "none"} className="gpu-media" />
+        <video ref={videoRef} src={videoSrc} muted playsInline disablePictureInPicture preload={videoSrc ? "metadata" : "none"} className="gpu-media" />
         <div className="page-backdrop-wash" />
       </div>
     </div>

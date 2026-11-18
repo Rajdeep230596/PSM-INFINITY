@@ -13,6 +13,10 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     void import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
       if (cancelled) return;
+      ScrollTrigger.config({
+        ignoreMobileResize: true,
+        autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+      });
       setScrollTriggerKiller(() => {
         ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
       });

@@ -1,4 +1,4 @@
-import { isCompactViewport } from "@/lib/media-capability";
+import { isCompactViewport, isIosDevice, isMotionLite } from "@/lib/media-capability";
 
 /**
  * Same device-pixel budget as the personal site: css width × dpr with 15%
@@ -14,12 +14,12 @@ export function isFilmLite() {
     .connection;
   if (connection?.saveData) return true;
   if (connection?.effectiveType === "slow-2g" || connection?.effectiveType === "2g") return true;
-  if (isCompactViewport()) return true;
+  if (isCompactViewport() || isMotionLite() || isIosDevice()) return true;
   return filmNeedPx() <= 1080;
 }
 
-export function chapterPreload(lite: boolean): HTMLVideoElement["preload"] {
-  return lite ? "metadata" : "auto";
+export function chapterPreload(_lite: boolean): HTMLVideoElement["preload"] {
+  return "auto";
 }
 
 let inflight = 0;
@@ -76,4 +76,37 @@ export function releaseFilmSlot(src: string) {
   if (!release) return;
   held.delete(src);
   release();
+}
+
+/** Free the download slot once the first second is buffered, not on the first frame. */
+export function releaseFilmSlotWhenHeadReady(video: HTMLVideoElement, src: string) {
+  let done = false;
+  const finish = () => {
+    if (done) return;
+    done = true;
+    video.removeEventListener("loadeddata", check);
+    video.removeEventListener("progress", check);
+    video.removeEventListener("canplaythrough", finish);
+    window.clearTimeout(timer);
+    releaseFilmSlot(src);
+  };
+  const check = () => {
+    if (video.buffered.length && video.buffered.end(0) >= 1.25) finish();
+  };
+  if (video.readyState >= 4) {
+    finish();
+    return () => {};
+  }
+  video.addEventListener("loadeddata", check);
+  video.addEventListener("progress", check);
+  video.addEventListener("canplaythrough", finish);
+  const timer = window.setTimeout(finish, 2800);
+  check();
+  return () => {
+    video.removeEventListener("loadeddata", check);
+    video.removeEventListener("progress", check);
+    video.removeEventListener("canplaythrough", finish);
+    window.clearTimeout(timer);
+    finish();
+  };
 }

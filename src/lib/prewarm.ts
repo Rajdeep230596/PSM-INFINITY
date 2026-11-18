@@ -1,4 +1,4 @@
-const READY_TIMEOUT_MS = 2400;
+const READY_TIMEOUT_MS = 900;
 
 function wait(ms: number) {
   return new Promise<void>((resolve) => {

@@ -49,7 +49,7 @@ export function DeferredChapter({
         setShow(true);
         observer.disconnect();
       },
-      { rootMargin: isCompactViewport() ? "25% 0px" : rootMargin, threshold: 0 },
+      { rootMargin: isCompactViewport() ? "12% 0px" : rootMargin, threshold: 0 },
     );
     observer.observe(node);
     return () => observer.disconnect();
@@ -58,11 +58,14 @@ export function DeferredChapter({
   useEffect(() => {
     if (!show) return;
     let cancelled = false;
-    void import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
-      if (!cancelled) ScrollTrigger.refresh();
-    });
+    const refresh = window.setTimeout(() => {
+      void import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
+        if (!cancelled) ScrollTrigger.refresh();
+      });
+    }, 80);
     return () => {
       cancelled = true;
+      window.clearTimeout(refresh);
     };
   }, [show]);
 

@@ -70,7 +70,7 @@ export function SkyTerraceArrival() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoSrc = useDeferredVideoSource(sectionRef, HOME_VIDEO.skyTerrace, {
-    rootMargin: "55% 0px",
+    rootMargin: "40% 0px",
     prefetch: LEVEL_TWO_VIDEO_SRC,
   });
   const [revealed, setRevealed] = useState(false);

@@ -20,11 +20,11 @@ export function RoutePrefetch() {
     };
 
     if (typeof window.requestIdleCallback === "function") {
-      const idle = window.requestIdleCallback(warm, { timeout: 1600 });
+      const idle = window.requestIdleCallback(warm, { timeout: 4200 });
       return () => window.cancelIdleCallback(idle);
     }
 
-    const timer = window.setTimeout(warm, 350);
+    const timer = window.setTimeout(warm, 2400);
     return () => window.clearTimeout(timer);
   }, [router]);
 

@@ -61,7 +61,8 @@ export function BootLoader() {
     };
 
     window.addEventListener("error", onResourceError, true);
-    const failsafe = window.setTimeout(finish, 1200);
+    const ios = /iPhone|iPod|iPad/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const failsafe = window.setTimeout(finish, ios ? 700 : 1200);
 
     void prewarmExperience({ reducedMotion })
       .catch(() => undefined)

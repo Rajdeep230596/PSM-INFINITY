@@ -10,7 +10,8 @@ import { HomeFilmStage } from "@/components/home/home-film-stage";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { playMutedLoop, prefetchVideo } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
-import { isConstrainedNetwork, prefersReducedMotion } from "@/lib/media-capability";
+import { isFilmLite } from "@/lib/film-load";
+import { prefersReducedMotion } from "@/lib/media-capability";
 import { bindNavYield } from "@/lib/nav-yield";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
@@ -62,7 +63,17 @@ export function CinematicWalkthrough() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [beat, setBeat] = useState<EditorialBeat | null>(BEATS[0]);
-  const videoSrc = HOME_VIDEO.landing;
+  const [videoSrc, setVideoSrc] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const arm = () => setVideoSrc(HOME_VIDEO.landing);
+    if (typeof window.requestIdleCallback === "function") {
+      const idle = window.requestIdleCallback(arm, { timeout: 480 });
+      return () => window.cancelIdleCallback(idle);
+    }
+    const timer = window.setTimeout(arm, 280);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const node = sectionRef.current;
@@ -102,18 +113,17 @@ export function CinematicWalkthrough() {
 
       let cancelled = false;
       const warmNext = () => {
-        if (cancelled || isConstrainedNetwork()) return;
+        if (cancelled || isFilmLite()) return;
         prefetchVideo(HOME_VIDEO.groundZero);
       };
-      const warmTimer = window.setTimeout(warmNext, 900);
-      video.addEventListener("loadeddata", warmNext, { once: true });
-      if (video.readyState >= 2) warmNext();
+      video.addEventListener("canplaythrough", warmNext, { once: true });
+      const stopWarm = () => video.removeEventListener("canplaythrough", warmNext);
 
       if (reduceMotion) {
         const stopLoop = playMutedLoop(video);
         return bindNavYield(() => {
           cancelled = true;
-          window.clearTimeout(warmTimer);
+          stopWarm();
           stopLoop();
           trigger.kill();
         });
@@ -127,7 +137,7 @@ export function CinematicWalkthrough() {
 
       return bindNavYield(() => {
         cancelled = true;
-        window.clearTimeout(warmTimer);
+        stopWarm();
         detach();
         trigger.kill();
       });

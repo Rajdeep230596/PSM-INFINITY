@@ -23,12 +23,7 @@
 
 @font-face {
   font-family: "Diastema";
-  src:
-    local("Diastema"),
-    local("Diastema Regular"),
-    url("/fonts/Diastema-Regular.woff2") format("woff2"),
-    url("/fonts/Diastema-Regular.otf") format("opentype"),
-    url("/fonts/Diastema-Regular.ttf") format("truetype");
+  src: local("Diastema"), local("Diastema Regular");
   font-weight: 300 700;
   font-style: normal;
   font-display: swap;
@@ -36,11 +31,7 @@
 
 @font-face {
   font-family: "Diastema";
-  src:
-    local("Diastema Italic"),
-    url("/fonts/Diastema-Italic.woff2") format("woff2"),
-    url("/fonts/Diastema-Italic.otf") format("opentype"),
-    url("/fonts/Diastema-Italic.ttf") format("truetype");
+  src: local("Diastema Italic");
   font-weight: 300 700;
   font-style: italic;
   font-display: swap;
@@ -665,73 +656,139 @@ textarea {
   }
 }
 
-/* Portrait: show the whole 16:9 frame, the way psminfinity.com does, instead of cropping the sides. */
+/* Film sits in a 16:9 frame. Desktop covers. Mobile keeps native aspect and puts copy in the black band. */
 .home-film-wash {
   display: none;
 }
 
+.home-stage {
+  height: 100vh;
+  height: 100dvh;
+}
+
+.home-film-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #050607;
+}
+
+.home-film-frame .home-film {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.home-film-poster {
+  z-index: 0;
+}
+
+.home-film-frame video.home-film {
+  z-index: 1;
+}
+
+.home-film-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.42) 0%,
+    transparent 22%,
+    transparent 58%,
+    rgba(0, 0, 0, 0.78) 100%
+  );
+}
+
+.home-film-rest {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
 @media (max-width: 1100px) and (orientation: portrait) {
   .home-stage {
-    background: #050607;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    background: #000;
   }
 
   .home-film-wash {
-    display: block;
-    position: absolute;
-    z-index: 0;
-    inset: -16%;
-    width: 132%;
-    height: 132%;
-    pointer-events: none;
-    filter: blur(28px);
-    transform: translateZ(0);
+    display: none !important;
   }
 
-  .home-stage .home-film {
-    position: absolute;
-    z-index: 1;
-    top: 50%;
-    right: auto;
-    bottom: auto;
-    left: 50%;
-    width: min(100%, calc(70dvh * 16 / 9));
-    height: auto;
-    max-height: 70dvh;
+  .home-film-frame {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    margin-inline: 0;
+    flex: 0 0 auto;
     aspect-ratio: 16 / 9;
-    margin: 0;
-    object-fit: contain;
-    object-position: center center;
-    transform: translate3d(-50%, -50%, 0);
+    max-height: none;
   }
 
-  .home-stage .home-film-shade {
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.55) 0%,
-      transparent 22%,
-      transparent 78%,
-      rgba(0, 0, 0, 0.72) 100%
-    );
+  .home-film-frame .home-film {
+    object-fit: contain;
+    object-position: top center;
+    transform: none;
+  }
+
+  .home-film-shade {
+    background: transparent;
+  }
+
+  .home-film-rest {
+    position: relative;
+    inset: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    background: #000;
+  }
+
+  .home-stage .home-copy {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    align-items: flex-start;
   }
 
   .home-stage .home-copy-inner {
-    padding-bottom: max(7.5rem, calc(env(safe-area-inset-bottom) + 6.5rem));
+    padding: 1.1rem 1.25rem max(1.35rem, calc(env(safe-area-inset-bottom) + 0.85rem));
   }
 
   .home-stage .home-copy h1,
   .home-stage .home-copy h2 {
-    font-size: clamp(1.55rem, 7.2vw, 2.15rem);
+    font-size: clamp(1.45rem, 7vw, 2.05rem);
   }
 
   .home-stage .home-copy p {
-    margin-top: 0.65rem;
+    margin-top: 0.55rem;
     font-size: 0.78rem;
     line-height: 1.45;
+  }
+
+  .home-stage .editorial-wash {
+    display: none;
   }
 
   .home-stage .event-cta-row {
     gap: 0.75rem;
     padding-inline: 0.75rem;
+  }
+
+  .home-stage .gz-card-overlay,
+  .home-stage .home-overlay {
+    position: absolute;
+    inset: 0;
+    align-items: flex-end;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
 
   .home-video-break {

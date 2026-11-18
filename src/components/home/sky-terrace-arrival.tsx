@@ -9,10 +9,11 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
-import { PortraitFilmWash } from "@/components/home/portrait-film-wash";
+import { HomeFilmStage } from "@/components/home/home-film-stage";
 import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { prefersReducedMotion } from "@/lib/media-capability";
+import { LEVEL_TWO_VIDEO_SRC } from "@/lib/second-ascent-video";
 import { bindNavYield } from "@/lib/nav-yield";
 import { attachScrollVideo } from "@/lib/scroll-video";
 
@@ -68,7 +69,10 @@ const SERVICES = [
 export function SkyTerraceArrival() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, HOME_VIDEO.skyTerrace, { eager: true });
+  const videoSrc = useDeferredVideoSource(sectionRef, HOME_VIDEO.skyTerrace, {
+    rootMargin: "55% 0px",
+    prefetch: LEVEL_TWO_VIDEO_SRC,
+  });
   const [revealed, setRevealed] = useState(false);
   const [beat, setBeat] = useState<EditorialBeat | null>(BEATS[0]);
 
@@ -123,23 +127,10 @@ export function SkyTerraceArrival() {
       style={homeChapterStyle(HOME_CHAPTER_VIDEO_SECONDS.firstAscent)}
       aria-label="Sky terrace arrival"
     >
-      <div className="home-stage sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden gpu-layer">
-        <PortraitFilmWash videoRef={videoRef} />
-        <video
-          ref={videoRef}
-          src={videoSrc}
-          muted
-          playsInline
-          disablePictureInPicture
-          preload={videoSrc ? "auto" : "none"}
-          className="home-film gpu-media absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="home-film-shade pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
-
+      <HomeFilmStage videoRef={videoRef} src={videoSrc}>
         <EditorialMilestone beat={beat} />
-
         <div
-          className={`relative z-30 mx-auto flex w-full max-w-6xl items-center justify-center px-6 md:px-10 ${
+          className={`home-overlay absolute inset-0 z-30 mx-auto flex w-full max-w-6xl items-center justify-center px-6 md:px-10 ${
             revealed ? "pointer-events-auto" : "pointer-events-none"
           }`}
         >
@@ -179,7 +170,7 @@ export function SkyTerraceArrival() {
             })}
           </div>
         </div>
-      </div>
+      </HomeFilmStage>
     </section>
   );
 }

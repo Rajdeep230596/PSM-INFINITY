@@ -56,6 +56,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={`${outfit.variable} ${cormorant.variable} is-booting`} data-scroll-behavior="smooth">
       <body>
         <link rel="preload" href={siteImageSrc("/brand/psm-infinity-logo.png")!} as="image" type="image/webp" fetchPriority="high" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){function reveal(){if(document.documentElement.classList.contains("is-revealed"))return;if(document.getElementById("psm-boot-failopen"))return;var s=document.createElement("style");s.id="psm-boot-failopen";s.textContent=".boot-loader{display:none!important}html.is-booting,html.is-booting body{overflow:auto!important}";document.head.appendChild(s);}window.setTimeout(reveal,1400);})();`,
+          }}
+        />
         <noscript>
           <style>{`.boot-loader{display:none!important}html.is-booting{overflow:auto!important}`}</style>
         </noscript>

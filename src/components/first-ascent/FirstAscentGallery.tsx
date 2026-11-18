@@ -8,14 +8,14 @@ import { ArrowUpRight, Building2, Calendar } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import { PortraitFilmWash } from "@/components/home/portrait-film-wash";
+import { HomeFilmStage } from "@/components/home/home-film-stage";
 import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
 import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
 import { prefersReducedMotion } from "@/lib/media-capability";
 import { bindNavYield } from "@/lib/nav-yield";
 import { attachScrollVideo } from "@/lib/scroll-video";
-import { LEVEL_TWO_VIDEO_SRC } from "@/lib/second-ascent-video";
+import { LEVEL_TWO_VIDEO_SRC, SKYDECK_VIDEO_SRC } from "@/lib/second-ascent-video";
 
 const EVENT_CTAS = [
   { id: "private-events", label: "Private Events", href: "/second-ascent/private-events", icon: Calendar },
@@ -42,7 +42,10 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, LEVEL_TWO_VIDEO_SRC, { eager: true });
+  const videoSrc = useDeferredVideoSource(sectionRef, LEVEL_TWO_VIDEO_SRC, {
+    rootMargin: "55% 0px",
+    prefetch: SKYDECK_VIDEO_SRC,
+  });
   const [phase, setPhase] = useState<ScrollPhase>("intro");
   const revealed = phase === "cta" || phase === "rest";
   const ctaVisible = phase === "cta";
@@ -85,7 +88,6 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
         getProgress: () => trigger.progress,
         smoothing: HOME_VIDEO_SMOOTHING,
         frameRate: 30,
-        preload: "auto",
       });
 
       return bindNavYield(() => {
@@ -104,21 +106,9 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
       style={homeChapterStyle(HOME_CHAPTER_VIDEO_SECONDS.events)}
       aria-label="Second Ascent"
     >
-      <div ref={videoWrapRef} className="home-stage sticky top-0 z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
-        <PortraitFilmWash videoRef={videoRef} />
-        <video
-          ref={videoRef}
-          src={videoSrc}
-          muted
-          playsInline
-          disablePictureInPicture
-          preload={videoSrc ? "auto" : "none"}
-          className="home-film gpu-media absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="home-film-shade pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
-
+      <HomeFilmStage videoRef={videoRef} wrapRef={videoWrapRef} src={videoSrc}>
         <div
-          className={`absolute inset-0 z-30 flex items-center justify-center ${
+          className={`home-overlay absolute inset-0 z-30 flex items-center justify-center ${
             ctaVisible ? "pointer-events-auto" : "pointer-events-none"
           }`}
         >
@@ -158,9 +148,12 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
         </div>
 
         <div
-          className={`home-copy-inner absolute inset-x-0 bottom-0 z-20 mx-auto w-full max-w-7xl px-8 pb-28 transition-opacity duration-500 md:px-16 md:pb-36 lg:px-20 ${
-            revealed ? "pointer-events-none opacity-0" : "opacity-100"
+          className={`home-copy pointer-events-none absolute inset-0 z-20 flex items-end ${
+            revealed ? "opacity-0" : "opacity-100"
           }`}
+        >
+        <div
+          className="home-copy-inner mx-auto w-full max-w-7xl px-8 pb-28 transition-opacity duration-500 md:px-16 md:pb-36 lg:px-20"
         >
           <div className="relative max-w-xl text-left">
             <div className="pointer-events-none absolute -inset-10 -z-10 bg-gradient-to-tr from-black/85 via-black/40 to-transparent blur-3xl" />
@@ -200,7 +193,8 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
             )}
           </div>
         </div>
-      </div>
+        </div>
+      </HomeFilmStage>
 
       <AnimatePresence>
         {showDock ? (

@@ -23,7 +23,7 @@ export function attachScrollVideo(
   video.defaultMuted = true;
   video.playsInline = true;
   video.loop = false;
-  video.preload = options.preload ?? "auto";
+  video.preload = options.preload ?? video.preload ?? "metadata";
   video.disablePictureInPicture = true;
   video.setAttribute("playsinline", "");
   video.setAttribute("webkit-playsinline", "");

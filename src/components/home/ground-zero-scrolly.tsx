@@ -6,8 +6,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
-import { PortraitFilmWash } from "@/components/home/portrait-film-wash";
 import { GroundZeroCard, GROUND_ZERO_CARDS } from "@/components/home/ground-zero-card";
+import { HomeFilmStage } from "@/components/home/home-film-stage";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
@@ -40,7 +40,10 @@ const BEATS: EditorialBeat[] = [
 export function GroundZeroScrollySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, HOME_VIDEO.groundZero, { eager: true });
+  const videoSrc = useDeferredVideoSource(sectionRef, HOME_VIDEO.groundZero, {
+    rootMargin: "55% 0px",
+    prefetch: HOME_VIDEO.skyTerrace,
+  });
   const [revealed, setRevealed] = useState(false);
   const [beat, setBeat] = useState<EditorialBeat | null>(BEATS[0]);
 
@@ -111,21 +114,8 @@ export function GroundZeroScrollySection() {
       style={homeChapterStyle(HOME_CHAPTER_VIDEO_SECONDS.groundZero)}
       aria-label="Ground Zero arrival"
     >
-      <div className="home-stage sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden gpu-layer">
-        <PortraitFilmWash videoRef={videoRef} />
-        <video
-          ref={videoRef}
-          src={videoSrc}
-          muted
-          playsInline
-          disablePictureInPicture
-          preload={videoSrc ? "auto" : "none"}
-          className="home-film gpu-media absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="home-film-shade pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/40" />
-
+      <HomeFilmStage videoRef={videoRef} src={videoSrc}>
         <EditorialMilestone beat={beat} />
-
         <div
           className={`gz-card-overlay absolute inset-0 z-30 flex items-center justify-center ${
             revealed ? "is-revealed" : "pointer-events-none"
@@ -137,7 +127,7 @@ export function GroundZeroScrollySection() {
             ))}
           </div>
         </div>
-      </div>
+      </HomeFilmStage>
     </section>
   );
 }

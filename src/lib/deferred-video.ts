@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type RefObject } from "react";
 
+import { acquireFilmSlot } from "@/lib/film-load";
 import { isConstrainedNetwork } from "@/lib/media-capability";
 
 const warmed = new Set<string>();
@@ -153,8 +154,18 @@ export function useDeferredVideoSource(
 
   useEffect(() => {
     if (!src || !eager) return;
-    setActiveSrc(src);
-    if (prefetch) prefetchVideo(prefetch);
+    let cancelled = false;
+    void acquireFilmSlot(src).then((release) => {
+      if (cancelled) {
+        release();
+        return;
+      }
+      setActiveSrc(src);
+      if (prefetch) prefetchVideo(prefetch);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [eager, prefetch, src]);
 
   useEffect(() => {
@@ -162,20 +173,29 @@ export function useDeferredVideoSource(
 
     const node = targetRef.current;
     if (!node) return;
+    let cancelled = false;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry?.isIntersecting) return;
-        prefetchVideo(src);
-        setActiveSrc(src);
-        if (prefetch) prefetchVideo(prefetch);
         observer.disconnect();
+        void acquireFilmSlot(src).then((release) => {
+          if (cancelled) {
+            release();
+            return;
+          }
+          setActiveSrc(src);
+          if (prefetch) prefetchVideo(prefetch);
+        });
       },
       { rootMargin, threshold: 0 },
     );
 
     observer.observe(node);
-    return () => observer.disconnect();
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+    };
   }, [eager, prefetch, rootMargin, src, targetRef]);
 
   useEffect(() => {

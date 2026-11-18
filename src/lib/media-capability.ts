@@ -12,9 +12,8 @@ export function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-/** True on phones, Save-Data, or slow cellular — skip extra media work. */
+/** True on Save-Data or slow cellular — skip extra media work. Phones still prefetch the next reel. */
 export function isConstrainedNetwork() {
-  if (isCompactViewport()) return true;
   const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } })
     .connection;
   if (!connection) return false;

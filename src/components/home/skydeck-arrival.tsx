@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
-import { PortraitFilmWash } from "@/components/home/portrait-film-wash";
+import { HomeFilmStage } from "@/components/home/home-film-stage";
 import { SkydeckSpaceTags } from "@/components/skydeck/SkydeckSpaceTags";
 import { SKYDECK_BACKDROP_FIRST, SKYDECK_BACKDROP_SECOND } from "@/content/skydeck";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
@@ -20,7 +20,6 @@ import {
   SKYDECK_CARDS_HIDE_AT,
   SKYDECK_LOUNGE_AT,
   SKYDECK_POOL_AT,
-  SKYDECK_VIDEO_MOBILE_SRC,
   SKYDECK_VIDEO_POSTER,
   SKYDECK_VIDEO_SRC,
   skydeckProgressForTime,
@@ -66,11 +65,7 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [fileSrc, setFileSrc] = useState("");
-  useEffect(() => {
-    setFileSrc(isMotionLite() ? SKYDECK_VIDEO_MOBILE_SRC : SKYDECK_VIDEO_SRC);
-  }, []);
-  const videoSrc = useDeferredVideoSource(sectionRef, fileSrc, { eager: Boolean(fileSrc) });
+  const videoSrc = useDeferredVideoSource(sectionRef, SKYDECK_VIDEO_SRC, { rootMargin: "55% 0px" });
   const hideHeroRef = useRef(hideHero);
   useEffect(() => {
     hideHeroRef.current = hideHero;
@@ -141,7 +136,6 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
         getProgress: () => trigger.progress,
         smoothing: HOME_VIDEO_SMOOTHING,
         frameRate: 24,
-        preload: "auto",
       });
 
       return bindNavYield(() => {
@@ -161,24 +155,20 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
       style={homeChapterStyle(HOME_CHAPTER_VIDEO_SECONDS.skydeck)}
       aria-label="Level Three Skydeck"
     >
-      <div ref={videoWrapRef} className="home-stage skydeck-stage sticky top-0 z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
-        <PortraitFilmWash videoRef={videoRef} />
-        <video
-          ref={videoRef}
-          src={videoSrc}
-          poster={SKYDECK_VIDEO_POSTER}
-          muted
-          playsInline
-          disablePictureInPicture
-          preload={videoSrc ? "auto" : "none"}
-          className="home-film gpu-media absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="home-film-shade pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
+      <HomeFilmStage
+        videoRef={videoRef}
+        wrapRef={videoWrapRef}
+        src={videoSrc}
+        poster={SKYDECK_VIDEO_POSTER}
+        className="skydeck-stage"
+      >
         {!hideHero ? (
-          <SkydeckSpaceTags
-            visible={cardPhase !== "hidden"}
-            spaces={cardPhase === "second" ? SKYDECK_BACKDROP_SECOND : SKYDECK_BACKDROP_FIRST}
-          />
+          <div className="home-overlay absolute inset-0">
+            <SkydeckSpaceTags
+              visible={cardPhase !== "hidden"}
+              spaces={cardPhase === "second" ? SKYDECK_BACKDROP_SECOND : SKYDECK_BACKDROP_FIRST}
+            />
+          </div>
         ) : null}
         <EditorialMilestone
           beat={beat}
@@ -191,7 +181,7 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
                 }
           }
         />
-      </div>
+      </HomeFilmStage>
     </section>
   );
 }

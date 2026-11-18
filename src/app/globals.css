@@ -665,6 +665,12 @@ textarea {
   }
 }
 
+/* Full-screen black hold between homepage videos so the next clip can buffer. */
+.home-video-break {
+  min-height: 100vh;
+  background: #000;
+}
+
 /* Hero scrollytelling */
 .hero-scrolly {
   position: relative;

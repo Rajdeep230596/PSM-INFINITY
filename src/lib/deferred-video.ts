@@ -114,6 +114,25 @@ export function seekIfBuffered(video: HTMLVideoElement, time: number) {
   }
 }
 
+/** If the scroll target is past the buffered range, step to the buffered edge so the download continues. */
+export function seekToward(video: HTMLVideoElement, time: number) {
+  if (seekIfBuffered(video, time)) return true;
+  if (video.seeking || !Number.isFinite(time)) return false;
+  const ranges = video.buffered;
+  let edge = -1;
+  for (let i = 0; i < ranges.length; i += 1) {
+    const end = ranges.end(i) - 0.08;
+    if (end < time && end > edge) edge = end;
+  }
+  if (edge < 0 || Math.abs(video.currentTime - edge) < 0.2) return false;
+  try {
+    video.currentTime = edge;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 type DeferredOptions = {
   eager?: boolean;
   rootMargin?: string;

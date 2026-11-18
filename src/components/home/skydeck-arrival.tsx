@@ -109,7 +109,7 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
         trigger: section,
         start: "top top",
         end: "bottom bottom",
-        scrub: lite ? 1.35 : HOME_SCROLL_SCRUB,
+        scrub: HOME_SCROLL_SCRUB,
         onUpdate: (self) => {
           const next = activeBeat(self.progress, BEATS).beat;
           setBeat((prev) => (prev?.id === next?.id ? prev : next));
@@ -138,9 +138,9 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
 
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
-        smoothing: lite ? 0.28 : HOME_VIDEO_SMOOTHING,
-        frameRate: lite ? 10 : 24,
-        preload: lite ? "metadata" : "auto",
+        smoothing: HOME_VIDEO_SMOOTHING,
+        frameRate: 24,
+        preload: "auto",
       });
 
       return bindNavYield(() => {
@@ -168,7 +168,7 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
           muted
           playsInline
           disablePictureInPicture
-          preload={videoSrc ? "metadata" : "none"}
+          preload={videoSrc ? "auto" : "none"}
           className="gpu-media absolute inset-0 h-full w-full object-cover"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />

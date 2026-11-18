@@ -157,7 +157,7 @@ export function CinematicWalkthrough() {
           muted
           playsInline
           disablePictureInPicture
-          preload={videoSrc ? "metadata" : "none"}
+          preload={videoSrc ? "auto" : "none"}
           className="gpu-media relative z-[1] h-full w-full object-cover"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />

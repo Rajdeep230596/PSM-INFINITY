@@ -14,15 +14,16 @@ import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, ho
 import { prefersReducedMotion } from "@/lib/media-capability";
 import { bindNavYield } from "@/lib/nav-yield";
 import { attachScrollVideo } from "@/lib/scroll-video";
-import { mapToLevelTwo, SECOND_ASCENT_VIDEO_SRC, SKYDECK_HANDOFF_AT } from "@/lib/second-ascent-video";
+import { LEVEL_TWO_VIDEO_SRC } from "@/lib/second-ascent-video";
 
 const EVENT_CTAS = [
   { id: "private-events", label: "Private Events", href: "/second-ascent/private-events", icon: Calendar },
   { id: "corporate-events", label: "Corporate Events", href: "/second-ascent/corporate-events", icon: Building2 },
 ] as const;
 
-const EVENT_CTA_REVEAL_AT = 6.85 / SKYDECK_HANDOFF_AT;
-const EVENT_CTA_HIDE_AT = 11.9 / SKYDECK_HANDOFF_AT;
+/** Same scroll beats as the previous Level Two film: cards arrive just before halfway, then clear near the end. */
+const EVENT_CTA_REVEAL_AT = 6.85 / 14.2;
+const EVENT_CTA_HIDE_AT = 11.9 / 14.2;
 const DOCK_AT = 0.12;
 
 type ScrollPhase = "intro" | "dock" | "cta" | "rest";
@@ -40,7 +41,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, SECOND_ASCENT_VIDEO_SRC, { eager: true });
+  const videoSrc = useDeferredVideoSource(sectionRef, LEVEL_TWO_VIDEO_SRC, { eager: true });
   const [phase, setPhase] = useState<ScrollPhase>("intro");
   const revealed = phase === "cta" || phase === "rest";
   const ctaVisible = phase === "cta";
@@ -81,10 +82,9 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
 
       const detach = attachScrollVideo(video, {
         getProgress: () => trigger.progress,
-        mapProgress: mapToLevelTwo,
         smoothing: HOME_VIDEO_SMOOTHING,
         frameRate: 30,
-        preload: "metadata",
+        preload: "auto",
       });
 
       return bindNavYield(() => {
@@ -110,7 +110,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
           muted
           playsInline
           disablePictureInPicture
-          preload={videoSrc ? "metadata" : "none"}
+          preload={videoSrc ? "auto" : "none"}
           className="gpu-media absolute inset-0 h-full w-full object-cover"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />

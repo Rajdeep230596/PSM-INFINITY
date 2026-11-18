@@ -1,6 +1,6 @@
 "use client";
 
-import { armVideoReveal, markVideoReady, seekIfBuffered, timeIsBuffered } from "@/lib/deferred-video";
+import { armVideoReveal, markVideoReady, seekIfBuffered, seekToward, timeIsBuffered } from "@/lib/deferred-video";
 import { registerNavYield } from "@/lib/nav-yield";
 
 type ScrollVideoOptions = {
@@ -23,7 +23,7 @@ export function attachScrollVideo(
   video.defaultMuted = true;
   video.playsInline = true;
   video.loop = false;
-  video.preload = options.preload ?? "metadata";
+  video.preload = options.preload ?? "auto";
   video.disablePictureInPicture = true;
   video.setAttribute("playsinline", "");
   video.setAttribute("webkit-playsinline", "");
@@ -81,11 +81,18 @@ export function attachScrollVideo(
     if (stopped || !visible || duration <= 0 || video.readyState < 2) return;
 
     const target = targetFromProgress();
-    displayed += (target - displayed) * smoothing;
+    displayed = smoothing >= 1 ? target : displayed + (target - displayed) * smoothing;
     if (Math.abs(target - displayed) < minStep) displayed = target;
-
-    if (seekIfBuffered(video, displayed)) {
+    if (video.seeking) return;
+    if (Math.abs(video.currentTime - displayed) < minStep) {
       markVideoReady(video);
+      return;
+    }
+    try {
+      video.currentTime = displayed;
+      markVideoReady(video);
+    } catch {
+      seekToward(video, displayed);
     }
   };
 

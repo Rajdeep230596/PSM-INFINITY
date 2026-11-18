@@ -38,7 +38,7 @@ export function PageBackdrop() {
           const top = region.getBoundingClientRect().top + window.scrollY;
           return Math.max(1, top + (region as HTMLElement).offsetHeight - window.innerHeight);
         },
-        scrub: 1.05,
+        scrub: true,
         onUpdate: (self) => {
           wrap.classList.toggle("is-past", self.progress >= 0.999);
         },
@@ -61,7 +61,7 @@ export function PageBackdrop() {
   return (
     <div className="page-backdrop" id="pageBackdrop" ref={wrapRef} aria-hidden="true">
       <div className="page-backdrop-media">
-        <video ref={videoRef} src={videoSrc} muted playsInline disablePictureInPicture preload={videoSrc ? "metadata" : "none"} className="gpu-media" />
+        <video ref={videoRef} src={videoSrc} muted playsInline disablePictureInPicture preload={videoSrc ? "auto" : "none"} className="gpu-media" />
         <div className="page-backdrop-wash" />
       </div>
     </div>

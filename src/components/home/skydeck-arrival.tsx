@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
+import { PortraitFilmWash } from "@/components/home/portrait-film-wash";
 import { SkydeckSpaceTags } from "@/components/skydeck/SkydeckSpaceTags";
 import { SKYDECK_BACKDROP_FIRST, SKYDECK_BACKDROP_SECOND } from "@/content/skydeck";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
@@ -160,7 +161,8 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
       style={homeChapterStyle(HOME_CHAPTER_VIDEO_SECONDS.skydeck)}
       aria-label="Level Three Skydeck"
     >
-      <div ref={videoWrapRef} className="skydeck-stage sticky top-0 z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
+      <div ref={videoWrapRef} className="home-stage skydeck-stage sticky top-0 z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
+        <PortraitFilmWash videoRef={videoRef} />
         <video
           ref={videoRef}
           src={videoSrc}
@@ -169,9 +171,9 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
           playsInline
           disablePictureInPicture
           preload={videoSrc ? "auto" : "none"}
-          className="gpu-media absolute inset-0 h-full w-full object-cover"
+          className="home-film gpu-media absolute inset-0 h-full w-full object-cover"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
+        <div className="home-film-shade pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
         {!hideHero ? (
           <SkydeckSpaceTags
             visible={cardPhase !== "hidden"}

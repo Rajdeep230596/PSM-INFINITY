@@ -8,6 +8,7 @@ import { ArrowUpRight, Building2, Calendar } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import { PortraitFilmWash } from "@/components/home/portrait-film-wash";
 import { enquireWhatsApp, openWhatsApp } from "@/lib/constants";
 import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
@@ -103,7 +104,8 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
       style={homeChapterStyle(HOME_CHAPTER_VIDEO_SECONDS.events)}
       aria-label="Second Ascent"
     >
-      <div ref={videoWrapRef} className="sticky top-0 z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
+      <div ref={videoWrapRef} className="home-stage sticky top-0 z-0 h-screen w-full overflow-hidden bg-[#080808] gpu-layer">
+        <PortraitFilmWash videoRef={videoRef} />
         <video
           ref={videoRef}
           src={videoSrc}
@@ -111,16 +113,16 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
           playsInline
           disablePictureInPicture
           preload={videoSrc ? "auto" : "none"}
-          className="gpu-media absolute inset-0 h-full w-full object-cover"
+          className="home-film gpu-media absolute inset-0 h-full w-full object-cover"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
+        <div className="home-film-shade pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/35" />
 
         <div
           className={`absolute inset-0 z-30 flex items-center justify-center ${
             ctaVisible ? "pointer-events-auto" : "pointer-events-none"
           }`}
         >
-          <div className="flex items-center justify-center gap-[48px]">
+          <div className="event-cta-row flex items-center justify-center gap-[48px]">
             {EVENT_CTAS.map((item, index) => {
               const Icon = item.icon;
               return (
@@ -156,7 +158,7 @@ export function FirstAscentGallery({ hideHero = false }: { hideHero?: boolean })
         </div>
 
         <div
-          className={`absolute inset-x-0 bottom-0 z-20 mx-auto w-full max-w-7xl px-8 pb-28 transition-opacity duration-500 md:px-16 md:pb-36 lg:px-20 ${
+          className={`home-copy-inner absolute inset-x-0 bottom-0 z-20 mx-auto w-full max-w-7xl px-8 pb-28 transition-opacity duration-500 md:px-16 md:pb-36 lg:px-20 ${
             revealed ? "pointer-events-none opacity-0" : "opacity-100"
           }`}
         >

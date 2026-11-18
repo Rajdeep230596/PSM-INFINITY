@@ -89,8 +89,8 @@ export function EditorialMilestone({
   }, []);
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-20 flex items-end">
-      <div className="mx-auto w-full max-w-7xl px-8 pb-28 md:px-16 md:pb-36 lg:px-20">
+    <div className="home-copy pointer-events-none absolute inset-0 z-20 flex items-end">
+      <div className="home-copy-inner mx-auto w-full max-w-7xl px-8 pb-28 md:px-16 md:pb-36 lg:px-20">
         <div className="relative max-w-xl text-left">
           <div className="editorial-wash pointer-events-none absolute -inset-10 -z-10 bg-gradient-to-tr from-black/85 via-black/40 to-transparent" />
           {lite ? (

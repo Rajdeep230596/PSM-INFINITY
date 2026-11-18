@@ -76,6 +76,22 @@
   text-transform: uppercase;
 }
 
+@media (max-width: 640px) {
+  .ambient-audio-toggle {
+    width: 44px;
+    padding: 0;
+  }
+
+  .ambient-audio-toggle span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
+
 .ambient-audio-toggle:hover {
   background: #c5a880;
   color: #08080a;

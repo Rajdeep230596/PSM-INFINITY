@@ -14,8 +14,8 @@ export function AscentBreak({
   links: readonly AscentLink[];
 }) {
   return (
-    <section className="home-video-break flex items-center text-white" aria-label={title}>
-      <div className="mx-auto w-full max-w-5xl px-8 py-16 md:px-16">
+    <section className="home-video-break flex items-center px-6 text-white md:px-16" aria-label={title}>
+      <div className="mx-auto w-full max-w-5xl py-16">
         <p className="mb-3 font-mono text-[10px] font-semibold tracking-[0.35em] text-[#C5A880] uppercase md:text-[11px]">
           {eyebrow}
         </p>

@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
+import { PortraitFilmWash } from "@/components/home/portrait-film-wash";
 import { SiteImage } from "@/components/media/site-image";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { playMutedLoop, prefetchVideo } from "@/lib/deferred-video";
@@ -143,13 +144,14 @@ export function CinematicWalkthrough() {
       style={homeChapterStyle(HOME_CHAPTER_VIDEO_SECONDS.landing)}
       aria-label="Master landing sequence"
     >
-      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black gpu-layer">
+      <div className="home-stage sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black gpu-layer">
+        <PortraitFilmWash videoRef={videoRef} />
         <SiteImage
           src={HOME_VIDEO.landingPoster}
           alt=""
           aria-hidden="true"
           priority
-          className="absolute inset-0 h-full w-full object-cover"
+          className="home-film absolute inset-0 h-full w-full object-cover"
         />
         <video
           ref={videoRef}
@@ -158,9 +160,9 @@ export function CinematicWalkthrough() {
           playsInline
           disablePictureInPicture
           preload={videoSrc ? "auto" : "none"}
-          className="gpu-media relative z-[1] h-full w-full object-cover"
+          className="home-film gpu-media relative z-[1] h-full w-full object-cover"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
+        <div className="home-film-shade pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
         <EditorialMilestone
           beat={beat}
           cta={

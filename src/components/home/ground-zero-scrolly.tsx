@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef, useState } from "react";
 
 import { EditorialMilestone, activeBeat, type EditorialBeat } from "@/components/home/editorial-milestone";
+import { PortraitFilmWash } from "@/components/home/portrait-film-wash";
 import { GroundZeroCard, GROUND_ZERO_CARDS } from "@/components/home/ground-zero-card";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { playMutedLoop, useDeferredVideoSource } from "@/lib/deferred-video";
@@ -110,7 +111,8 @@ export function GroundZeroScrollySection() {
       style={homeChapterStyle(HOME_CHAPTER_VIDEO_SECONDS.groundZero)}
       aria-label="Ground Zero arrival"
     >
-      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden gpu-layer">
+      <div className="home-stage sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden gpu-layer">
+        <PortraitFilmWash videoRef={videoRef} />
         <video
           ref={videoRef}
           src={videoSrc}
@@ -118,9 +120,9 @@ export function GroundZeroScrollySection() {
           playsInline
           disablePictureInPicture
           preload={videoSrc ? "auto" : "none"}
-          className="gpu-media absolute inset-0 h-full w-full object-cover"
+          className="home-film gpu-media absolute inset-0 h-full w-full object-cover"
         />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/40" />
+        <div className="home-film-shade pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/40" />
 
         <EditorialMilestone beat={beat} />
 

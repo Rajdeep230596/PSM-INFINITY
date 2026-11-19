@@ -69,7 +69,7 @@ export function SkyTerraceArrival() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoSrc = useDeferredVideoSource(sectionRef, HOME_VIDEO.skyTerrace, {
-    rootMargin: "40% 0px",
+    eager: true,
     prefetch: LEVEL_TWO_VIDEO_SRC,
   });
   const [revealed, setRevealed] = useState(false);
@@ -92,7 +92,7 @@ export function SkyTerraceArrival() {
           const isRevealed = self.progress >= 0.72;
           const next = activeBeat(isRevealed ? 1.1 : self.progress, BEATS).beat;
           setRevealed((prev) => (prev === isRevealed ? prev : isRevealed));
-          setBeat((prev) => (prev?.id === next?.id ? prev : next));
+          setBeat((prev) => (next && prev?.id !== next.id ? next : prev));
         },
       });
 

@@ -10,7 +10,6 @@ import { HomeFilmStage } from "@/components/home/home-film-stage";
 import { setCinematicChapter } from "@/lib/cinematic-hero";
 import { playMutedLoop, prefetchVideo } from "@/lib/deferred-video";
 import { HOME_CHAPTER_VIDEO_SECONDS, HOME_SCROLL_SCRUB, HOME_VIDEO, HOME_VIDEO_SMOOTHING, homeChapterStyle } from "@/lib/home-scroll";
-import { isFilmLite } from "@/lib/film-load";
 import { prefersReducedMotion } from "@/lib/media-capability";
 import { bindNavYield } from "@/lib/nav-yield";
 import { attachScrollVideo } from "@/lib/scroll-video";
@@ -63,17 +62,7 @@ export function CinematicWalkthrough() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [beat, setBeat] = useState<EditorialBeat | null>(BEATS[0]);
-  const [videoSrc, setVideoSrc] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    const arm = () => setVideoSrc(HOME_VIDEO.landing);
-    if (typeof window.requestIdleCallback === "function") {
-      const idle = window.requestIdleCallback(arm, { timeout: 480 });
-      return () => window.cancelIdleCallback(idle);
-    }
-    const timer = window.setTimeout(arm, 280);
-    return () => window.clearTimeout(timer);
-  }, []);
+  const videoSrc = HOME_VIDEO.landing;
 
   useEffect(() => {
     const node = sectionRef.current;
@@ -107,13 +96,13 @@ export function CinematicWalkthrough() {
         scrub: HOME_SCROLL_SCRUB,
         onUpdate: (self) => {
           const next = activeBeat(self.progress, BEATS).beat;
-          setBeat((prev) => (prev?.id === next?.id ? prev : next));
+          setBeat((prev) => (next && prev?.id !== next.id ? next : prev));
         },
       });
 
       let cancelled = false;
       const warmNext = () => {
-        if (cancelled || isFilmLite()) return;
+        if (cancelled) return;
         prefetchVideo(HOME_VIDEO.groundZero);
       };
       video.addEventListener("canplaythrough", warmNext, { once: true });

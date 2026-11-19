@@ -3,6 +3,7 @@
 import { useEffect, type ReactNode, type RefObject } from "react";
 
 import { SiteImage } from "@/components/media/site-image";
+import { registerBootVideo } from "@/lib/film-boot";
 import { holdFilmSlot, releaseFilmSlotWhenHeadReady } from "@/lib/film-load";
 import { armFilmSharpness, armInlineVideo } from "@/lib/media-capability";
 
@@ -30,8 +31,9 @@ export function HomeFilmStage({
     const video = videoRef.current;
     if (!video) return;
     armInlineVideo(video);
+    if (posterPriority) registerBootVideo(video);
     return armFilmSharpness(video);
-  }, [videoRef]);
+  }, [posterPriority, videoRef]);
 
   useEffect(() => {
     if (!src) return;
@@ -42,7 +44,7 @@ export function HomeFilmStage({
     return releaseFilmSlotWhenHeadReady(video, src);
   }, [posterPriority, src, videoRef]);
 
-  const preload = src ? (posterPriority ? "auto" : "metadata") : "none";
+  const preload = src ? "auto" : "none";
 
   return (
     <div

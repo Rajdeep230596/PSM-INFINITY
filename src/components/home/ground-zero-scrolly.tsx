@@ -42,7 +42,7 @@ export function GroundZeroScrollySection() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoSrc = useDeferredVideoSource(sectionRef, HOME_VIDEO.groundZero, {
-    rootMargin: "40% 0px",
+    eager: true,
     prefetch: HOME_VIDEO.skyTerrace,
   });
   const [revealed, setRevealed] = useState(false);
@@ -81,7 +81,7 @@ export function GroundZeroScrollySection() {
           const isRevealed = self.progress >= 0.58;
           const next = activeBeat(isRevealed ? 1.1 : self.progress, BEATS).beat;
           setRevealed((prev) => (prev === isRevealed ? prev : isRevealed));
-          setBeat((prev) => (prev?.id === next?.id ? prev : next));
+          setBeat((prev) => (next && prev?.id !== next.id ? next : prev));
         },
       });
 

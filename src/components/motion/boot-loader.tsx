@@ -3,23 +3,25 @@
 import { useLayoutEffect, useState } from "react";
 
 import { BootMark } from "@/components/layout/boot-mark";
+import { completeBootProgress, subscribeBootProgress } from "@/lib/boot-progress";
 import { prewarmExperience } from "@/lib/prewarm";
 
-const REVEALED_KEY = "psm-revealed";
+const READY_KEY = "psm-films-ready";
 
-function markRevealed(html: HTMLElement) {
+function markRevealed(html: HTMLElement, persist: boolean) {
   html.classList.remove("is-booting");
   html.classList.add("is-revealed");
+  if (!persist) return;
   try {
-    sessionStorage.setItem(REVEALED_KEY, "1");
+    sessionStorage.setItem(READY_KEY, "1");
   } catch {
     // Private mode can block storage.
   }
 }
 
-function alreadyRevealed() {
+function filmsAlreadyReady() {
   try {
-    return sessionStorage.getItem(REVEALED_KEY) === "1";
+    return sessionStorage.getItem(READY_KEY) === "1";
   } catch {
     return false;
   }
@@ -27,12 +29,20 @@ function alreadyRevealed() {
 
 export function BootLoader() {
   const [phase, setPhase] = useState<"booting" | "exiting" | "done">("booting");
+  const [percent, setPercent] = useState(0);
+
+  useLayoutEffect(() => {
+    return subscribeBootProgress(setPercent);
+  }, []);
 
   useLayoutEffect(() => {
     const html = document.documentElement;
-    if (alreadyRevealed() || html.classList.contains("is-revealed")) {
-      markRevealed(html);
+    if (filmsAlreadyReady() || html.classList.contains("is-revealed")) {
+      markRevealed(html, true);
       setPhase("done");
+      void import("@/lib/film-boot").then(({ primeHomeMedia }) => {
+        void primeHomeMedia();
+      });
       return;
     }
 
@@ -40,11 +50,15 @@ export function BootLoader() {
     html.classList.add("is-booting");
 
     let cancelled = false;
+    let settled = false;
     const fadeMs = reducedMotion ? 0 : 280;
 
-    const finish = () => {
-      if (cancelled || html.classList.contains("is-revealed")) return;
-      markRevealed(html);
+    const finish = (persist: boolean) => {
+      if (cancelled || settled || html.classList.contains("is-revealed")) return;
+      settled = true;
+      window.clearTimeout(failsafe);
+      completeBootProgress();
+      markRevealed(html, persist);
       if (reducedMotion) {
         setPhase("done");
         return;
@@ -55,23 +69,19 @@ export function BootLoader() {
       }, fadeMs);
     };
 
-    const onResourceError = (event: Event) => {
-      const target = event.target;
-      if (target instanceof HTMLScriptElement || target instanceof HTMLLinkElement) finish();
-    };
+    const ios =
+      /iPhone|iPod|iPad/i.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const failsafe = window.setTimeout(() => finish(false), ios ? 50000 : 28000);
 
-    window.addEventListener("error", onResourceError, true);
-    const ios = /iPhone|iPod|iPad/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    const failsafe = window.setTimeout(finish, ios ? 700 : 1200);
-
-    void prewarmExperience({ reducedMotion })
-      .catch(() => undefined)
-      .then(finish);
+    void prewarmExperience({ reducedMotion }).then(
+      () => finish(true),
+      () => finish(false),
+    );
 
     return () => {
       cancelled = true;
       window.clearTimeout(failsafe);
-      window.removeEventListener("error", onResourceError, true);
     };
   }, []);
 
@@ -84,7 +94,7 @@ export function BootLoader() {
       aria-live="polite"
       role="status"
     >
-      <BootMark />
+      <BootMark percent={phase === "exiting" ? 100 : percent} />
     </div>
   );
 }

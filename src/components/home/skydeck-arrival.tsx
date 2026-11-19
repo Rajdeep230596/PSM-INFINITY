@@ -65,7 +65,7 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const videoWrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const videoSrc = useDeferredVideoSource(sectionRef, SKYDECK_VIDEO_SRC, { rootMargin: "40% 0px" });
+  const videoSrc = useDeferredVideoSource(sectionRef, SKYDECK_VIDEO_SRC, { eager: true });
   const hideHeroRef = useRef(hideHero);
   useEffect(() => {
     hideHeroRef.current = hideHero;
@@ -108,7 +108,7 @@ export function SkydeckArrival({ hideHero = false }: { hideHero?: boolean }) {
         scrub: HOME_SCROLL_SCRUB,
         onUpdate: (self) => {
           const next = activeBeat(self.progress, BEATS).beat;
-          setBeat((prev) => (prev?.id === next?.id ? prev : next));
+          setBeat((prev) => (next && prev?.id !== next.id ? next : prev));
           const nextPhase = cardPhaseFromProgress(self.progress);
           if (
             allowCardPause &&

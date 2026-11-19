@@ -81,6 +81,7 @@ export function releaseFilmSlot(src: string) {
 /** Free the download slot once the first second is buffered, not on the first frame. */
 export function releaseFilmSlotWhenHeadReady(video: HTMLVideoElement, src: string) {
   let done = false;
+  let timer = 0;
   const finish = () => {
     if (done) return;
     done = true;
@@ -100,7 +101,7 @@ export function releaseFilmSlotWhenHeadReady(video: HTMLVideoElement, src: strin
   video.addEventListener("loadeddata", check);
   video.addEventListener("progress", check);
   video.addEventListener("canplaythrough", finish);
-  const timer = window.setTimeout(finish, 2800);
+  timer = window.setTimeout(finish, 2800);
   check();
   return () => {
     video.removeEventListener("loadeddata", check);

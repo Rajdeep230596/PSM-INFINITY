@@ -49,7 +49,7 @@ export function DeferredChapter({
         setShow(true);
         observer.disconnect();
       },
-      { rootMargin: isCompactViewport() ? "12% 0px" : rootMargin, threshold: 0 },
+      { rootMargin: isCompactViewport() ? "280% 0px" : rootMargin, threshold: 0 },
     );
     observer.observe(node);
     return () => observer.disconnect();

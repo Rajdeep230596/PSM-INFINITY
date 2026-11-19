@@ -2,28 +2,22 @@
 
 import { useEffect, useState, type RefObject } from "react";
 
-import { acquireFilmSlot, isFilmLite } from "@/lib/film-load";
-import { isConstrainedNetwork } from "@/lib/media-capability";
+import { acquireFilmSlot } from "@/lib/film-load";
+import { armInlineVideo, isConstrainedNetwork } from "@/lib/media-capability";
 
 const warmed = new Set<string>();
 const warmers = new Map<string, HTMLVideoElement>();
 
 /** Warm the media cache without occupying a full download slot. */
-export function prefetchVideo(src: string) {
+export function prefetchVideo(src: string, options?: { force?: boolean }) {
   if (!src || typeof document === "undefined") return;
-  if (warmed.has(src) || warmers.has(src)) return;
-  if (isConstrainedNetwork() || isFilmLite()) return;
+  if (warmers.has(src)) return;
+  if (!options?.force && (warmed.has(src) || isConstrainedNetwork())) return;
   warmed.add(src);
 
   const video = document.createElement("video");
-  video.muted = true;
-  video.defaultMuted = true;
-  video.playsInline = true;
-  video.disablePictureInPicture = true;
-  video.preload = "metadata";
-  video.setAttribute("playsinline", "");
-  video.setAttribute("webkit-playsinline", "");
-  video.setAttribute("muted", "");
+  armInlineVideo(video);
+  video.preload = "auto";
   video.setAttribute("aria-hidden", "true");
   video.tabIndex = -1;
   Object.assign(video.style, {
@@ -38,6 +32,10 @@ export function prefetchVideo(src: string) {
   document.body.append(video);
   video.load();
   warmers.set(src, video);
+}
+
+export function getPrefetchVideo(src: string) {
+  return warmers.get(src) ?? null;
 }
 
 export function releaseVideoPrefetch(src: string) {
@@ -115,23 +113,9 @@ export function seekIfBuffered(video: HTMLVideoElement, time: number) {
   }
 }
 
-/** If the scroll target is past the buffered range, step to the buffered edge so the download continues. */
+/** Hold the last good frame until the scroll target is actually buffered. */
 export function seekToward(video: HTMLVideoElement, time: number) {
-  if (seekIfBuffered(video, time)) return true;
-  if (video.seeking || !Number.isFinite(time)) return false;
-  const ranges = video.buffered;
-  let edge = -1;
-  for (let i = 0; i < ranges.length; i += 1) {
-    const end = ranges.end(i) - 0.08;
-    if (end < time && end > edge) edge = end;
-  }
-  if (edge < 0 || Math.abs(video.currentTime - edge) < 0.2) return false;
-  try {
-    video.currentTime = edge;
-    return true;
-  } catch {
-    return false;
-  }
+  return seekIfBuffered(video, time);
 }
 
 type DeferredOptions = {
@@ -154,18 +138,8 @@ export function useDeferredVideoSource(
 
   useEffect(() => {
     if (!src || !eager) return;
-    let cancelled = false;
-    void acquireFilmSlot(src).then((release) => {
-      if (cancelled) {
-        release();
-        return;
-      }
-      setActiveSrc(src);
-      if (prefetch) prefetchVideo(prefetch);
-    });
-    return () => {
-      cancelled = true;
-    };
+    setActiveSrc(src);
+    if (prefetch) prefetchVideo(prefetch);
   }, [eager, prefetch, src]);
 
   useEffect(() => {
@@ -200,7 +174,7 @@ export function useDeferredVideoSource(
 
   useEffect(() => {
     if (!activeSrc) return;
-    const timer = window.setTimeout(() => releaseVideoPrefetch(activeSrc), 8000);
+    const timer = window.setTimeout(() => releaseVideoPrefetch(activeSrc), 180000);
     return () => window.clearTimeout(timer);
   }, [activeSrc]);
 

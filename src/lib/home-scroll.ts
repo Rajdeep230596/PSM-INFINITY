@@ -2,7 +2,8 @@ import { LEVEL_TWO_VIDEO_DURATION, SKYDECK_VIDEO_DURATION } from "@/lib/second-a
 
 /** Shared homepage scrollytelling. Video time tracks the scroll position directly. */
 export const HOME_SCROLL_SCRUB = true;
-export const HOME_VIDEO_SMOOTHING = 1;
+/** Ease currentTime toward scroll. 1 snaps and skips frames. */
+export const HOME_VIDEO_SMOOTHING = 0.22;
 /** Extra viewport-heights of scroll per second of mapped video. */
 export const HOME_EXTRA_VH_PER_SECOND = 20;
 

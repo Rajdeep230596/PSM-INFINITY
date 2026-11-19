@@ -1,4 +1,5 @@
-const READY_TIMEOUT_MS = 900;
+import { beginHomeMediaProgress, markBootShellReady, primeHomeMedia } from "@/lib/film-boot";
+import { completeBootProgress } from "@/lib/boot-progress";
 
 function wait(ms: number) {
   return new Promise<void>((resolve) => {
@@ -26,7 +27,7 @@ function whenReady(signal: AbortSignal) {
 
 async function whenFontsReady() {
   try {
-    await Promise.race([document.fonts.ready, wait(900)]);
+    await Promise.race([document.fonts.ready, wait(600)]);
   } catch {
     // Fonts are best-effort; never block the reveal on a failed face.
   }
@@ -46,15 +47,15 @@ function paintFrames(count: number) {
 
 export async function prewarmExperience(options: { reducedMotion: boolean }) {
   const controller = new AbortController();
-  const cap = wait(READY_TIMEOUT_MS).then(() => controller.abort());
-
-  await Promise.race([
-    (async () => {
-      await whenReady(controller.signal);
-      await whenFontsReady();
-      if (options.reducedMotion) return;
-      await paintFrames(2);
-    })(),
-    cap,
-  ]);
+  beginHomeMediaProgress();
+  await whenReady(controller.signal);
+  await whenFontsReady();
+  markBootShellReady();
+  if (options.reducedMotion) {
+    completeBootProgress();
+    return;
+  }
+  await primeHomeMedia();
+  await paintFrames(2);
+  completeBootProgress();
 }
